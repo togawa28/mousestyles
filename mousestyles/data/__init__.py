@@ -6,6 +6,12 @@ import numpy as np
 import pandas as pd
 
 from mousestyles import data_dir
+from mousestyles.intervals import Intervals
+import collections
+
+from matplotlib.externals import six
+
+INTERVAL_FEATURES = ["AS", "F", "IS", "M_AS", "M_IS", "W"]
 
 
 def load_all_features():
@@ -91,10 +97,10 @@ def load_intervals(feature):
     >>> IS = load_intervals('IS')
     """
     # check input is one of the provided choices
-    if feature not in {"AS", "F", "IS", "M_AS", "M_IS", "W"}:
+    if feature not in INTERVAL_FEATURES:
         raise ValueError(
             'Input value must be one of {"AS", "F", "IS", "M_AS", "M_IS", "W"}'
-            )
+        )
     # get all file names
     file_names = _os.listdir(_os.path.join(data_dir, "intervals", feature))
     # check if directory is empty
@@ -162,7 +168,7 @@ def load_movement(strain, mouse, day):
     if any(conditions_type):
         raise TypeError("Input values need to be integer")
     # load all four files of HB, CT, CX and CY data
-    HB_path = "txy_coords/C_idx_HB/C_idx_HB_strain{}_mouse{}_day{}.npy".\
+    NHB_path = "txy_coords/C_idx_HB/C_idx_HB_strain{}_mouse{}_day{}.npy".\
         format(strain, mouse, day)
     CT_path = "txy_coords/CT/CT_strain{}_mouse{}_day{}.npy".\
         format(strain, mouse, day)
@@ -170,10 +176,14 @@ def load_movement(strain, mouse, day):
         format(strain, mouse, day)
     CY_path = "txy_coords/CY/CY_strain{}_mouse{}_day{}.npy".\
         format(strain, mouse, day)
-    HB = np.load(_os.path.join(data_dir, HB_path))
-    CT = np.load(_os.path.join(data_dir, CT_path))
-    CX = np.load(_os.path.join(data_dir, CX_path))
-    CY = np.load(_os.path.join(data_dir, CY_path))
+    try:
+        HB = ~ np.load(_os.path.join(data_dir, NHB_path))
+        CT = np.load(_os.path.join(data_dir, CT_path))
+        CX = np.load(_os.path.join(data_dir, CX_path))
+        CY = np.load(_os.path.join(data_dir, CY_path))
+    except IOError:
+        raise ValueError("No data exists for strain {}, mouse {}, day {}".
+                         format(strain, mouse, day))
     # make data frame
     dt = pd.DataFrame()
     dt["t"] = CT
@@ -181,3 +191,134 @@ def load_movement(strain, mouse, day):
     dt["y"] = CY
     dt["isHB"] = HB
     return dt
+
+
+def _lookup_intervals(times, intervals):
+    """
+    Return a boolean array where each element is True
+    if the corresponding element of `times` was
+    in `intervals`.
+
+    Parameters
+    ----------
+    times: numpy.array of floats
+        an array of timestamps
+    intervals: pandas.DataFrame
+        a data frame containing columns 'start' and
+        'stop', represent a series of time intervals
+
+    Returns
+    -------
+    numpy.array of booleans
+        Array of booleans representing whether the timestamps
+        in `times` fell in the intervals in `intervals`
+
+    Examples
+    --------
+    >>> t = pd.Series([1.5, 2.5, 3.5])
+    >>> ints = pd.DataFrame({'start': [1, 2], 'stop': [1.99, 2.99]})
+    >>> in_intervals = _lookup_intervals(t, ints)
+    >>> t.shape == in_intervals.shape
+    True
+    >>> in_intervals
+    0     True
+    1     True
+    2    False
+    dtype: bool
+    """
+    ints = Intervals(intervals[['start', 'stop']])
+    return times.map(ints.contains)
+
+
+def load_movement_and_intervals(strain, mouse, day,
+                                features=INTERVAL_FEATURES):
+    """
+    Return a pandas.DataFrame object of project movement and interval
+    data for the specified combination of strain, mouse and day.
+
+    There are 4 + len(features) columns in the dataframe: t: Time
+    coordinates (in seconds) x: X coordinates indicating the
+    left-right position of the cage y: Y coordinates indicating the
+    front-back position of the cage isHB: Boolean indicating whether
+    the point is in the home base or not Additonal columns taking
+    their names from features: Boolean indicating whether the time
+    point is in an interval of behavior of the given feature.
+
+    Parameters
+    ----------
+    strain: int
+        nonnegative integer indicating the strain number
+    mouse: int
+        nonnegative integer indicating the mouse number
+    day: int
+        nonnegative integer indicating the day number
+    features: list (or other iterable) of strings
+        list of features from {"AS", "F", "IS", "M_AS", "M_IS", "W"}
+
+    Returns
+    -------
+    movement : pandas.DataFrame CT, CX, CY
+        coordinates, home base status, and feature interval information
+        for a given srain, mouse and day
+
+    Examples
+    --------
+    >>> m1 = load_movement(1, 1, 1)
+    >>> m2 = load_movement_and_intervals(1, 1, 1, []) # don't add any features
+    >>> np.all(m1 == m2)
+    True
+    >>> m3 = load_movement_and_intervals(1, 1, 1, ['AS'])
+    >>> m3.shape[1] == m1.shape[1] + 1 # adds one column
+    True
+    >>> m3.shape[0] == m1.shape[0] # same number of rows
+    True
+    >>> m3[29:32]
+                t      x       y   isHB     AS
+    29  56448.333 -6.289  34.902  False  False
+    30  56448.653 -5.509  34.173   True   True
+    31  56449.273 -5.048  33.284   True   True
+    """
+    if isinstance(features, six.string_types):
+        features = [features]
+    elif not isinstance(features, collections.Iterable):
+        raise ValueError('features must be a string or iterable of strings')
+    movements = load_movement(strain, mouse, day)
+    for f in features:
+        intervals = load_intervals(feature=f)
+        mouse_intervals = intervals[(intervals['strain'] == strain) &
+                                    (intervals['mouse'] == mouse) &
+                                    (intervals['day'] == day)]
+        movements[f] = _lookup_intervals(movements['t'], mouse_intervals)
+
+    return movements
+
+
+def load_start_time_end_time(strain, mouse, day):
+    """
+    Returns the start and end times recorded
+    for the mouse-day. The first number indicates
+    the number of seconds elapsed since midnight,
+    the second number indicates when the cage is
+    closed for cleaning. In other words, this is
+    the interval for which all sensors are active.
+
+    Parameters
+    ----------
+    strain: int
+        nonnegative integer indicating the strain number
+    mouse: int
+        nonnegative integer indicating the mouse number
+    day: int
+        nonnegative integer indicating the day number
+
+    Returns
+    -------
+    times: a tuple of (float, float)
+        the start time and end time
+    """
+    file_name = 'recordingStartTimeEndTime_strain{}_mouse{}_day{}.npy'.\
+                format(strain, mouse, day)
+    path_to_file = _os.path.join(data_dir, 'txy_coords',
+                                 'recordingStartTimeEndTime',
+                                 file_name)
+    return tuple(np.load(path_to_file))
