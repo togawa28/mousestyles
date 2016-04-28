@@ -17,6 +17,10 @@ involves how many times did the mouse eat in that day and how long did it eat.
 As we think that mice locomotion patterns are fundamental aspects of behavior,
 we will expect that these are good features of strains.
 
+.. plot:: report/plots/heat_map_0_0_0.py
+
+   A heatmap of a mouse movement.
+
 Statement of Statistical Problems
 ---------------------------------
 
