@@ -1,7 +1,7 @@
 from matplotlib import pyplot as plt
 from scipy.cluster.hierarchy import dendrogram, linkage
 from sklearn.cluster import AgglomerativeClustering, KMeans
-from sklearn.metrics import pairwise_distances
+from sklearn.metrics import pairwise_distances, silhouette_samples, silhouette_score
 from sklearn import metrics
 import numpy as np
 import pandas as pd
@@ -205,3 +205,79 @@ def plot_lastp_dist(Z, method, dist, p = 10):
     label = '2nd derivative of {} distance'.format(dist))
     plt.legend(handles = [line1, line2])
     plt.show()
+
+def get_optimal_fit_kmeans(mouse_X,num_clusters,raw=False):
+    """
+    Returns a list of 2: [silhouettes, cluster_labels]
+        silhouettes: list of float,
+        cluster_labels: list of list, 
+            each sublist is the labels corresponding to the silhouette
+
+    Parameters
+    ----------
+    mouse_X: a 170 * M numpy array or 21131 * M numpy array, 
+        all columns corresponding to feature avg/std of a mouse over 16 days
+        or the raw data without averaging over days
+    num_clusters: range or a list or a numpy array
+        range of number of clusters
+    raw: a boolean with default is False
+       False if using the 170 * M array
+    Returns
+    -------
+    A list of 2: [silhouettes, cluster_labels]
+    """
+
+    if raw=True:
+        sample_amount=1000
+    else: sample_amount=mouse_X.shape[0]
+    cluster_labels=[]
+    silhouettes = []
+    for n_clusters in num_clusters:
+        clustering = KMeans(n_clusters=n_clusters)
+        clustering.fit(mouse_X)
+        labels = clustering.labels_
+        silhouettes.append(metrics.silhouette_score(mouse_X, labels,\
+        metric="euclidean",sample_size=sample_amount))
+        cluster_labels.append(list(labels))
+    return([silhouettes,cluster_labels])
+
+def cluster_in_strain(labels_first,labels_second):
+    """
+    Returns a dictionary object indicating the count of different
+    clusters in each different strain (when put cluster labels as first) 
+    or the count of different strain in each clusters (when put strain
+    labels as first).
+
+    Parameters
+    ----------
+    labels_first: numpy arrary or list
+        A numpy arrary or list of integers representing which cluster 
+        the mice in, or representing which strain mice in.
+    labels_second: numpy arrary or list
+        A numpy array or list of integers (0-15) representing which strain 
+        the mice in, or representing which cluster the mice in  
+
+    Returns
+    -------
+    count_data : dictionary
+        A dictioanry object with key is the strain number and value is a list 
+        indicating the distribution of clusters, or the key is the cluster 
+        number and the value is a list indicating the distribution of each
+        strain.
+
+    Examples
+    --------
+    >>> count_1=cluster_in_strain([1,2,1,0,0],[0,1,1,2,1])
+    """
+    count_data={}
+    labels_first=np.asarray(labels_first)
+    labels_second=np.asarray(labels_second)
+    for label_2 in np.unique(labels_second):
+        label_2_index=labels_second==label_2
+        label_1_sub=labels_first[label_2_index]
+        count_list=[]
+        for label_1 in np.unique(labels_first):
+            count_list.append(sum(label_1_sub==label_1))
+        count_data[label_2]=count_list
+    return(count_data)
+
