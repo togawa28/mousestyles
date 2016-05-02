@@ -4,7 +4,7 @@ from __future__ import (absolute_import, division, print_function,
 import pytest
 
 from mousestyles import data
-from mousestyles.path_index import path_index
+from mousestyles.path_diversity import path_index
 
 
 def test_path_input():
