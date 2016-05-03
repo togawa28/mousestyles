@@ -1,4 +1,5 @@
-from __future__ import (absolute_imoport, division, print_function, unicode_literals)
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
 
 import pytest
 
@@ -35,4 +36,3 @@ def test_detect_noise():
     # Check if function produces the correct outputs.
     noise = detect_noise(movement, paths, 135, 0.08)
     assert noise[0:9] == [0, 0, 0, 0, 0, 0, 0,  1,  1]
-    
