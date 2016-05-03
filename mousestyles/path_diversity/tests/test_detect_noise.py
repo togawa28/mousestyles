@@ -35,3 +35,4 @@ def test_detect_noise():
     # Check if function produces the correct outputs.
     noise = detect_noise(movement, paths, 135, 0.08)
     assert noise[0:9] == [0, 0, 0, 0, 0, 0, 0,  1,  1]
+    
