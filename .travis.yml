@@ -25,17 +25,13 @@ before_install:
   - wheelhouse_pip_r_install ${DEPENDS}
 
 install:
-  - pip install .
+  - pip install -e .
 
 script:
   - cd doc/source
   - make html
   - cd ../..
-  - mkdir tmp_for_tests
-  - cp Makefile tmp_for_tests/.
-  - cd tmp_for_tests
-  - make test-fast
-  - make style-fast
+  - make travis-test
 
 after_success:
   - if [ "${COVERAGE}" == "1" ]; then coveralls; fi

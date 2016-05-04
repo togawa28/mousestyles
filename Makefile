@@ -25,6 +25,10 @@ test-fast:
 style-fast:
 	py.test --pep8 --flakes --pyargs mousestyles
 
+travis-test:
+	py.test --cov=mousestyles --pep8 --flakes --pyargs mousestyles
+
+
 .PHONY: doc
 doc:
 	cd doc/source && $(MAKE) html
