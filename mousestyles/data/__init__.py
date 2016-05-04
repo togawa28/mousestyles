@@ -70,6 +70,98 @@ def load_all_features():
     return pd.concat(other_features, axis=1)
 
 
+def load_mouseday_features(features=None):
+    """
+    Returns a (1921, 3+11*n) size pandas.DataFrame object corresponding to
+    each 2-hour time bin of the n inputted features over each mouse.
+    The first three columns index each mouse:
+
+    Column 0: the strain of the mouse (0-15)
+    Column 1: the mouse number (number depends on strain)
+    Column 2: the day number (5-16)
+
+    The remaining 3*n columns are the values for each 2-hour time bin
+    of the n inputted features.
+
+    Parameters
+    ----------
+    features: list, optional
+        A list of one or more features chosen from
+        {"ASProbability", "ASNumbers", "ASDurations",
+        "Food", "Water", "Distance",
+        "ASFoodIntensity", "ASWaterIntensity", "MoveASIntensity"}
+        Default all features when optional
+
+    Returns
+    -------
+    features_data_frame : pandas.DataFrame
+        A dataframe of computed features.
+
+    Examples
+    --------
+    >>> mouseday = load_mouseday_features()
+    >>> mouseday = load_mouseday_features(["Food"])
+    >>> mouseday = load_mouseday_features(["Food", "Water", "Distance"])
+    """
+    features_list = [
+        "ASProbability",
+        "ASNumbers",
+        "ASDurations",
+        "Food",
+        "Water",
+        "Distance",
+        "ASFoodIntensity",
+        "ASWaterIntensity",
+        "MoveASIntensity"]
+
+    if features is None:
+        features = features_list
+
+    if type(features) is str:
+        features = [features]
+
+    fea_str = "{"
+    for item in features_list:
+        fea_str += '"' + item + '", '
+    fea_str = fea_str[:-2] + "}"
+
+    # Check if input is a list
+    if type(features) is not list:
+        raise TypeError(
+            "Input value must be a list."
+        )
+
+    # Check if input values are expected features
+    for feature in features:
+        if feature not in features_list:
+            raise ValueError(
+                "Input value must be chosen from " + fea_str + "."
+            )
+
+    # 9 x 1921 x (3 labels + 11 feature time bins)
+    all_features = np.load(
+        _os.path.join(
+            data_dir,
+            "all_features_mousedays_11bins.npy"))
+
+    # Locate each feature and aggregate numpy arrays
+    dic = {}
+    for (i, feature) in enumerate(features_list):
+        dic[feature] = i
+    all_data_orig = np.hstack(
+        [all_features[0, :, 0:3]] +
+        [all_features[dic[feature], :, 3:] for feature in features])
+
+    # Prepare column names
+    columns = ["strain", "mouse", "day"]
+    for feature in features:
+        columns += [feature + "_" + str(x) for x in range(0, 22, 2)]
+    # Transform into data frame
+    data_all = pd.DataFrame(all_data_orig, columns=columns)
+
+    return data_all
+
+
 def load_intervals(feature):
     """
     Return a pandas.DataFrame object of project interval data
