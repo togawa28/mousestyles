@@ -5,25 +5,60 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import StandardScaler
 import pandas as pd 
 
-def RandomForest():
-    df = data.load_all_features()
+def prep_data(strain, features, rseed = 222):
+    """
+    Returns a list of 4: [train_y, train_x, test_y, test_x]
+        train_y: list of strain labels in train data sets,
+        train_x: list of features in train data sets,
+        test_y: list of strain labels in test data sets,
+        test_x: list of features in train data sets
+    Parameters
+    ----------
+    strain: ndarray, shape of (1921,)
+            classification labels
+    features: ndarray, shape of (1921, 99)
+              classification features
+    rseed: int, optional
+           random seed for shuffling the data set to separate train and test
+    Returns
+    ----------
+    The list as specified
+    """
     #total: 21131 rows 
-    index = np.arange(df.shape[0])
-    np.random.seed(222)
+    index = np.arange(features.shape[0])
+    np.random.seed(rseed)
     np.random.shuffle(index)
     #split the dataset to 75% training and 25% testing 
-    sep = int(df.shape[0]*0.75)
+    sep = int(features.shape[0] * 0.75)
     #total 15848 rows 
-    train = df.iloc[index[:sep]]
+    train_x = features.iloc[index[:sep]]
+    train_y = strain.iloc[index[:sep]]
     #total 5283 rows 
-    test = df.iloc[index[sep:]]
-    #select features starting from column 4. 
-    #eliminate columns strain, mouse, day, hour
-    train_x = train.iloc[:,4:]
-    #label is the strain 
-    train_y = train['strain']
-    test_x = test.iloc[:,4:]
-    test_y = test['strain']
+    test_x = features.iloc[index[sep:]]
+    test_y = strain.iloc[index[sep:]]
+    return [train_y, train_x, test_y, test_x]
+
+
+def RandomForest(strain, features, rseed = 222):
+    """
+    Returns a ndarray of RandomForest results, containing prediction strain 
+    labels and true strain labels for test data set. Use cross validation 
+    to tune Parameters.
+    Parameters
+    ----------
+    strain: ndarray, shape of (1921,)
+            classification labels 
+    features: ndarray, shape of (1921, 99)
+              classification features
+    rseed: int, optional
+           random seed for shuffling the data set to separate train and test
+    Returns
+    ----------
+    ndarray of RandomForest results in test data set.
+        Column 0: prediction strain labels
+        Column 1: true strain labels
+    """
+    train_y, train_x, test_y, test_x = prep_data(strain, features, rseed)
     #creat RF model 
     scaler = StandardScaler()
     train_x = scaler.fit_transform(train_x)
@@ -48,6 +83,24 @@ def RandomForest():
 
 
 def GetSummary(result) :
+    """
+    Returns a ndarray of classification result summary,
+    including precision, recall, F1 measure in terms of different 
+    strains.
+    Parameters
+    ----------
+    result: classification results in test data set
+        Column 0: prediction strain labels
+        Column 1: true strain labels 
+    Returns
+    ----------
+    ndarray of classification result summary, shape(16,3).
+       16 rows, for each strain 0-15
+       Column 0: precision
+       Column 1: recall
+       Column 2: F-1 measure
+
+    """
     prediction_accurate_count_matrix = pd.crosstab(index=result.iloc[:,0],
         columns=result.iloc[:,1],margins=True)  
     prediction_accurate_count_matrix.rename(columns = {"All":"rowTotal"},inplace=True)
@@ -64,8 +117,7 @@ def GetSummary(result) :
     summary.columns = ['precision','recall',"F1_score"]
     return(summary)
 
-#test with RF Model 
-GetSummary(RandomForest())
+
 
 
 
