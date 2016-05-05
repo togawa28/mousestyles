@@ -35,6 +35,7 @@ def test_fit_hc():
 
 
 def test_fit_kmeans():
+    # Check get_optimal_fit_kmeans returns expected result
     mouse_data = data.load_all_features()
     preped_data = clustering.prep_data(mouse_data)
     mouse_day_X = preped_data[:, 2:]
@@ -49,5 +50,6 @@ def test_fit_kmeans():
 
 
 def test_cluster_in_strain():
+    # Check cluster_in_strain calculate correct strain counts
     res = clustering.cluster_in_strain([1, 2, 1, 0, 0], [0, 1, 1, 2, 1])
     assert res == {0: [0, 1, 0], 1: [1, 1, 1], 2: [1, 0, 0]}
