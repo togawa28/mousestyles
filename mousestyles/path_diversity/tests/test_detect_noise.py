@@ -31,8 +31,22 @@ def test_detect_noise_input():
 
 
 def test_detect_noise():
-    movement = data.load_movement(1, 2, 1)
+    movement = {'t': pd.Series([0., 0.02, 0.04, 0.06], index=[0, 1, 2, 3]),
+                'x': pd.Series([0., 0., 0.1, 0.2], index=[0, 1, 2, 3]),
+                'y': pd.Series([0., 1., 0., 1.], index=[0, 1, 2, 3]),
+                'isHB': pd.Series(['No', 'No', 'No', 'No'], index=[0, 1, 2, 3])}
     paths = path_index(movement, 1, 1)
     # Check if function produces the correct outputs.
-    noise = detect_noise(movement, paths, 135, 0.08)
-    assert noise[0:9] == [0, 0, 0, 0, 0, 0, 0,  1,  1]
+    noise = detect_noise(movement, paths, 120, 1)
+    noise = list(noise)
+    assert noise == [0, 1, 1, 0]
+
+    movement = {'t': pd.Series([0., 2., 4., 7.], index=[0, 1, 2, 3]),
+                'x': pd.Series([0., 0., 0.1, 0.2], index=[0, 1, 2, 3]),
+                'y': pd.Series([0., 1., 0., 1.], index=[0, 1, 2, 3]),
+                'isHB': pd.Series(['No', 'No', 'No', 'No'], index=[0, 1, 2, 3])}
+    paths = path_index(movement, 1, 1)
+    # Check if function produces the correct outputs.
+    noise = detect_noise(movement, paths, 135, 1)
+    noise = list(noise)
+    assert noise == [0, 0, 0, 0]

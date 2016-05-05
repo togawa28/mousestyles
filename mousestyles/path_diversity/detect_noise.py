@@ -1,9 +1,10 @@
 from __future__ import print_function, absolute_import, division
 
 import numpy as np
-from PathFeatures import compute_angles
+from path_features import compute_angles
 
-def detect_noise(movement, paths, angle_threshold, delta_t):    
+
+def detect_noise(movement, paths, angle_threshold, delta_t):
     r"""
     Return a list object containing boolean values at points
     where measurement noise is detected and will be passed to
@@ -25,7 +26,7 @@ def detect_noise(movement, paths, angle_threshold, delta_t):
 
     Returns
     -------
-    noise index : a list containing the indices at which measurement
+    noise index : a pandas series containing the indices at which
     noise, as defined by input parameters, is detected
 
     Examples
@@ -42,26 +43,35 @@ def detect_noise(movement, paths, angle_threshold, delta_t):
 
     noise_index = 1
     noise_path = []
-    noise_path = np.array(noise_path)
+    noise_path = pd.Series(noise_path)
+    current_noise = False
 
     for path in paths:
-        path_obj = movement[path[0]:path[1]+1]
-
-        path_obj['angles'] = compute_angles(path_obj, False)
-        path_obj['sharp_angle'] = path_obj['angles'] > angle_threshold
-        path_obj['noise'] = 0
+        path_obj = movement[path[0]:path[1] + 1]
 
         if len(path_obj) > 3:
-            for i in range(0, len(path_obj)-1):
-                if path_obj['sharp_angle'].iloc[i]:
-                    if path_obj['sharp_angle'].iloc[i+1]:
-                        if path_obj['t'].iloc[i+1] - 
-                        path_obj['t'].iloc[i] < delta_t:
-                            path_obj['noise'].iloc[i] = noise_index
-                            path_obj['noise'].iloc[i+1] = noise_index
-                        else:
-                            noise_index += 1
 
-        noise_path = np.append(noise_path, np.array(path_obj['noise']))
+            path_obj['angles'] = compute_angles(path_obj, False)
+            path_obj['sharp_angle'] = path_obj['angles'] > angle_threshold
+            path_obj['noise'] = 0
+
+            for i in range(0, len(path_obj) - 1):
+                if path_obj['sharp_angle'].iloc[i]:
+                    if path_obj['sharp_angle'].iloc[i + 1]:
+                        if path_obj['t'].iloc[
+                                i + 1] - path_obj['t'].iloc[i] < delta_t:
+                            path_obj['noise'].iloc[i] = noise_index
+                            path_obj['noise'].iloc[i + 1] = noise_index
+                            current_noise = True
+                        elif current_noise:
+                            noise_index += 1
+                            current_noise = False
+                    elif current_noise:
+                        noise_index += 1
+                        current_noise = False
+        else:
+            path_obj['noise'] = 0
+
+        noise_path = noise_path.append(path_obj.noise)
 
     return(noise_path)
