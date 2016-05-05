@@ -2,10 +2,11 @@ from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 
 import pytest
+import pandas as pd
 
 from mousestyles import data
-from detect_noise import detect_noise
-from path_index import path_index
+from mousestyles.detect_noise import detect_noise
+from mousestyles.path_index import path_index
 
 
 def test_detect_noise_input():
@@ -34,7 +35,9 @@ def test_detect_noise():
     movement = {'t': pd.Series([0., 0.02, 0.04, 0.06], index=[0, 1, 2, 3]),
                 'x': pd.Series([0., 0., 0.1, 0.2], index=[0, 1, 2, 3]),
                 'y': pd.Series([0., 1., 0., 1.], index=[0, 1, 2, 3]),
-                'isHB': pd.Series(['No', 'No', 'No', 'No'], index=[0, 1, 2, 3])}
+                'isHB': pd.Series(['No', 'No', 'No', 'No'],
+                                  index=[0, 1, 2, 3])}
+    movement = pd.DataFrame(movement)
     paths = path_index(movement, 1, 1)
     # Check if function produces the correct outputs.
     noise = detect_noise(movement, paths, 120, 1)
@@ -44,7 +47,9 @@ def test_detect_noise():
     movement = {'t': pd.Series([0., 2., 4., 7.], index=[0, 1, 2, 3]),
                 'x': pd.Series([0., 0., 0.1, 0.2], index=[0, 1, 2, 3]),
                 'y': pd.Series([0., 1., 0., 1.], index=[0, 1, 2, 3]),
-                'isHB': pd.Series(['No', 'No', 'No', 'No'], index=[0, 1, 2, 3])}
+                'isHB': pd.Series(['No', 'No', 'No', 'No'],
+                                  index=[0, 1, 2, 3])}
+    movement = pd.DataFrame(movement)
     paths = path_index(movement, 1, 1)
     # Check if function produces the correct outputs.
     noise = detect_noise(movement, paths, 135, 1)

@@ -1,7 +1,7 @@
 from __future__ import print_function, absolute_import, division
 
-import numpy as np
-from path_features import compute_angles
+import pandas as pd
+from mousestyles.path_features import compute_angles
 
 
 def detect_noise(movement, paths, angle_threshold, delta_t):
