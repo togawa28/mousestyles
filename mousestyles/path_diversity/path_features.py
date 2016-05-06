@@ -126,8 +126,8 @@ def compute_angles(path_obj, radian=None):
     if type(path_obj) is not pd.core.frame.DataFrame:
         raise TypeError("path_obj must be pandas DataFrame")
     
-    if set(path_obj.keys()) != {'isHB', 't', 'x', 'y'}:
-        raise ValueError("the keys of path_obj must be 't', 'x', 'y', and 'isHB'")
+    if set(path_obj.keys()).issuperset(['x','y']) == False:
+        raise ValueError("the keys of path_obj must contain 'x', 'y'")
     
     if len(path_obj) <= 2:
         raise ValueError("path_obj must contain at least 3 rows")

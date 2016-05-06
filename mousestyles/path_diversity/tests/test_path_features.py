@@ -64,8 +64,8 @@ def test_compute_angles_input():
                          'y':[-3, 0, 0], 'isHB':[True, False, False]})
     # not pandas DataFrame
     like_path = [1,2,3]
-    # not having keys 't', 'x', 'y', and 'isHB'
-    like_path2 = pd.DataFrame({'x':[5,-2],'y':[-2,3],'isHB':[True,True]})
+    # not having keys 'x', 'y'
+    like_path2 = pd.DataFrame({'x':[5,-2,1],'t':[-2,3,1],'isHB':[True,True,False]})
     # length is less than 2
     like_path3 = pd.DataFrame({'t':[2], 'x':[5],'y':[3],'isHB':[True]})
     
@@ -79,7 +79,7 @@ def test_compute_angles_input():
 
     with pytest.raises(ValueError) as excinfo:
         compute_angles(like_path2, True)
-    assert excinfo.value.args[0] == "the keys of path_obj must be 't', 'x', 'y', and 'isHB'"
+    assert excinfo.value.args[0] == "the keys of path_obj must contain 'x', 'y'"
 
     with pytest.raises(ValueError) as excinfo:
         compute_angles(like_path3, True)
