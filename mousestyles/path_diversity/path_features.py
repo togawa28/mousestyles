@@ -97,7 +97,7 @@ def angle_between(v1, v2):
     return np.arccos(np.clip(np.dot(v1_u, v2_u), -1.0, 1.0))
 
 
-def compute_angles(path_obj, radian=None):
+def compute_angles(path_obj, radian=False):
     r"""
     Returns a list of the angles in the path.
     Each element of the list is the angle between the adjacent vectors in the
@@ -126,8 +126,6 @@ def compute_angles(path_obj, radian=None):
     >>> compute_angles(path)
     [None, 90.0, None]
     """
-    if radian is None:
-        radian = False
 
     if not isinstance(path_obj, pd.core.frame.DataFrame):
         raise TypeError("path_obj must be pandas DataFrame")
