@@ -32,6 +32,7 @@ def path_index(movement, stop_threshold, min_path_length):
     --------
     >>> movement = data.load_movement(1, 2, 1)
     >>> paths = path_index(movement, 1, 1)[:5]
+    >>> paths
     [[0, 2], [6, 8], [107, 113], [129, 131], [144, 152]]
     """
     # check if all inputs are positive integers

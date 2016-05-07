@@ -148,15 +148,36 @@ whole project can be divided into 6 sub-projects:
 -  **Strain:** A strain here is a genetic variant or sub-type of of the
    more general mouse population.
 
-5. References
--------------
+5. Data 
+-------
 
--  Laurence H Tecott. The genes and brains of mice and men. American
-   Journal of Psychiatry, 2003
-   http://dx.doi.org/10.1176/appi.ajp.160.4.646.
--  David J Anderson and Pietro Perona. Toward a science of computational
-   ethology. Neuron, 84(1):18-31, 2014.
-   http://www.sciencedirect.com/science/article/pii/S0896627314007934.
+The data includes two directories, intervals and txy_coords, and a npy file named all_features_mousedays_11bins. The all_features_mousedays_11bins.npy
+contains a 9*1921*11 matrix, which represents 9 features among 1921 mouse days in 11 2 hour bins for a day, the 9 features are:
+
+-  **Food (F):** records the food consumption (g) for a certain mouse day and a certain time bin.
+-  **Water (W):** records the water consumption (g) for a certain mouse day and a certain time bin.
+-  **Distance (D):** records the movement distance for a certain mouse day and a certain time bin.
+-  **ASProbability (ASP):** records the AS time proportion in the certain time bin.
+-  **ASNumbers (ASN):** records the numbers of AS in the certain time bin. 
+-  **ASDurations (ASD):** records the total duration of AS in a certain bin.
+-  **ASFoodIntensity (ASFI):** equals F/ASP.
+-  **ASWaterIntensity (ASWI):** equals W/ASP. 
+-  **MoveASIntensity (ASMI):** equals D/ASP.
+
+The intervals directory has 6 sub-directories, all sub-directories have about 33 files for 3 strains, and for each strain there are 11 days data:
+
+-  **F:** records start and stop time of eating behaviors for a certain strain and a certain day. 
+-  **W:** records start and stop time of drinking behaviors for a certain strain and a certain day.
+-  **AS:** records start and stop time of AS for a certain strain and a certain day.
+-  **M_AS:** records start and stop time of movements in AS for a certain strain and a certain day.
+-  **IS:** records start and stop time of IS for a certain strain and a certain day.
+-  **M_IS:** records start and stop time of movements in IS for a certain strain and a certain day.
+
+The txy_coords directory has 5 sub-directories,all sub-directories have about 33 files for 3 strains, and for each strain there are 11 days data:
+
+-  **CY,CX,CY:** records the position (x,y) in time t for a certain strain and a certain day.
+-  **C_idx_HB:** indicates whether the mouse is in HB or not at time t.
+-  **recordingStartTimeEndTime:** records the start and stop time of tracking (x,y,t) for a certain strain and a certain day.
 
 .. rubric:: Footnotes
 

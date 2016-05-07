@@ -232,6 +232,7 @@ dummy:
 	@echo "Build finished. Dummy builder generates no files."
 
 .PHONY: github
-github: html
+github: html latexpdf
+	cp $(BUILDDIR)/latex/mousestyles.pdf $(BUILDDIR)/html/.
 	ghp-import $(BUILDDIR)/html
 	git push upstream gh-pages --force
