@@ -5,8 +5,8 @@ import pytest
 import pandas as pd
 
 from mousestyles import data
-from mousestyles.detect_noise import detect_noise
-from mousestyles.path_index import path_index
+from mousestyles.path_diversity import detect_noise
+from mousestyles.path_diversity import path_index
 
 
 def test_detect_noise_input():
