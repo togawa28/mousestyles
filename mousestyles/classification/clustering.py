@@ -9,7 +9,7 @@ from mousestyles.data.utils import day_to_mouse_average
 
 
 # prep data functions
-def prep_data(mouse_data, std=True, rescale=True):
+def prep_data(mouse_data, melted=False, std=True, rescale=True):
     """
     Returns a ndarray data to be used in clustering algorithms:
         column 0 : strain,
@@ -19,12 +19,21 @@ def prep_data(mouse_data, std=True, rescale=True):
 
     Parameters
     ----------
-    mouse_data: a 21131 * 13 pandas DataFrame,
-        column 0 : strain,
-        column 1: mouse,
-        column 2: day,
-        column 3: hour,
-        other columns corresponding to features
+    mouse_data: 
+        (i) a 21131 * (4 + ) pandas DataFrame,
+            column 0 : strain,
+            column 1: mouse,
+            column 2: day,
+            column 3: hour,
+            other columns corresponding to features
+        or
+        (ii) a 1921 * (3 + ) pandas DataFrame,
+            column 0: strain,
+            column 1: mouse,
+            column 2: day,
+            other columns corresponding to features
+    melted: bool,
+        False if the input mouse_data is of type (i)    
     std: bool,
         whether the standard deviation of each feature is returned
     rescale: bool,
@@ -35,7 +44,10 @@ def prep_data(mouse_data, std=True, rescale=True):
     ----------
     The ndarray as specified
     """
-    mouse_X = np.array(mouse_data.iloc[:, 4:], dtype=float)
+    if melted:
+        mouse_X = np.array(mouse_data.iloc[:, 3:], dtype=float)
+    else:
+        mouse_X = np.array(mouse_data.iloc[:, 4:], dtype=float)
     mouse_labels = np.array(mouse_data.iloc[:, 0:3])
     mouse_dayavg, mouse_daystd = day_to_mouse_average(
         mouse_X, mouse_labels, num_strains=16, stdev=True, stderr=False)
