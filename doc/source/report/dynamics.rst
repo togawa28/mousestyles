@@ -6,114 +6,54 @@ Dynamics of AS Patterns
 Statement of Problem
 --------------------
 
-The objective of Dynamics Analysis is to classify the active states and
-inactive states, as well as understand the dynamics/transitions between
-AS and IS..
+The objective of Dynamics Analysis is to analyze and characterize the behaviors of different strains of mice using Markov Chain model. We could use the MC models to further explore the discrepancy between different strains and even simulate a particular mouse day for a particular strain.
 
 Statement of Statistical Problems
 ---------------------------------
 
--  Use the Raw Observation Data of Mouse's spatial and temporal data, to
-   classify for each time-stamp whether the mice is in Active State or
-   Inactive State, therefore to calculate AS numbers, AS durations, and
-   AS probability for the 2-hour bin.
--  Calculate the probability of events transition (e.g. eating =>
-   drinking) and of states transition (i.e. active => inactive).
--  Using those probabilities as a feature of our "big model" to predict
-   the mice's gene type based on their behavior.
+The statistical problems in this project are mainly naturally divided into two parts, the modeling part and the simluation of the model part. The modelling part consists of estimating the probability of events transition using the raw data of mouse's spatial and temporal data, and once we've got the model, we could use this model to do predictions and simulate a fake mouse day.
 
-Exploratory Analysis
---------------------
+For the estimation, the statistical problems include:
 
--  Paper Define that when the mice is inside the Home Base, it is in IS.
-   However, we make some improvement by adding the assumption that mice
-   bring food back to Home Base.
-
-   -  Original Classification:
-
-   -  Improved Classification:
-
--  EDA on their result to get a rough idea of the expectation: Summary
-   statistics and plots can serve starting points to answer our
-   problems. For example, it can be helpful to plot the features (e.g.
-   food consumption, moving distance) over time bin for all mice.
-
-   -  Food Consumed:
-
-   -  Distance Traveled:
+    - Define the states of interest.
+    - Estimate the transition probability matrix given the data we have
+    - Expand the capacity of our model to take into account the effect of time in our estimation. We want our model to be time-dependent (non-homogeneous) and could also model some of the time series structure of the behaviors of the mice during one typical mouse day
 
 Data Requirements Description
 -----------------------------
 
--  Variables should be explained in detail for further analysis. For
-   example, we need to merge the interval data to the main data to apply
-   the methodology, but it is little explained how to match the
-   time-stamps of the interval data to those of the main data.
+-  We need labels of states of interest with respect to the time intervals in a specific mouse day to extract the structure of the Markov Chain.
 
 Methodology/ Approach Description
 ---------------------------------
 
-1. First Step: How to define AS and IS States?
+1. Defining states of interest: which behaviors of the mouse are we interested in? 
 
--  Feeding(in/out), drinking(in/out), outside HomeBase movement ==> AS
--  The time gaps of two activity < IST ==> AS
--  Complement of AS ==> IS
--  QDA/LDA to classify the IS and AS
+   - Feeding: labeled by event F
+   - Drinking: labeled by event W
+   - Other active state behaviors: This could possibly include all other movements in the AS state of a mouse besides drinking and eating.
+   - Inactive State: labeled by event I.
 
-   -  P(food \| IS) = 0.01, P(drink \| IS) = 0.01, P(sleep \| IS) = 0.8,
-      P(move \| IS) = 0.1, P(digging \| IS) = 0.08
-   -  P(food \| AS) = 0.3, P(drink \| AS) = 0.3, P(sleep \| AS) = 0.01,
-      P(move \| AS) = 0.3, P(digging \| AS) = 0.09
 
-2. Second Step: Find the Optimal IST(Inactive State Threshold), so as to
-   calculate AS numbers, AS Durations. Inspiration by:
+2. Data Preprocessing: convert the data we had into strings of the events chosen. This could be done by checking out the states of a typical mouse day at a lot of equally spaced time points and store the states and the time points in the same order. In order to perform this task, we need basically do the following two steps:
 
-   -  Events:
+   -  Data cleaning: Clean the raw intervals given by the measurements in the experiment into interval data that makes more sense and consistent. Also need to check if any of our states overlapped.
+   -  Data reformating: Convert the cleaned interval data into strings of events or matrices containing both information from timestamps and the events at those timepoints.
 
-   -  IST vs AS numbers:
+3. Estimating Transition Probability: Estimate the transition probability matrix of the Markov Chain using the data given. One of the key challenges to estimate the transition matrix is that our model is actually time continuous non-homogeneous Markov Chain, and the parameters are too difficult to estimate given the data we have. Instead, we figured out a way to make our model a composite of small homogeneous discrete time Markov Chains, so that we could perform a rough estimation of the original time continuous non-homogeneous Markov Chain. We followed the following steps to achieve our goal:
 
-3. Third Step: Use Markov chain to model the transition between events:
+   - Divide each mouse day into small time intervals, say 5 minutes
+   - For each of the small time intervals, aggregate the data from all mouses in the same strain for all mouse days and estimate the transition probability matrix of a discrete homogeneous Markov Chain model just for this small time interval.
+     - each of these transition probability matrices is estimated by MLE method, where e.g.: 
+     .. math:: P(F_{t+1} | W_{t}) = \frac{N_{WF}}{N_{W.}}
+     where ..math::N_{WF} indicates the counts of transitions from W to F and ..math::N_{W.} indicates the counts of transitions starting from W, no matter where it ends.
+   - Build the whole model by compositing the models for each small time intervals.
 
-   .. math:: P(food_{t+1} | drink_{t})
+4. Simluation: Use previous estimated model to simluate a typical mouse day for a typical strain. This part could also be used to evaluate the length of the time interval chosen in the previous step.
 
-4. Fourth Step: Use Hidden Markov to model the transition between events
-   for different stages
-
-.. code:: python
-
-    states = ('AS', 'IS')
-     
-    observations = ('food', 'water', 'sleep','movement','digging')
-     
-    start_probability = {'AS': 14/24, 'IS': 10/24}#based on time
-     
-    transition_probability = {
-       'AS' : {'IS': 0.7, 'AS': 0.3},
-       'IS' : {'IS': 0.4, 'AS': 0.6},
-       }
-     
-    emission_probability = {
-       'IS' : {'food': 0.01, 'water': 0.01, 'sleep': 0.8, 'movement': 0.1, 'digging': 0.08},
-       'AS' : {'food': 0.3, 'water': 0.3, 'sleep': 0.01, 'movement': 0.3, 'digging': 0.09},
-       }
-
-Testing Framework Outline
--------------------------
-
--  Main idea: check the reasonability of IST to be the number we choosed
-   and the AS probability or Transition probability by testing:
--  Examples:
-
-   -  For each mice, The AS numbers for Night Time bins < The AS numbers
-      of Daytime Bins.
-   -  P(IS\|Food) < P(AS\|Food)
-
-Additional Remarks:
--------------------
-
--  Improvement on the definition of AS/IS: whether inside HomeBase
-   movement count as AS as well?
--  latent variables?
+Remarks:
+--------
+Testing for each function should be done by the person who wrote the function.
 
 References:
 -----------
@@ -123,3 +63,13 @@ http://scikit-learn.sourceforge.net/stable/modules/hmm.html
 https://github.com/hmmlearn/hmmlearn
 
 https://en.wikipedia.org/wiki/Hidden\_Markov\_model
+
+
+Project Details:
+----------------
+
+- Data Preprocessing: Hongfei
+- Modeling: Jianglong
+- Simlation: Chenyu
+- Evaluation of length of small time interval chosen: Weiyan, Lynn, Mingyung
+- Final Report writeup: Weiyan, Lynn, Mingyung
