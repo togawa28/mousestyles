@@ -6,61 +6,85 @@ import matplotlib.pyplot as plt
 import statsmodels.api as sm
 import statsmodels.formula.api as smf
 from scipy.stats import chi2
+import statsmodels
 
 import mousestyles.data as data
 
-#Check the outcome data type of function aggregate_interval()
-def aggregate_interval_test(strain=0, mouse=1, feature="AS", bin_width=30):
-    result = aggregate_interval(strain, mouse, feature, bin_width)
-        assert type(result) is pd.core.series.Series
-#Check the length of the outcome, should be 17280/bin_width
-def aggregate_interval_test_length(strain=0, mouse=1, feature="AS", bin_width=30):
-    result = aggregate_interval(strain, mouse, feature, bin_width)
-        assert len(result) == 17280/bin_width
+# aggregate_interval test
 
-#Check the outcome data type of function aggregate_movement()
-def aggregate_movement_test(strain=0, mouse=1, bin_width=30):
-    result = aggregate_movement(strain,mouse, bin_width)
-        assert type(result) is pd.core.series.Series
-#Check the outcome data type of function aggregate_movement()
-def aggregate_movement_test_length(strain=0, mouse=1, bin_width=30):
-    result = aggregate_movement(strain,mouse, bin_width)
-        assert len(result) == 17280/bin_width
 
-#Check the outcome data type of function aggregate_data()
-#First to check to data type
-def aggregate_data_test(feature="AS", bin_width=30):
-    result = aggregate_data(feature, binwith)
-        assert type(result) is pd.core.frame.DataFrame
-#Then to check the number of columns
-def aggregate_data_test_columns(feature="AS", bin_width=30):
-    result = aggregate_data(feature, binwith)
-        n = len(result.columns)
-        assert n == 4
-#Check the range for hour, should be within 24 hours
-def aggregate_data_test_hour(feature="AS", bin_width=30):
-    result = aggregate_data(feature,bin_width)
-    test = np.array(result['hour'])
-    assert test.max() < 24
-#Check the range of strain, should only have 0,1,2. There the lenght of the unique values should be 3
-def aggregate_data_test_strain(feature="AS", bin_width=30):
-    result = aggregate_data(feature,bin_width)
-    test = np.array(result['strain'])
-    assert len(np.unique(test)) == 3
-#Check the values in feature columns, all the values should be greater than 0
-def aggregate_data_test_feature(feature="AS", bin_width=30):
-    result = aggregate_data(feature,bin_width)
-    test = np.array(result[feature])
-    assert test.min() >= 0
+def test_aggregate_interval():
+    with pytest.raises(ValueError) as msg1:
+        aggregate_interval(-1, 1, "M_IS", 30)
+    assert msg1.value.args[0] == 'Strain must be a non-negative integer'
 
-#Test for seasonal decomposition
-def seasonal_decomposition_test(strain=0, mouse=1, feature='AS', bin_width=30, period_length=10):
-    resul = seasonal_decomposition(strain, mouse, feature, bin_width, period_length)
-        assert tyep(result) == statsmodels.tsa.seasonal.DecomposeResult
+    with pytest.raises(ValueError) as msg2:
+        aggregate_interval(1, -1, "M_IS", 30)
+    assert msg2.value.args[0] == 'Mouse value must be a non-negative integer'
 
-#strain_seasonal is to produce a plot, so I think we can check the plot directly istead of writing a test function
+    with pytest.raises(ValueError) as msg3:
+        aggregate_interval(1, 1, "A", 30)
+    assert msg3.value.args[
+        0] == 'Input value must in {"AS", "F", "M_AS", "M_IS", "W"}'
 
-#check the outcome range of mix_strain, the result is a p-value, so it's between 0 and 1
-def mix_strain_test(data, feature):
+    with pytest.raises(ValueError) as msg4:
+        aggregate_interval(1, 1, "M_IS", -30)
+    assert msg4.value.args[0] ==
+    'Bin width (minutes) must be a non-negative integer below 1440'
+    result = aggregate_interval(0, 1, "AS", 30)
+    assert type(result) is pd.core.series.Series
+    assert all(result >= 0) is True
+
+
+# Testforaggregate_movement
+def test_aggregate_movement():
+    with pytest.raises(ValueError) as msg1:
+        aggregate_movement(-1, 1, 30)
+    assert msg1.value.args[0] == 'Strain must be a non-negative integer'
+
+    with pytest.raises(ValueError) as msg2:
+        aggregate_movement(1, -1, 30)
+    assert msg2.value.args[0] == 'Mouse value must be a non-negative integer'
+
+    with pytest.raises(ValueError) as msg3:
+        aggregate_movement(1, 1, -30)
+    assert msg3.value.args[
+        0] == 'Bin width (minutes) must be a non-negative integer below 1440'
+# Check the outcome data type of function aggregate_movement()
+    result = aggregate_movement(0, 1, 30)
+    assert type(result) is pd.core.series.Series
+
+
+# Test for aggregate_data
+def test_aggregate_data(feature="AS", bin_width=30):
+    result = aggregate_data(feature, bin_width)
+    assert type(result) is pd.core.frame.DataFrame
+# Check the columns
+    n = len(result.columns)
+    assert n == 4
+# Check the hours
+    test_1 = np.array(result['hour'])
+    assert test_1.max() < 24
+# Check the strain
+    test_2 = np.array(result['strain'])
+    assert len(np.unique(test_2)) == 3
+
+
+# Test for seasonal decomposition
+def test_seasonal_decomposition(strain=0, mouse=1, feature='AS',
+                                bin_width=30, period_length=10):
+    result = seasonal_decomposition(strain,
+                                    mouse, feature, bin_width, period_length)
+    assert type(result) == statsmodels.tsa.seasonal.DecomposeResult
+
+# strain_seasonal is to produce a plot, so I think we can check the plot
+# directly istead of writing a test function
+
+# check the outcome range of mix_strain, the result is a p-value, so it's
+# between 0 and 1
+
+
+def test_mix_strain():
+    data = aggregate_data("AS", 30)
     result = mix_strain(data, feature)
-        assert  0 < result < 1
+    assert (result > 0) and (result < 1)
