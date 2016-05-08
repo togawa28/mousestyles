@@ -77,8 +77,14 @@ def test_seasonal_decomposition(strain=0, mouse=1, feature='AS',
                                     mouse, feature, bin_width, period_length)
     assert type(result) == statsmodels.tsa.seasonal.DecomposeResult
 
-# strain_seasonal is to produce a plot, so I think we can check the plot
-# directly istead of writing a test function
+
+# Test for strai_seasonal
+def test_strain_seasonal():
+    res = strain_seasonal(strain=0, mouse={0, 1, 2}, feature="W",
+                          bin_width=30, period_length=24)
+    assert type(res) == tuple
+    assert len(res) == 2
+
 
 # check the outcome range of mix_strain, the result is a p-value, so it's
 # between 0 and 1
