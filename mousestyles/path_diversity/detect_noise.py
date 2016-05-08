@@ -1,7 +1,7 @@
 from __future__ import print_function, absolute_import, division
 
 import pandas as pd
-from mousestyles.path_features import compute_angles
+from path_features import compute_angles
 
 
 def detect_noise(movement, paths, angle_threshold, delta_t):
@@ -40,6 +40,16 @@ def detect_noise(movement, paths, angle_threshold, delta_t):
     conditions_value = [angle_threshold < 0, delta_t < 0]
     if any(conditions_value):
         raise ValueError("Input values need to be positive")
+
+    if not isinstance(movement, pd.core.frame.DataFrame):
+        raise TypeError("Movement must be pandas DataFrame")
+
+    if set(movement.keys()) != {'isHB', 't', 'x', 'y'}:
+        raise ValueError(
+            "The keys of movement must be 't', 'x', 'y', and 'isHB'")
+
+    if len(movement) <= 1:
+        raise ValueError("Movement must contain at least 2 rows")
 
     noise_index = 1
     noise_path = []
