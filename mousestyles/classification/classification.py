@@ -1,6 +1,7 @@
 from sklearn.grid_search import GridSearchCV
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import StandardScaler
+from sklearn.ensemble import GradientBoostingClassifier
 
 import numpy as np
 import pandas as pd
@@ -125,3 +126,46 @@ def GetSummary(result):
                          pd.DataFrame(recall), pd.DataFrame(f1)], axis=1)
     summary.columns = ['precision', 'recall', "F1_score"]
     return(summary)
+
+
+def GradientBoosting(strain, features, rseed=222):
+    """
+    Returns a ndarray of GradientBoosting results, containing prediction strain
+    labels and true strain labels for test data set. Use cross validation
+    to tune Parameters.
+    Parameters
+    ----------
+    strain: ndarray, shape of (1921,)
+    classification labels
+    features: ndarray, shape of (1921, 99)
+    classification features
+    rseed: int, optional
+    random seed for shuffling the data set to separate train and test
+    Returns
+    ----------
+    ndarray of RandomForest results in test data set.
+    Column 0: prediction strain labels
+    Column 1: true strain labels
+    """
+    train_y, train_x, test_y, test_x = prep_data(strain, features, rseed)
+    # creat GradientBoosting model
+    scaler = StandardScaler()
+    train_x = scaler.fit_transform(train_x)
+    es = [100, 200, 500]
+    ls = np.linspace(0.0001, 1, 10)
+    gb = GradientBoostingClassifier()
+    clf = GridSearchCV(
+        estimator=gb, param_grid=dict(n_estimators=es, learning_rate=ls),
+        n_jobs=-1)
+    clf.fit(train_x, train_y)
+    clf = clf.best_estimator_
+    # fit the best model
+    clf.fit(train_x, train_y)
+    # predict the testing data and convert to data frame
+    prediction = clf.predict(scaler.fit_transform((test_x)))
+    prediction = pd.DataFrame(prediction)
+    # reindex test_y so that it starts from 0
+    test_y.index = range(test_y.shape[0])
+    predict_true = pd.concat([prediction, test_y], axis=1)
+    predict_true.columns = ['predict_strain', 'true_strain']
+    return(predict_true)
