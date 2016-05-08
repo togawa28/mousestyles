@@ -20,10 +20,11 @@ def test_RandomForest():
     # prediction labels and true labels
     # labels are integers from 0 to 15
     df = data.load_mouseday_features()
+    df = df.iloc[:200, ]
     strain = df['strain']
     features = df.iloc[:, 3:]
     result = classification.RandomForest(strain, features)
-    assert result.shape == (481, 2)
+    assert result.shape == (50, 2)
     assert all(result.iloc[:, 0] >= 0) & all(result.iloc[:, 0] <= 15)
     assert all(result.iloc[:, 1] >= 0) & all(result.iloc[:, 1] <= 15)
     assert all([i.is_integer() for i in result.iloc[:, 0]])
@@ -42,3 +43,20 @@ def test_GetSummary():
     assert all(summary.iloc[:, 0] <= 1) & all(summary.iloc[:, 0] >= 0)
     assert all(summary.iloc[:, 1] <= 1) & all(summary.iloc[:, 1] >= 0)
     assert all(summary.iloc[:, 2] <= 1) & all(summary.iloc[:, 2] >= 0)
+
+
+def test_GradientBoosting():
+    # check GradientBoosting() returns approriate data frame with
+    # prediction labels and true labels
+    # labels are integers from 0 to 15
+    df = data.load_mouseday_features()
+    df = df.iloc[:200, ]
+    strain = df['strain']
+    features = df.iloc[:, 3:]
+    result = classification.GradientBoosting(strain, features)
+    assert features.shape == (200, 99)
+    assert result.shape == (50, 2)
+    assert all(result.iloc[:, 0] >= 0) & all(result.iloc[:, 0] <= 15)
+    assert all(result.iloc[:, 1] >= 0) & all(result.iloc[:, 1] <= 15)
+    assert all([i.is_integer() for i in result.iloc[:, 0]])
+    assert all([i.is_integer() for i in result.iloc[:, 1]])

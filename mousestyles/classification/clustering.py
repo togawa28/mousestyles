@@ -19,7 +19,7 @@ def prep_data(mouse_data, melted=False, std=True, rescale=True):
 
     Parameters
     ----------
-    mouse_data: 
+    mouse_data:
         (i) a 21131 * (4 + ) pandas DataFrame,
             column 0 : strain,
             column 1: mouse,
@@ -33,7 +33,7 @@ def prep_data(mouse_data, melted=False, std=True, rescale=True):
             column 2: day,
             other columns corresponding to features
     melted: bool,
-        False if the input mouse_data is of type (i)    
+        False if the input mouse_data is of type (i)
     std: bool,
         whether the standard deviation of each feature is returned
     rescale: bool,

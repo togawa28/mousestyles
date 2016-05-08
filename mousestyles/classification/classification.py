@@ -151,8 +151,8 @@ def GradientBoosting(strain, features, rseed=222):
     # creat GradientBoosting model
     scaler = StandardScaler()
     train_x = scaler.fit_transform(train_x)
-    es = [100, 200, 500]
-    ls = np.linspace(0.0001, 1, 10)
+    es = [200]
+    ls = np.linspace(0.0001, 0.15, 10)
     gb = GradientBoostingClassifier()
     clf = GridSearchCV(
         estimator=gb, param_grid=dict(n_estimators=es, learning_rate=ls),
