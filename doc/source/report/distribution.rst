@@ -112,9 +112,6 @@ power law distribution, as well as exponential distribution.
 =======
    Distribution
 
-.. plot:: plots/plot_distances.py
-
-   Distances recorded every second
 
 - Preferred choice of distribution: the power law is a
   monotone decreasing, however our plot indicates a peak, in which gamma
