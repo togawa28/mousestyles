@@ -1,10 +1,8 @@
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 
-import pytest
 import pandas as pd
 
-from mousestyles import data
 from mousestyles.path_diversity import smooth_noise
 from mousestyles.path_diversity import path_index
 
@@ -19,7 +17,7 @@ def test_smooth_noise():
     paths = path_index(movement, 1, 1)
 
     # Check if function produces the correct outputs.
-    smoothed = smooth_noise(movement, paths, 120, 1)
+    smoothed = smooth_noise.smooth_noise(movement, paths, 120, 1)
     assert len(smoothed) == 3
 
     movement = {'t': pd.Series([0., 0.02, 0.04, 0.06], index=[0, 1, 2, 3]),
@@ -30,7 +28,7 @@ def test_smooth_noise():
     movement = pd.DataFrame(movement)
     paths = path_index(movement, 1, 1)
     # Check if function produces the correct outputs.
-    smoothed = smooth_noise(movement, paths, 120, 1)
+    smoothed = smooth_noise.smooth_noise(movement, paths, 120, 1)
     assert smoothed['y'][1] == 0.5
 
     movement = {'t': pd.Series([0., 0.02, 0.04, 0.06], index=[0, 1, 2, 3]),
@@ -41,7 +39,7 @@ def test_smooth_noise():
     movement = pd.DataFrame(movement)
     paths = path_index(movement, 1, 1)
     # Check if function produces the correct outputs.
-    smoothed = smooth_noise(movement, paths, 120, 1)
+    smoothed = smooth_noise.smooth_noise(movement, paths, 120, 1)
     assert smoothed['x'][1] == 0.05
 
     movement = {'t': pd.Series([0., 0.02, 0.04, 0.06], index=[0, 1, 2, 3]),
@@ -52,5 +50,5 @@ def test_smooth_noise():
     movement = pd.DataFrame(movement)
     paths = path_index(movement, 1, 1)
     # Check if function produces the correct outputs.
-    smoothed = smooth_noise(movement, paths, 120, 1)
+    smoothed = smooth_noise.smooth_noise(movement, paths, 120, 1)
     assert smoothed['t'][1] == 0.03

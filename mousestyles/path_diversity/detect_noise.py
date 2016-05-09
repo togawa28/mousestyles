@@ -61,7 +61,7 @@ def detect_noise(movement, paths, angle_threshold, delta_t):
 
         if len(path_obj) > 3:
 
-            path_obj['angles'] = compute_angles(path_obj, False)
+            path_obj['angles'] = path_features.compute_angles(path_obj, False)
             path_obj['sharp_angle'] = path_obj['angles'] > angle_threshold
             path_obj['noise'] = 0
 

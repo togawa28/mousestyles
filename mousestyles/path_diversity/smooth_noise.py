@@ -47,14 +47,15 @@ def smooth_noise(movement, paths, angle_threshold, delta_t):
     if not isinstance(movement, pd.core.frame.DataFrame):
         raise TypeError("Movement must be pandas DataFrame")
 
-    if set(movement.keys()).issuperset(['x', 'y', 't']) == False:
+    if set(movement.keys()).issuperset(['x', 'y', 't']) is False:
         raise ValueError(
             "The keys of movement must be 't', 'x', and 'y'")
 
     if len(movement) <= 1:
         raise ValueError("Movement must contain at least 2 rows")
 
-    noise = detect_noise(movement, paths, angle_threshold, delta_t)
+    noise = detect_noise.detect_noise(
+        movement, paths, angle_threshold, delta_t)
 
     max_noise = max(noise)
 

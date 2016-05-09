@@ -40,7 +40,7 @@ def test_detect_noise():
     movement = pd.DataFrame(movement)
     paths = path_index(movement, 1, 1)
     # Check if function produces the correct outputs.
-    noise = detect_noise(movement, paths, 120, 1)
+    noise = detect_noise.detect_noise(movement, paths, 120, 1)
     noise = list(noise)
     assert noise == [0, 1, 1, 0]
 
@@ -52,6 +52,6 @@ def test_detect_noise():
     movement = pd.DataFrame(movement)
     paths = path_index(movement, 1, 1)
     # Check if function produces the correct outputs.
-    noise = detect_noise(movement, paths, 135, 1)
+    noise = detect_noise.detect_noise(movement, paths, 135, 1)
     noise = list(noise)
     assert noise == [0, 0, 0, 0]
