@@ -99,6 +99,7 @@ defined based on time.
 .. figure:: figure/project6.png
    :alt: alt tag
 
+
 Preferred choice of distribution: the power law is a monotone decreasing, 
 however our plot indicates a peak. Therefore, we can either choose
 differernt parametric distribution family, such as gamma distribution, or
@@ -108,6 +109,23 @@ more than 1cm within in 20ms. It does not make sense to have observations
 less than 1cm and outliers needs to be cleaned up. After we put a threshold
 with 1cm, we find the distribution is monotonic decreasing and we can fit
 power law distribution, as well as exponential distribution.
+=======
+   Distribution
+
+.. plot:: plots/plot_distances.py
+
+   Distances recorded every second
+
+- Preferred choice of distribution: the power law is a
+  monotone decreasing, however our plot indicates a peak, in which gamma
+  distribution may fit better.
+
+- Another idea would be to record the position of the mouse at regular time intervals and compute the distances between them. This will give us an idea of the speed distribution of the mouse.
+
+.. plot:: report/plots/plot_distances.py
+
+   Distances recorded every second, for different strains of mice
+
 
 Data Requirements Description
 -----------------------------
