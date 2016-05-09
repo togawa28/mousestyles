@@ -14,15 +14,7 @@ plt.style.use('ggplot')
 plt.style.use('seaborn-notebook')
 
 # Extract strain data
-dist_strain = []
-strain = 0
-dist = distances_bystrain(strain, step=step)
-while dist.size > 0:
-    dist_strain.append(dist[dist >= threshold])
-    if verbose:
-        print('strain %s loaded.' % strain)
-    strain += 1
-    dist = distances_bystrain(strain, step=step)
+dist_strain = list(np.load('distances.npy'))
 
 # Plot
 fig = plt.figure(1)
