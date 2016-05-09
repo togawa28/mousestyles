@@ -2,16 +2,19 @@ from __future__ import print_function, absolute_import, division
 
 import pandas as pd
 import numpy as np
-from path_features import compute_angles
-from detect_noise import detect_noise
+from mousestyles.path_diversity import detect_noise
 
 
 def smooth_noise(movement, paths, angle_threshold, delta_t):
     r"""
-    Return a new movement pandas DataFrame object containing
-    CT, CX, CY coordinates and the homebase status. The points at which
-    noise, as defined by the input parameters, is detected have been
-    smoothed by averaging.
+    Return a new smoothed movement pandas DataFrame object containing
+    CT, CX, CY coordinates.
+
+    The inputted movement DataFrame is passed through a noise detection
+    function. At points where noise is detected, as defined by the
+    input parameters (i.e., angle_threshold and delta_t), this function
+    returns a new movement DataFrame by averaging points where noise
+    is detected.
 
     Parameters
     ----------
@@ -41,16 +44,12 @@ def smooth_noise(movement, paths, angle_threshold, delta_t):
     """
 
     # check if all inputs are positive
-    conditions_value = [angle_threshold < 0, delta_t < 0]
-    if any(conditions_value):
-        raise ValueError("Input values need to be positive")
-
     if not isinstance(movement, pd.core.frame.DataFrame):
         raise TypeError("Movement must be pandas DataFrame")
 
-    if set(movement.keys()) != {'isHB', 't', 'x', 'y'}:
+    if set(movement.keys()).issuperset(['x', 'y', 't']) == False:
         raise ValueError(
-            "The keys of movement must be 't', 'x', 'y', and 'isHB'")
+            "The keys of movement must be 't', 'x', and 'y'")
 
     if len(movement) <= 1:
         raise ValueError("Movement must contain at least 2 rows")
@@ -59,10 +58,9 @@ def smooth_noise(movement, paths, angle_threshold, delta_t):
 
     max_noise = max(noise)
 
-    drop_ind = []
-    drop_ind = np.array(drop_ind)
+    drop_ind = np.array([])
 
-    for i in range(1, max_noise + 1):
+    for i in range(1, max_noise):
         noise_chunk = noise[noise == i]
         movement_chunk = movement.loc[noise_chunk.index]
 

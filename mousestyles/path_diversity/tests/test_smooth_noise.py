@@ -5,31 +5,8 @@ import pytest
 import pandas as pd
 
 from mousestyles import data
-from mousestyles.path_diversity import detect_noise
 from mousestyles.path_diversity import smooth_noise
 from mousestyles.path_diversity import path_index
-
-
-def test_smooth_noise_input():
-    movement = data.load_movement(0, 0, 0)
-    paths = path_index(movement, 1, 1)
-    # Check if function raises the correct type of errors.
-    # Input negative angle_threshold
-    with pytest.raises(ValueError) as excinfo:
-        smooth_noise(movement, paths, -1, 1)
-    assert excinfo.value.args[0] == "Input values need to be positive"
-    # Input negative delta_t
-    with pytest.raises(TypeError) as excinfo:
-        smooth_noise(movement, paths, 1, -1)
-    assert excinfo.value.args[0] == "Input values need to be positive"
-    # Input zero angle_threshold
-    with pytest.raises(ValueError) as excinfo:
-        smooth_noise(movement, paths, 0, 1)
-    assert excinfo.value.args[0] == "Input values need to be positive"
-    # Input zero delta_t
-    with pytest.raises(ValueError) as excinfo:
-        smooth_noise(movement, paths, 1, 0)
-    assert excinfo.value.args[0] == "Input values need to be positive"
 
 
 def test_smooth_noise():
