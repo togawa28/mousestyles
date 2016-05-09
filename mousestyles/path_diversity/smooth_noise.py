@@ -61,7 +61,7 @@ def smooth_noise(movement, paths, angle_threshold, delta_t):
 
     drop_ind = np.array([])
 
-    for i in range(1, max_noise):
+    for i in range(1, max_noise + 1):
         noise_chunk = noise[noise == i]
         movement_chunk = movement.loc[noise_chunk.index]
 

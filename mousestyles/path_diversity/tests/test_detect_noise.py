@@ -15,19 +15,19 @@ def test_detect_noise_input():
     # Check if function raises the correct type of errors.
     # Input negative angle_threshold
     with pytest.raises(ValueError) as excinfo:
-        detect_noise(movement, paths, -1, 1)
+        detect_noise.detect_noise(movement, paths, -1, 1)
     assert excinfo.value.args[0] == "Input values need to be positive"
     # Input negative delta_t
     with pytest.raises(TypeError) as excinfo:
-        detect_noise(movement, paths, 1, -1)
+        detect_noise.detect_noise(movement, paths, 1, -1)
     assert excinfo.value.args[0] == "Input values need to be positive"
     # Input zero angle_threshold
     with pytest.raises(ValueError) as excinfo:
-        detect_noise(movement, paths, 0, 1)
+        detect_noise.detect_noise(movement, paths, 0, 1)
     assert excinfo.value.args[0] == "Input values need to be positive"
     # Input zero delta_t
     with pytest.raises(ValueError) as excinfo:
-        detect_noise(movement, paths, 1, 0)
+        detect_noise.detect_noise(movement, paths, 1, 0)
     assert excinfo.value.args[0] == "Input values need to be positive"
 
 
@@ -38,7 +38,7 @@ def test_detect_noise():
                 'isHB': pd.Series(['No', 'No', 'No', 'No'],
                                   index=[0, 1, 2, 3])}
     movement = pd.DataFrame(movement)
-    paths = path_index(movement, 1, 1)
+    paths = path_index(movement, 2, 1)
     # Check if function produces the correct outputs.
     noise = detect_noise.detect_noise(movement, paths, 120, 1)
     noise = list(noise)
@@ -50,8 +50,8 @@ def test_detect_noise():
                 'isHB': pd.Series(['No', 'No', 'No', 'No'],
                                   index=[0, 1, 2, 3])}
     movement = pd.DataFrame(movement)
-    paths = path_index(movement, 1, 1)
+    paths = path_index(movement, 4, 1)
     # Check if function produces the correct outputs.
-    noise = detect_noise.detect_noise(movement, paths, 135, 1)
+    noise = detect_noise.detect_noise(movement, paths, 120, 1)
     noise = list(noise)
     assert noise == [0, 0, 0, 0]
