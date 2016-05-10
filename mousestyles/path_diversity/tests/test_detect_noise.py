@@ -18,7 +18,7 @@ def test_detect_noise_input():
         detect_noise.detect_noise(movement, paths, -1, 1)
     assert excinfo.value.args[0] == "Input values need to be positive"
     # Input negative delta_t
-    with pytest.raises(TypeError) as excinfo:
+    with pytest.raises(ValueError) as excinfo:
         detect_noise.detect_noise(movement, paths, 1, -1)
     assert excinfo.value.args[0] == "Input values need to be positive"
     # Input zero angle_threshold
@@ -39,7 +39,7 @@ def test_detect_noise():
                                   index=[0, 1, 2, 3])}
     movement = pd.DataFrame(movement)
     paths = path_index(movement, 2, 1)
-    # Check if function produces the correct outputs.
+    # Check if function produces the correct outputs
     noise = detect_noise.detect_noise(movement, paths, 120, 1)
     noise = list(noise)
     assert noise == [0, 1, 1, 0]
@@ -51,7 +51,7 @@ def test_detect_noise():
                                   index=[0, 1, 2, 3])}
     movement = pd.DataFrame(movement)
     paths = path_index(movement, 4, 1)
-    # Check if function produces the correct outputs.
+    # Check if function produces the correct outputs
     noise = detect_noise.detect_noise(movement, paths, 120, 1)
     noise = list(noise)
     assert noise == [0, 0, 0, 0]
