@@ -81,11 +81,11 @@ def compute_area_rectangle(edge_points):
         raise TypeError("edge_points must be a dictionary")
 
     if set(edge_points.keys()) != {'xmax', 'xmin', 'ymax', 'ymin'}:
-        raise ValueError("the keys of edge_points must be 'xmax', 'xmin',
-                         'ymax', and 'ymin'")
+        raise ValueError('the keys of edge_points must be "xmax", \
+                         "xmin", "ymax", and "ymin"')
 
-    return((edge_points['xmax']-edge_points['xmin']) *
-           (edge_points['ymax']-edge_points['ymin']))
+    return((edge_points['xmax'] - edge_points['xmin']) *
+           (edge_points['ymax'] - edge_points['ymin']))
 
 
 def find_center(edge_points):
@@ -127,8 +127,8 @@ def find_center(edge_points):
         raise ValueError("the keys of edge_points must be \
            'xmax', 'xmin', 'ymax', and 'ymin'")
 
-    return({'x': (edge_points['xmin'] + edge_points['xmax'])/2,
-            'y': (edge_points['ymin'] + edge_points['ymax'])/2})
+    return({'x': (edge_points['xmin'] + edge_points['xmax']) / 2,
+            'y': (edge_points['ymin'] + edge_points['ymax']) / 2})
 
 
 def compute_radius_and_center_angle(path_obj, center):
@@ -241,7 +241,7 @@ def compute_area_covered(r_and_theta):
         raise TypeError("r_and_theta must be a dictionary")
 
     if set(r_and_theta.keys()) != {'radius', 'center_angles'}:
-        raise ValueError("the keys of r_and_theta must be 'radius' and
+        raise ValueError("the keys of r_and_theta must be 'radius' and\
                          'center_angles'")
 
     if not isinstance(r_and_theta['radius'], list):
@@ -251,7 +251,7 @@ def compute_area_covered(r_and_theta):
         raise TypeError("r_and_theta['center_angles'] must be a list")
 
     if len(r_and_theta['radius']) != len(r_and_theta['center_angles']) + 1:
-        raise ValueError("length of r_and_theta['radius'] must be
+        raise ValueError("length of r_and_theta['radius'] must be\
                          the length of r_and_theta['center_angles'] plus 1")
 
     zipped = zip(r_and_theta['radius'][1:], r_and_theta['radius'][:-1],
@@ -294,4 +294,4 @@ def compute_start_end_distance(path_obj):
     initial = path_obj.loc[path_obj.index[0], 'x':'y']
     end = path_obj.loc[path_obj.index[-1], 'x':'y']
     return(np.sqrt((end['x'] - initial['x'])**2 +
-           (end['y'] - initial['y'])**2))
+                   (end['y'] - initial['y'])**2))
