@@ -9,7 +9,8 @@ def find_edge_points(path_obj):
     r"""
     Returns a dictionary of the edge points of the path object.
 
-    The dictionary containts min and max of each of the x, y coordinates in the path.
+    The dictionary containts min and max of each of the x, y coordinates
+    in the path.
 
     Parameters
     ----------
@@ -39,8 +40,9 @@ def find_edge_points(path_obj):
     if len(path_obj) <= 1:
         raise ValueError("path_obj must contain at least 2 rows")
 
-    return( {'xmin' : np.min(path_obj.x) , 'xmax' : np.max(path_obj.x) , \
-             'ymin' : np.min(path_obj.y) , 'ymax' : np.max(path_obj.y)} )
+    return({'xmin': np.min(path_obj.x), 'xmax': np.max(path_obj.x),
+            'ymin': np.min(path_obj.y), 'ymax': np.max(path_obj.y)})
+
 
 def compute_area_rectangle(edge_points):
     r"""
@@ -79,10 +81,12 @@ def compute_area_rectangle(edge_points):
         raise TypeError("edge_points must be a dictionary")
 
     if set(edge_points.keys()) != {'xmax', 'xmin', 'ymax', 'ymin'}:
-        raise ValueError("the keys of edge_points must be 'xmax', 'xmin', 'ymax', and 'ymin'")
+        raise ValueError("the keys of edge_points must be 'xmax', 'xmin',
+                         'ymax', and 'ymin'")
 
-    return( (edge_points['xmax']-edge_points['xmin']) * \
-           (edge_points['ymax']-edge_points['ymin']) )
+    return((edge_points['xmax']-edge_points['xmin']) *
+           (edge_points['ymax']-edge_points['ymin']))
+
 
 def find_center(edge_points):
     r"""
@@ -104,7 +108,7 @@ def find_center(edge_points):
 
     Returns
     -------
-    center point of the path : dictinoary
+    center point of the path : dictionary
         defined by the intersection point of 2 diagonal lines of the
         rectangle spanned by the path.
 
@@ -123,8 +127,8 @@ def find_center(edge_points):
         raise ValueError("the keys of edge_points must be \
            'xmax', 'xmin', 'ymax', and 'ymin'")
 
-    return( { 'x' : (edge_points['xmin'] + edge_points['xmax'])/2 , \
-             'y' : (edge_points['ymin'] + edge_points['ymax'])/2 } )
+    return({'x': (edge_points['xmin'] + edge_points['xmax'])/2,
+            'y': (edge_points['ymin'] + edge_points['ymax'])/2})
 
 
 def compute_radius_and_center_angle(path_obj, center):
@@ -188,24 +192,28 @@ def compute_radius_and_center_angle(path_obj, center):
         raise ValueError("the keys of center must be 'x', and 'y'")
 
     indices = path_obj.index[:-1]
-    vectors = [ path_obj.loc[i,'x':'y'] - [center['x'],center['y']] for i in indices]
-    # center_angles = [oath_features.angle_between(v1,v2) for v1,v2 in zip(vectors[1:], vectors[:len(vectors)])]
-    center_angles = [angle_between(list(v1),list(v2)) for v1,v2 in zip(vectors[1:], vectors[:-1])]
+    vectors = [path_obj.loc[i, 'x':'y'] -
+               [center['x'], center['y']] for i in indices]
+    center_angles = [path_features.angle_between(list(v1), list(v2)) for
+                     v1, v2 in zip(vectors[1:], vectors[:len(vectors)])]
     radius = [np.linalg.norm(v) for v in vectors]
     return({'radius': radius, 'center_angles': center_angles})
+
 
 def compute_area_covered(r_and_theta):
     r"""
     Returns the area spanned by the path.
 
-    For 2 adjacent points in a path and its center, the area of the triangle
-    constructed by such 3 points can be calculated by the 2 radius and the center
-    angle: let r1 and r2 be 2 adjacent radius, and theta be the angle between such 2 vectors.
-    The area of the triangle is then calculated by
+    For 2 adjacent points in a path and its center,
+    the area of the triangle constructed by such 3 points
+    can be calculated by the 2 radius and the center angle:
+    let r1 and r2 be 2 adjacent radius, and theta be
+    the angle between such 2 vectors. The area of the triangle is
+    then calculated by
     r1 * r2 * sin(theta) / 2.
 
-    This function sums up such areas of the triangles over all pairs of 2 adjacent points
-    in the path.
+    This function sums up such areas of the triangles over
+    all pairs of 2 adjacent points in the path.
 
     Parameters
     ----------
@@ -233,7 +241,8 @@ def compute_area_covered(r_and_theta):
         raise TypeError("r_and_theta must be a dictionary")
 
     if set(r_and_theta.keys()) != {'radius', 'center_angles'}:
-        raise ValueError("the keys of r_and_theta must be 'radius' and 'center_angles'")
+        raise ValueError("the keys of r_and_theta must be 'radius' and
+                         'center_angles'")
 
     if not isinstance(r_and_theta['radius'], list):
         raise TypeError("r_and_theta['radius'] must be a list")
@@ -242,13 +251,14 @@ def compute_area_covered(r_and_theta):
         raise TypeError("r_and_theta['center_angles'] must be a list")
 
     if len(r_and_theta['radius']) != len(r_and_theta['center_angles']) + 1:
-        raise ValueError("length of r_and_theta['radius'] must be \
-            the length of r_and_theta['center_angles'] plus 1")
+        raise ValueError("length of r_and_theta['radius'] must be
+                         the length of r_and_theta['center_angles'] plus 1")
 
-    zipped = zip(r_and_theta['radius'][1:], r_and_theta['radius'][:-1], \
+    zipped = zip(r_and_theta['radius'][1:], r_and_theta['radius'][:-1],
                  r_and_theta['center_angles'])
-    areas = [ v1 * v2 * np.sin(theta) / 2 for v1,v2,theta in zipped]
+    areas = [v1 * v2 * np.sin(theta) / 2 for v1, v2, theta in zipped]
     return(sum(areas))
+
 
 def compute_start_end_distance(path_obj):
     r'''
@@ -283,4 +293,5 @@ def compute_start_end_distance(path_obj):
 
     initial = path_obj.loc[path_obj.index[0], 'x':'y']
     end = path_obj.loc[path_obj.index[-1], 'x':'y']
-    return(np.sqrt( (end['x'] - initial['x'])**2 + (end['y'] - initial['y'])**2 ))
+    return(np.sqrt((end['x'] - initial['x'])**2 +
+           (end['y'] - initial['y'])**2))
