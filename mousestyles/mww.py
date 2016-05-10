@@ -6,10 +6,10 @@ import matplotlib.pyplot as plt
 from mousestyles.data import distances_bymouse, distances_bystrain
 
 
-def pvalues(m):
+def get_pvalues(m):
     """
     This function takes a bunch of sampled distributions and compute the
-    p-values of the Mann–Whitney U test for each couple of samples.
+    p-values of the two sided Mann–Whitney U test for each couple of samples.
 
     The Mann–Whitney U test is a test for assessing whether two independent
     samples come from the same distribution. The null hypothesis for this test
@@ -46,13 +46,13 @@ def pvalues(m):
 
     Examples:
     ---------
-    >>> cor = pvalues([np.array([1, 2, 3]), np.array([1, 1, 2])])
+    >>> cor = get_pvalues([np.array([1, 2, 3]), np.array([1, 1, 2])])
     """
     n = len(m)
     indices = list(itertools.product(*[range(n), range(n)]))
     cor = np.empty([n, n])
     for (a, b) in indices:
-        cor[a, b] = mannwhitneyu(m[a], m[b])[1]
+        cor[a, b] = 2 * mannwhitneyu(m[a], m[b])[1]
     return(cor)
 
 
@@ -65,7 +65,8 @@ def MWW_mice(strain, step=50, verbose=False):
     ----------
     strain: integer
         Number of the strain.
-    step: time interval length used to compute distances. Default is 1s.
+    step: floeat
+        Time interval length used to compute distances. Default is 1s.
         See data.distances_bymouse for more information.
     verbose: boolean
 
@@ -88,7 +89,7 @@ def MWW_mice(strain, step=50, verbose=False):
         mouse += 1
         if verbose:
             print('mouse %s done.' % mouse)
-    cor = pvalues(res[:-1])
+    cor = get_pvalues(res[:-1])
     return(cor)
 
 
@@ -154,7 +155,7 @@ def MWW_strains(step=50, verbose=False):
         if verbose:
             print('strain %s done.' % strain)
         strain += 1
-    cor = pvalues(res[:-1])
+    cor = get_pvalues(res[:-1])
     return(cor)
 
 
