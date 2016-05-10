@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import numpy as np
 
 from mousestyles.data import distances_bystrain
 
@@ -7,8 +8,6 @@ threshold = 0.1
 numbins = 30
 xlim = [0, 40]
 col = 'blue'
-verbose = False
-step = 50
 
 plt.style.use('ggplot')
 plt.style.use('seaborn-notebook')
@@ -19,7 +18,7 @@ dist_strain = list(np.load('distances.npy'))
 # Plot
 fig = plt.figure(1)
 fig.subplots_adjust(hspace=.6)
-nb_plots = strain
+nb_plots = len(dist_strain)
 for i, s in enumerate(dist_strain):
     index_plot = nb_plots * 100 + 10 + i + 1
     plt.subplot(index_plot)
