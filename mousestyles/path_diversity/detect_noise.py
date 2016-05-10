@@ -37,7 +37,7 @@ def detect_noise(movement, paths, angle_threshold, delta_t):
     """
 
     # check if all inputs are positive
-    conditions_value = [angle_threshold < 0, delta_t < 0]
+    conditions_value = [angle_threshold <= 0, delta_t <= 0]
     if any(conditions_value):
         raise ValueError("Input values need to be positive")
 
