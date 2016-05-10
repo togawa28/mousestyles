@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from scipy.stats import mannwhitneyu
 import itertools
 import numpy as np
@@ -9,7 +11,7 @@ from mousestyles.data import distances_bymouse, distances_bystrain
 def get_pvalues(m):
     """
     This function takes a bunch of sampled distributions and compute the
-    p-values of the two sided Mann–Whitney U test for each couple of samples.
+    p-values of the two sided Mann Whitney U test for each couple of samples.
 
     The Mann–Whitney U test is a test for assessing whether two independent
     samples come from the same distribution. The null hypothesis for this test
