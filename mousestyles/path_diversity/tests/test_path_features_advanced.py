@@ -60,7 +60,7 @@ def test_compute_advanced():
     assert len(adv_feats['center_angles']) == len(path)-1
     assert len(adv_feats['radius']) == len(path)
 
-    # some errors were produced
+    # in center_angles some errors were produced
     # so it's not exactly but approximately equal to
     # the theoretical values
     # By law of cosines
