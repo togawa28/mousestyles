@@ -5,7 +5,7 @@ from mousestyles.path_diversity.path_features import angle_between
 
 def compute_advanced(path_obj):
     r"""
-    Return dictionary containing several advanced features of path.
+    Returns dictionary containing several advanced features of path.
 
     The features are the radius, center angles, area covered by the path,
     area of the rectangle spanned by the path, and
