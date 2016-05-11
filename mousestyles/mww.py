@@ -145,7 +145,7 @@ def MWW_strains(step=50, verbose=False):
 
     Examples:
     ---------
-    >>> cor = MWW_allmice()
+    >>> cor = MWW_strains()
     """
     strain = 0
     res = []
