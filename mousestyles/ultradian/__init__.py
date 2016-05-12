@@ -478,10 +478,10 @@ def mix_strain(data, feature):
 
     Examples
     --------
-    >>> result = mix_strain(data = aggregate_data("F",20), feature = "F",
+    >>> result = mix_strain(data = aggregate_data("F",30), feature = "F",
     >>>          print_opt = False)
     >>> print(result)
-    1.4189770157713608e-05
+    1.4047992545261542e-12
 
     """
     if not isinstance(data, pd.DataFrame):
@@ -490,6 +490,12 @@ def mix_strain(data, feature):
     if feature not in ALL_FEATURES:
         raise ValueError(
             'Input value must in {"AS", "F", "M_AS", "M_IS", "W", "Distance"}')
+    data["cycle"] = 0
+    for i in range(3):
+        result = Find_Cycle(feature = "W", strain = i, plot = False,
+                            search_range_find = (3, 12))
+        cycle = result[0][0]
+        data.loc[data["strain"] == i, "cycle"] = cycle
     b = pd.get_dummies(data["strain"])
     data["strain0"] = b.ix[:, 0]
     data["strain1"] = b.ix[:, 1]
@@ -500,7 +506,7 @@ def mix_strain(data, feature):
     data.columns = names
     print(data)
     md1 = smf.mixedlm(
-        "feature ~ hour + strain0 +strain1 + strain0*hour+ strain1*hour",
+        "feature ~ hour + strain0 + strain1 + strain0*hour + strain1*hour",
         data, groups=data["mouse"])
     mdf1 = md1.fit()
     like1 = mdf1.llf
@@ -510,6 +516,6 @@ def mix_strain(data, feature):
     mdf2 = md2.fit()
     like2 = mdf2.llf
     print(mdf1.summary())
-    fstat = like1 - like2
+    fstat = 2*abs(like1 - like2)
     p_v = chi2.pdf(fstat, df=2)
     return(p_v)
