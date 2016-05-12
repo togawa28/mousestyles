@@ -10,6 +10,7 @@ from scipy.stats import chi2
 import mousestyles.data as data
 
 INTERVAL_FEATURES = ["AS", "F", "M_AS", "M_IS", "W"]
+ALL_FEATURES = ["AS", "F", "M_AS", "M_IS", "W", "Distance"]
 
 
 def aggregate_interval(strain, mouse, feature, bin_width):
@@ -207,7 +208,7 @@ def aggregate_data(feature, bin_width):
     Parameters
     ----------
     feature :
-        {"AS", "F", "IS", "M_AS", "M_IS", "W"}
+        {"AS", "F", "IS", "M_AS", "M_IS", "W", "Distance"}
     bin_width : int
         Number of minutes, the time interval for data aggregation.
 
@@ -227,9 +228,9 @@ def aggregate_data(feature, bin_width):
     531.4500177747973
     """
 
-    if feature not in INTERVAL_FEATURES:
+    if feature not in ALL_FEATURES:
         raise ValueError(
-            'Input value must in {"AS", "F", "M_AS", "M_IS", "W"}')
+            'Input value must in {"AS", "F", "M_AS", "M_IS", "W", "Distance"}')
     if (not isinstance(bin_width, int)) or bin_width < 0 or bin_width > 1440:
         raise ValueError(
             'Bin width (minutes) must be a non-negative integer below 1440')
@@ -297,9 +298,9 @@ def seasonal_decomposition(strain, mouse, feature, bin_width, period_length):
     if (not isinstance(mouse, int)) or (mouse < 0):
         raise ValueError(
             'Mouse value must be a non-negative integer')
-    if feature not in INTERVAL_FEATURES:
+    if feature not in ALL_FEATURES:
         raise ValueError(
-            'Input value must in {"AS", "F", "M_AS", "M_IS", "W"}')
+            'Input value must in {"AS", "F", "M_AS", "M_IS", "W", "Distance"}')
     if (not isinstance(bin_width, int)) or bin_width < 0 or bin_width > 1440:
         raise ValueError(
             'Bin width (minutes) must be a non-negative integer below 1440')
@@ -359,12 +360,13 @@ def strain_seasonal(strain, mouse, feature, bin_width, period_length):
     if (not isinstance(strain, int)) or (strain < 0):
         raise ValueError(
             'Strain must be a non-negative integer')
-    if (not isinstance(mouse, int)) or (mouse < 0):
+    if (not all([isinstance(m, int)
+                for m in mouse])) or (any([m < 0 for m in mouse])):
         raise ValueError(
             'Mouse value must be a non-negative integer')
-    if feature not in INTERVAL_FEATURES:
+    if feature not in ALL_FEATURES:
         raise ValueError(
-            'Input value must in {"AS", "F", "M_AS", "M_IS", "W"}')
+            'Input value must in {"AS", "F", "M_AS", "M_IS", "W", "Distance"}')
     if (not isinstance(bin_width, int)) or bin_width < 0 or bin_width > 1440:
         raise ValueError(
             'Bin width (minutes) must be a non-negative integer below 1440')
@@ -404,7 +406,7 @@ def mix_strain(data, feature):
     Parameters
     ----------
         data: data frame output from aggregate_data function
-        feature: {"AS", "F", "IS", "M_AS", "M_IS", "W"}
+        feature: {"AS", "F", "IS", "M_AS", "M_IS", "W", "Distance"}
 
     Returns
     -------
@@ -428,9 +430,9 @@ def mix_strain(data, feature):
     if not isinstance(data, pd.DataFrame):
         raise ValueError(
             'Data must be a pandas data frame')
-    if feature not in INTERVAL_FEATURES:
+    if feature not in ALL_FEATURES:
         raise ValueError(
-            'Input value must in {"AS", "F", "M_AS", "M_IS", "W"}')
+            'Input value must in {"AS", "F", "M_AS", "M_IS", "W", "Distance"}')
     b = pd.get_dummies(data["strain"])
     data["strain0"] = b.ix[:, 0]
     data["strain1"] = b.ix[:, 1]
