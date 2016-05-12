@@ -26,3 +26,4 @@ for i, s in enumerate(dist_strain):
     plt.ylabel('Density')
     plt.title('strain %s' % i)
 plt.xlabel('Distance (cm)')
+plt.show()

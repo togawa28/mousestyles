@@ -119,7 +119,8 @@ power law distribution, as well as exponential distribution.
 
 - Another idea would be to record the position of the mouse at regular time intervals and compute the distances between them. This will give us an idea of the speed distribution of the mouse.
 
-.. plot:: report/plots/plot_distances.py
+.. figure:: figure/distances.png
+   :alt: alt tag
 
    Distances recorded every second, for different strains of mice
 
