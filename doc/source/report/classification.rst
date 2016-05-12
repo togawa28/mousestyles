@@ -132,12 +132,44 @@ interpretations of the model.
 
 **Unsupervised learning**
 
+Unsupervised learning algorithms, K-means and hierarchical clustering, are included in the subpackage `classification`. Unlike other clustering problems where no ground truth is available, the biological information of the mice allows us to group the 16 strains into 6 larger mouse families, although the ‘distances’ among the families are unknown and may not be comparable at all. Hence, cluster numbers from 2 to 16 should all be tried out to find the optimal. Here, we briefly describe the two algorithms and the usage of the related functions.
+
 Above all, note that unlike the supervised classification problem where we have 11 levels for one feature (so we have up to 99 features in the classification problem), the unsupervised clustering methods could suffer from curse of high dimensionality when we input a large amount of features. In high dimension, every data point is far away from each other, and the useful feature may fail to stand out. Thus we decided to use the average amount of features over a day and the standard deviation of those features for the individual mouse (170 data points) case. 
 
 ***K-means***
 
 To begin with, *K-means* minimizes the within-cluster sum of squares to search for the best clusters set. Then the best number of clusters was determined by a compromise between the silhouette score and the interpretability. K-means is computationally inexpensive so we can either do the individual mouse options (170 data points) or use the raw data with 21192 data points where we regard different data points to be different mice.
 However, the nature of K-means makes it perform poorly when we have imbalanced clusters. 
+
+***Hierarchical Clustering***
+
+Given the above, the potentially uneven cluster sizes lead us to consider an additional clustering algorithm, *hierarchical clustering*, the functionality of which is included in the subpackage. Generally, hierarchical clustering seeks to build a hierarchy of clusters and falls into two types: agglomerative and divisive. The agglomerative approach has a “richer get richer” behavior and hence is adopted, which works in a bottom-up manner such that each observation starts in its own cluster, and pairs of clusters are merged as one moves up the hierarchy. The merges are determined in a greedy manner in the sense that the merge resulting in the greatest reduction in the total distances is chosen at each step. The results of hierarchical clustering are usually presented in a dendrogram, and thereby one may choose the cutoff to decide the optimal number of clusters.
+Below is a demo to fit the clustering algorithm. The loaded data is firstly standardized, and then the optimal distance measure and the optimal linkage method are determined. We have restricted the distance measure to be l1-norm (Manhattan distance), l2-norm (Euclidean distance) and infinity-norm (maximum distance), and the linkage method to be ward linkage, maximum linkage and average linkage. The maximum linkage assigns the maximum distance between any pair of points from two clusters to be the distance between the clusters, while the average linkage assigns the average. The ward linkage uses the Ward variance minimization criterion. Then, the optimal linkage method and distance measure are input to the model fitting function, and the resulting clusters and corresponding silhouette scores are recorded for cluster number determination. A plotting function from the subpackage is also called to output a plot. The output plot is included in the result section of the report.
+
+```python
+from mousestyles import data
+from mousestyles.classification import clustering
+from mousestyles.visualization import plot_clustering
+
+# load data
+mouse_data = data.load_all_features()
+
+# rescaled mouse data
+mouse_dayavgstd_rsl = clustering.prep_data(
+mouse_data, melted=False, std=True, rescale=True)
+
+# get optimal parameters
+method, dist = clustering.get_optimal_hc_params(mouse_day=mouse_dayavgstd_rsl)
+
+# fit hc
+sils_hc, labels_hc = clustering.fit_hc(
+    mouse_day_X=mouse_dayavgstd_rsl[:,2:],
+    method=method, dist=dist, num_clusters=range(2,17))
+
+# plot 
+plot_clustering.plot_dendrogram(
+    mouse_day=mouse_dayavgstd_rsl, method=method, dist=dist)
+```
 
 Testing Framework outline
 -------------------------
@@ -156,6 +188,26 @@ Testing Framework outline
    not much different than physical disabilities. Otherwise, if nature
    has little influence over these disorders, we can try to find way to
    prevent these disorders from happening.
+
+Result
+-------------
+**Classification**
+
+**Clustering**
+***K-means***
+
+***Hierarchical clustering***
+
+The optimal distance measure is l1-norm and the optimal linkage method is average linkage method. The silhouette scores corresponding to the number of clusters ranging from 2 to 16 are:  0.8525, 0.7548, 0.7503, 0.6695, 0.6796, 0.4536, 0.4557, 0.4574, 0.3997, 0.4057, 0.3893, 0.3959, 0.4075, 0.4088, 0.4179. It seems 6 clusters is a good choice from the silhouette scores. 
+However, the clustering dendrogram tells a different story. Below shows the last 10 merges of the hierarchical clustering algorithm. The black dots indicate the earlier merges. The leaf texts are either the mouse id (ranges from 0 to 169) or the number of mice in that leaf. Clearly, we see that almost all the mice are clustered in 2 clusters, very far from the rest individuals. Thus, the hierarchical clustering fails to correctly cluster the mice in the case. 
+.. plot:: report/plots/plot_hc_dendrogram.py
+
+   Dendrogram of the hierarchical clustering
+The failure of the the algorithm might be due to the different importance levels of the features in determining which cluster a mouse belongs to. One improvement could be that using only the important features determined in the classification algorithms to cluster the mice, but given the unsupervised learning nature of the algorithm, not using the results from the classification is fair for clustering tasks.
+The distribution of strains in each cluster in the case of using 6 clusters are shown below. Obviously, the mice almost fall into the same cluster.
+.. plot:: report/plots/plot_hc_result.py
+
+   Distribution of strains in clusters by agglomerative hierarchical clustering
 
 Future work
 ----------------
