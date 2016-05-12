@@ -215,7 +215,7 @@ def load_intervals(feature):
         dt_sub["stop"] = sub[:, 1]
         dt = pd.concat([dt, dt_sub])
     # sort based on strain, mouse and day
-    dt = dt.sort(["strain", "mouse", "day"])
+    dt = dt.sort_values(["strain", "mouse", "day"])
     dt.index = range(dt.shape[0])
     return dt
 
