@@ -90,24 +90,36 @@ those values after encountering that.
 Data Requirements Description
 -----------------------------
 
-We dispose of a labeled data set of 16 different strains of mice.
-Behavioral features are recorded for each mouse and each day. One
-example can be the time spent eating or drinking, and the amount
-ingested.
+For this project, we use behavioral data recorded for each mouse and each
+two-hour time bin of the day. There are in total 170 mice across 16 different
+strains. Behavioral features include measurements of daily activities, such 
+as food and water consumption, distance moved, the amount of time a mouse is 
+in active state, and the amount of time a mouse spends eating, drinking and 
+moving while in active state.
 
-The researchers record the daily activities of each mouse, for example
-the time it spends eating, drinking, sleeping, and wondering around its
-habitats. Therefore, every behavioral features should be averaged to the
-same time period (one mouse day) for each mouse. For example, the food
-consumed variable at each timestamp will be aggregated to the average
-food consumption.
+For classification and clustering subsections, we require different processed 
+data.
 
-Notice that the final dataset should be a clean and well formatted
-dataframe (in numpy array or pandas dataframe) aggregating the features
-of mice so that it can be directly used to train classification models.
+For classification project, we have two different dataset -- mouseday dataset 
+or individual mouse dataset. For the mouseday dataset, we take each 
+combination of mouse and day as a unique observation, resulting in  1921 
+observations. For the individual mouse dataset, we take the average measures 
+of different days for each mouse to form 170 unique observations. In each 
+dataset, we use the measures for different time bins as different features. 
+Therefore, we have a maximum of 9 types of features * 11 time bins = 99 features. 
+Users can also use a subset of these 99 features to train models. The mouse 
+strain number will serve as the label for the dataset.
 
-Besides, the detailed explanation for each variable and strain type
-might be needed for further interpretations of models.
+For clustering project, we used the individual mouse dataset which has 170 
+observations. For clustering, we do not want too many features since these 
+features might have directions very close to each other and it would be 
+repetitive to use all of them. Therefore, instead taking each hour bin as 
+different features like in the classification dataset, we take each hour bin 
+as different observations, resulting in only 9 features for the clustering 
+data. Then we take average of days for each mouse. While preparing the input 
+data, users will also have the choice to standardize data and/or add the 
+standard deviation for each of the 9 features, resulting in possibly 18 final features.
+
 
 Methodology/ Approach Description
 ---------------------------------
@@ -175,20 +187,14 @@ plot_clustering.plot_dendrogram(
 Testing Framework outline
 -------------------------
 
--  The first step to test the reproducibility is to test the stability
-   of classification models. Since we randomly split the dataset to be
-   the test set and the training set, we can train and test the model
-   over different seeds and plot the accuracy against different
-   trials. We should also see if the important features are stable over
-   different trials.
-
--  From our limited understanding, the results of this research might
-   have a meaningful implication on the way we treat psychological
-   disorders. If it turns out that nature does influence these
-   disorders, we can probably conclude that psychological disorders is
-   not much different than physical disabilities. Otherwise, if nature
-   has little influence over these disorders, we can try to find way to
-   prevent these disorders from happening.
+To ensure our functions do the correct steps and return appropriate 
+results, we also implemented test functions.
+For clustering, we first perform basic testing of whether our output 
+has appropriate number of values or values we expect. One more advanced 
+check we perform is to test whether we successfully assign cluster numbers 
+to every observation. Also, since we compute silhouette score for each 
+cluster and silhouette score is defined to be between -1 and 1, we also 
+checked that whether our silhouette score is appropriate.
 
 Result
 -------------
