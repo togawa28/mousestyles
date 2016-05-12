@@ -14,7 +14,7 @@ sils_km, labels_km = clustering.get_optimal_fit_kmeans(
                         mouse_X = mouse_dayavgstd_rsl[:,2:],
                         num_clusters = range(2,17))
 # result
-result = clustering.cluster_in_strain(mouse_dayavgstd_rsl[:, 0], labels_km[2])
+result = clustering.cluster_in_strain(mouse_dayavgstd_rsl[:, 0], labels_km[4])
 
 # plot
 plot_clustering.plot_strain_cluster(count_data=result, groupby_cluster=True)
