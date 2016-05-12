@@ -57,12 +57,12 @@ def compute_advanced(path_obj):
                    'ymin': np.min(path_obj.y), 'ymax': np.max(path_obj.y)}
 
     # Computes area of rectangle
-    area_rec = (edge_points['xmax']-edge_points['xmin']) * \
-               (edge_points['ymax']-edge_points['ymin'])
+    area_rec = (edge_points['xmax'] - edge_points['xmin']) * \
+               (edge_points['ymax'] - edge_points['ymin'])
 
     # Computes center point
-    center = {'x': (edge_points['xmin'] + edge_points['xmax'])/2,
-              'y': (edge_points['ymin'] + edge_points['ymax'])/2}
+    center = {'x': (edge_points['xmin'] + edge_points['xmax']) / 2,
+              'y': (edge_points['ymin'] + edge_points['ymax']) / 2}
 
     # Computes radius
     indices = path_obj.index
@@ -82,8 +82,8 @@ def compute_advanced(path_obj):
     # Computes distance between start and end points
     initial = path_obj.loc[path_obj.index[0], 'x':'y']
     end = path_obj.loc[path_obj.index[-1], 'x':'y']
-    abs_distance = np.sqrt((end['x'] - initial['x'])**2 +
-                           (end['y'] - initial['y'])**2)
+    abs_distance = np.sqrt((end['x'] - initial['x']) ** 2 +
+                           (end['y'] - initial['y']) ** 2)
 
     return({'radius': radius, 'center_angles': center_angles,
             'area_cov': area_cov, 'area_rec': area_rec,

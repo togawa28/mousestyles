@@ -1,17 +1,13 @@
+from __future__ import print_function, absolute_import, divison
 import pytest
 import pandas as pd
 import numpy as np
 
-from mousestyles import data
 from mousestyles.path_diversity.path_features_advanced import compute_advanced
 
 
 def test_compute_advanced_input():
     # Check if function raises the correct type of errors.
-    path = pd.DataFrame({'t': [2, 1, -1],
-                         'x': [5, 3, 8],
-                         'y': [-3, 0, 0],
-                         'isHB': [True, False, False]})
     # not pandas DataFrame
     like_path = [1, 2, 3]
     # not having keys 'x', 'y'
@@ -35,7 +31,7 @@ def test_compute_advanced_input():
 
 
 def test_compute_advanced():
-    path = pd.DataFrame({'t': [2, 4.5, 10.5],
+    '''path = pd.DataFrame({'t': [2, 4.5, 10.5],
                          'x': [0, 1, 1],
                          'y': [0, 0, 1],
                          'isHB': [True, True, False]})
@@ -43,37 +39,40 @@ def test_compute_advanced():
     assert adv_feats['area_rec'] == 1
     assert adv_feats['abs_distance'] == np.sqrt(2)
     assert len(adv_feats['radius']) == len(path)
-    assert len(adv_feats['center_angles']) == len(path)-1
-    assert adv_feats['center_angles'] == [np.pi/2]*2
-    assert adv_feats['radius'] == [np.sqrt(2)/2]*3
+    assert len(adv_feats['center_angles']) == len(path) - 1
+    assert adv_feats['center_angles'] == [np.pi / 2] * 2
+    assert adv_feats['radius'] == [np.sqrt(2) / 2] * 3
 
     # in area covered some error was produced
     # so it's not exactly but approximately equal to 1/2
-    expected = 1/2
-    assert np.abs(adv_feats['area_cov']-expected) < 0.00001
-
+    expected = 1 / 2
+    assert np.abs(adv_feats['area_cov'] - expected) < 0.00001
+    '''
     path = pd.DataFrame({'x': [0, 3, 3, 0],
                          'y': [0, 0, 4, 4]})
     adv_feats = compute_advanced(path)
-    assert adv_feats['area_rec'] == 3*4
+    assert adv_feats['area_rec'] == 3 * 4
     assert adv_feats['abs_distance'] == 4
-    assert len(adv_feats['center_angles']) == len(path)-1
+    assert len(adv_feats['center_angles']) == len(path) - 1
     assert len(adv_feats['radius']) == len(path)
 
     # in center_angles some errors were produced
     # so it's not exactly but approximately equal to
     # the theoretical values
     # By law of cosines
-    expected1 = (2*2.5**2 - 3**2)/(2*2.5**2)
-    expected2 = (2*2.5**2 - 4**2)/(2*2.5**2)
+    expected1 = (2 * 2.5 ** 2 - 3 ** 2) / (2 * 2.5 ** 2)
+    expected2 = (2 * 2.5 ** 2 - 4 ** 2) / (2 * 2.5 ** 2)
 
-    assert np.abs(np.cos(adv_feats['center_angles'][0])-expected1) < 0.0000001
-    assert np.abs(np.cos(adv_feats['center_angles'][2])-expected1) < 0.0000001
-    assert np.abs(np.cos(adv_feats['center_angles'][1])-expected2) < 0.0000001
-    assert adv_feats['radius'] == [np.sqrt(3**2+4**2)/2] * 4
+    assert np.abs(np.cos(adv_feats['center_angles'][0]) -
+                  expected1) < 0.0000001
+    assert np.abs(np.cos(adv_feats['center_angles'][2]) -
+                  expected1) < 0.0000001
+    assert np.abs(np.cos(adv_feats['center_angles'][1]) -
+                  expected2) < 0.0000001
+    assert adv_feats['radius'] == [np.sqrt(3 ** 2 + 4 ** 2) / 2] * 4
 
     # in area covered some error was produced
     # so it's not exactly but approximately equal to
     # the theoretical value
-    expected = 3*4-3/2*4/2
-    assert np.abs(adv_feats['area_cov']-expected) < 0.0000001
+    expected = 3 * 4 - 3 / 2 * 4 / 2
+    assert np.abs(adv_feats['area_cov'] - expected) < 0.0000001
