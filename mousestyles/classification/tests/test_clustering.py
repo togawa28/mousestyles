@@ -29,6 +29,7 @@ def test_fit_hc():
     assert len(res) == 2
     assert len(res[0]) == 15
     assert len(res[1][0]) == 170
+    assert len(set(res[1][14])) <= 16
     # silhouette score should be between -1 and 1
     assert all(value < 1 for value in res[0])
     assert all(value > -1 for value in res[0])
@@ -44,6 +45,7 @@ def test_fit_kmeans():
     assert len(res) == 2
     assert len(res[0]) == 15
     assert len(res[1][0]) == 170
+    assert len(set(res[1][14])) <= 16
     # silhouette score should be between -1 and 1
     assert all(value < 1 for value in res[0])
     assert all(value > -1 for value in res[0])
