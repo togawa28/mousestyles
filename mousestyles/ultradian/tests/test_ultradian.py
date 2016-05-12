@@ -2,13 +2,9 @@ from __future__ import print_function, absolute_import, division
 
 import numpy as np
 import pandas as pd
-import statsmodels.api as sm
-import statsmodels.formula.api as smf
-from scipy.stats import chi2
 import statsmodels
 import mousestyles.ultradian as ultradian
 import pytest
-import mousestyles.data as data
 
 # aggregate_interval test
 
@@ -73,15 +69,15 @@ def test_aggregate_data(feature="AS", bin_width=30):
 # Test for seasonal decomposition
 def test_seasonal_decomposition(strain=0, mouse=1, feature='AS',
                                 bin_width=30, period_length=10):
-    result = ultradian.seasonal_decomposition(strain,
-                                    mouse, feature, bin_width, period_length)
+    result = ultradian.seasonal_decomposition(
+        strain, mouse, feature, bin_width, period_length)
     assert type(result) == statsmodels.tsa.seasonal.DecomposeResult
 
 
 # Test for strai_seasonal
 def test_strain_seasonal():
     res = ultradian.strain_seasonal(strain=0, mouse={0, 1, 2}, feature="W",
-                          bin_width=30, period_length=24)
+                                    bin_width=30, period_length=24)
     assert type(res) == tuple
     assert len(res) == 2
 
@@ -94,4 +90,3 @@ def test_mix_strain(data):
     result = ultradian.mix_strain(data, "AS")
     assert result > 0
     assert result < 1
-
