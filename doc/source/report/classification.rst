@@ -135,8 +135,12 @@ Above all, note that unlike the supervised classification problem where we have 
 
 ***K-means***
 
-To begin with, *K-means* minimizes the within-cluster sum of squares to search for the best clusters set. Then the best number of clusters was determined by a compromise between the silhouette score and the interpretability. K-means is computationally inexpensive so we can either do the individual mouse options (170 data points) or use the raw data with 21192 data points where we regard different data points to be different mice.
-However, the nature of K-means makes it perform poorly when we have imbalanced clusters. 
+To begin with, *K-means* minimizes the within-cluster sum of squares to search for the 
+best clusters set. Then the best number of clusters was determined by a compromise 
+between the silhouette score and the interpretability. K-means is computationally 
+inexpensive so we can either do the individual mouse options (170 data points).
+However, the nature of K-means makes it perform poorly when we have imbalanced 
+clusters. 
 
 ***Hierarchical Clustering***
 
@@ -192,6 +196,13 @@ Result
 
 **Clustering**
 ***K-means***
+The silhouette scores corresponding to the number of clusters ranging from 2 to 16 
+are:[0.835, 0.775, 0.423, 0.415, 0.432, 0.421, 0.404, 0.383, 0.421, 0.327, 0.388, 0.347, 0.388, 0.371,0.362]
+ . We plot 6 clusters here to show, and found that Czech and CAST mice behaved 
+ quite differently from each other. 
+.. plot:: report/plots/plot_km_result.py
+   Distribution of strains in clusters by K-means algorithm
+
 
 ***Hierarchical clustering***
 
