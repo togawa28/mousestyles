@@ -67,7 +67,7 @@ Exploratory Analysis & Classification Models
 --------------------------------------------
 
 In 1D, box plots of each feature, say food consumption or sleeping time,
-of each strain can be plotted. In 2D, PCA can be preformed on the
+of each strain are plotted below. In 2D, PCA can be performed on the
 feature data set and the data are then plotted along the first and the
 second principal axes colored in different strains. These plots are
 useful in verifying assumptions. For instance, we could box-plot
@@ -76,12 +76,9 @@ different strains of mice eat distinctly. If the number of variables
 needed to be evaluated is large, we might also use five number summaries
 to study the distributions.
 
-Example boxplots: 
+.. plot:: report/plots/plot_eda.py
 
-.. figure:: figure/features_boxplot_by_strain.png 
-   :align:   center
-
-   Example boxplots
+   Boxplots of the features over 170 mice
 
 Since each strain (each class) only has 9 to 12 mice, inputting too many
 features to the classification model is unwise. The exploratory data
@@ -223,4 +220,6 @@ the future work.
 
 References
 ----------
+1. [An Efficient SNP System for Mouse Genome Scanning and Elucidating Strain Relationships](http://genome.cshlp.org/content/14/9/1806/F3.expansion), Genome Research
+
 
