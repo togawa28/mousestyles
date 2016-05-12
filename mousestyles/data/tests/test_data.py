@@ -153,3 +153,11 @@ def max_speed_bymouse():
 def max_speed_bystrain():
     # Max speed of a mouse should be less than 40 km/h
     assert max(data.distances_bystrain(0, step=50) * 3.6 / 100) < 40
+
+
+def test_load_time_matrix_dynamics():
+    time_matrix_dynamics = data.load_time_matrix_dynamics()
+    # Check the matrix shape
+    assert time_matrix_dynamics.shape == (137, 88287)
+    # Check one specific elemet of the matrix
+    assert time_matrix_dynamics.iloc[1, 2] == 1.0
