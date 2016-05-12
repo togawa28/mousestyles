@@ -1,8 +1,9 @@
 from __future__ import print_function, absolute_import, division
 
+from gatspy.periodic import LombScargleFast
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 import statsmodels.api as sm
 import statsmodels.formula.api as smf
 from scipy.stats import chi2
@@ -227,7 +228,6 @@ def aggregate_data(feature, bin_width, nmouse = 4, nstrain = 3):
     >>> print(np.mean(test["Distance"]))
     531.4500177747973
     """
-
     if feature not in ALL_FEATURES:
         raise ValueError(
             'Input value must in {"AS", "F", "M_AS", "M_IS", "W", "Distance"}')
@@ -529,3 +529,103 @@ def mix_strain(data, feature, print_opt = True, nstrain = 3, range = (3, 12)):
     fstat = 2*abs(like1 - like2)
     p_v = chi2.pdf(fstat, df=2)
     return(p_v)
+
+# methods LombScargel, FDS, visualization take out, mouse == none
+
+
+def Find_Cycle(feature, strain, mouse=None, bin_width=15,
+               methods='LombScargleFast', search_range_fit=None,
+               disturb_t=False, plot=True, nyquist_factor=3,
+               n_cycle=10, search_range_find=(2, 26), sig=np.array([0.05])):
+    """
+    Either way of plotting or calculating power is not
+    the same method used in the find_best cycle.
+
+    Parameters
+    ----------
+    search_range_fit: numpy array, like np.arange(0,26,0.1), defalut is None
+
+    Returns
+    -------
+    ts: pandas.tseries
+        a pandas time series of length 12(day)*24(hour)*60(minute)/n
+    """
+    # get data
+    if mouse is None:
+        data_all = aggregate_data(feature=feature, bin_width=bin_width)
+        n_mouse_in_strain = len(
+            set(data_all.loc[data_all['strain'] == strain]['mouse']))
+        data = [[] for i in range(n_mouse_in_strain)]
+        t = [[] for i in range(n_mouse_in_strain)]
+        for i in range(n_mouse_in_strain):
+            data[i] = data_all.loc[(data_all['strain'] == strain) & (
+                data_all['mouse'] == i)][feature]
+            t[i] = np.array(np.arange(0, len(data[i]) *
+                                      bin_width / 60, bin_width / 60))
+
+        data = [val for sublist in data for val in sublist]
+        N = len(data)
+        t = [val for sublist in t for val in sublist]
+    else:
+        if feature == 'Distance':
+            data = aggregate_movement(
+                strain=strain, mouse=mouse, bin_width=bin_width)
+            N = len(data)
+            t = np.arange(0, N * bin_width / 60, bin_width / 60)
+        else:
+            data = aggregate_interval(
+                strain=strain, mouse=mouse,
+                feature=feature, bin_width=bin_width)
+            N = len(data)
+            t = np.arange(0, N * bin_width / 60, bin_width / 60)
+
+    y = data
+
+    # fit model
+    if disturb_t is True:
+        t = t + np.random.uniform(-bin_width / 600, bin_width / 600, N)
+
+    model = LombScargleFast(fit_period=False).fit(t=t, y=y)
+    # calculate periods' LS power
+    if search_range_fit is None:
+        periods, power = model.periodogram_auto(nyquist_factor=nyquist_factor)
+    else:
+        periods = search_range_fit
+        power = model.periodogram(periods=search_range_fit)
+    # print(periods[:15]); print(len(periods));
+    # print(5*nyquist_factor/2*N)
+    # find best cycle
+    model.optimizer.period_range = search_range_find
+    cycle, cycle_power = model.find_best_periods(
+        return_scores=True, n_periods=n_cycle)
+    cycle_pvalue = 1 - (1 - np.exp(cycle_power / (-2) * (N - 1))) ** (2 * N)
+    # visualization
+    if plot is True:
+        fig, ax = plt.subplots()
+        ax.plot(periods, power)
+        ax.set(xlim=(0, 25),  # ylim=(0, 0.5),
+               xlabel='period (hours)',
+               ylabel='Lomb-Scargle Power')
+        for i in sig:
+            power_sig = -2 / (N - 1) * np.log(
+                1 - (1 - np.asarray(i)) ** (1 / 2 / N))
+            plt.axhline(y=power_sig, color='green', ls='dashed', lw=1)
+            ax.text(x=24, y=power_sig, s='P-value:' +
+                    str(float(i)), ha='right', va='bottom')
+            idx = [i for i, x in enumerate(cycle_pvalue) if x < 0.001]
+            for j in idx:
+                ax.text(x=cycle[j], y=cycle_power[j],
+                        s=r'$\bigstar\bigstar\bigstar$',
+                        ha='right', va='top')
+            idx = [i for i, x in enumerate(
+                cycle_pvalue) if x > 0.001 and x < 0.01]
+            for j in idx:
+                ax.text(x=cycle[j], y=cycle_power[j],
+                        s=r'$\bigstar\bigstar$', ha='right', va='top')
+            idx = [i for i, x in enumerate(
+                cycle_pvalue) if x > 0.01 and x < 0.05]
+            for j in idx:
+                ax.text(x=cycle[j], y=cycle_power[j],
+                        s=r'$\bigstar$', ha='right', va='top')
+
+    return cycle, cycle_power, cycle_pvalue
