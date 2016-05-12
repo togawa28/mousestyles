@@ -13,18 +13,19 @@ mouse data, since experimenting directly on human is difficult.
 The important concern is whether we can classify different strains of
 mice based on mouse behaviors through machine learning algorithms.
 Important features in classification models will be extracted for future
-study. Another question of interest is on whether genetic affects
-(different strain effects) psychological disorders such as depression,
-or overeating. The fundamental hypothesis is that different mouse
+study. The fundamental hypothesis is that different mouse
 strains have different behaviors, and we are able to use these behaviors
-as features to classify mice successfully.
+as features to classify mice successfully. On the other hand, we are also 
+trying to use unsupervised clustering algorithms to cluster mice, and 
+ideally different strains should have different clustering distributions.
+
 
 Statement of statistical problems
 ---------------------------------
 
 The researchers design the experiment as follow: they have 16 different
 strains of mice, and each strain has 9 to 12 almost identical male mice
-in terms of genetic.
+in terms of gene.
 
 We need to firstly verify the assumption that mouse of different strains
 do exhibit different behaviors. One way to do this is to perform
@@ -37,6 +38,7 @@ important for classification. Notice that here we can evaluate the
 difference by assessing the classification performance of models based
 on behavioral features.
 
+**Classification**
 Based on the assumption, the problem is inherently a multiclass
 classification problem based on behavioral features either directly
 obtained during the experiment or artificially constructed. Here we have
@@ -48,6 +50,18 @@ biological explanations. Otherwise, say if the model fails to
 distinguish two different strains of mice, we may study that whether
 those strains of mice are genetically similar or the behavior features
 we selected are actually homogeneous through different strains of mice.
+
+**Clustering**
+To extend the scope of the analysis, the clustering analysis may also be used 
+to analyze mouse behaviors. Though these mice had inherent strain labels,
+the clusters may not follow the strain labels because genetical differences are not
+fully capturing the behavioral differences. Moreover, determining the best number
+of clusters is the key assessing the performance of a clustering model. Notice that
+the best number of clusters are neither necessarily equaling to 16 nor the same 
+across different clustering methods. Criterion like silhouette scores would be
+evaluated to choose the best number of clusters. 
+
+
 
 Exploratory Analysis & Classification Models
 --------------------------------------------
@@ -111,17 +125,19 @@ be used as test data to evaluate the model performance. Notice that we
 may manually manipulate so that the both the training data and the test
 data cover all strains of mice.
 
-2.Unsupervised clustering In addition, we can use unsupervised machine
-learning models (e.g. K-means) to cluster the daily mouse activities
-into clusters that correspond to the genes. This means we will not use
-the given strain label, instead we will create new labels for mice
-purely based on its behaviors by clustering. This can highlight an even
-stronger relationship between genes and mouse behaviors.
-
 The step after model fitting is to assess the important behavioral
 features in the classification and clustering models. A smaller set of
 feature space containing only top features might be used to gain better
 interpretations of the model.
+
+**Unsupervised learning**
+
+Above all, note that unlike the supervised classification problem where we have 11 levels for one feature (so we have up to 99 features in the classification problem), the unsupervised clustering methods could suffer from curse of high dimensionality when we input a large amount of features. In high dimension, every data point is far away from each other, and the useful feature may fail to stand out. Thus we decided to use the average amount of features over a day and the standard deviation of those features for the individual mouse (170 data points) case. 
+
+***K-means***
+
+To begin with, *K-means* minimizes the within-cluster sum of squares to search for the best clusters set. Then the best number of clusters was determined by a compromise between the silhouette score and the interpretability. K-means is computationally inexpensive so we can either do the individual mouse options (170 data points) or use the raw data with 21192 data points where we regard different data points to be different mice.
+However, the nature of K-means makes it perform poorly when we have imbalanced clusters. 
 
 Testing Framework outline
 -------------------------
@@ -141,17 +157,17 @@ Testing Framework outline
    has little influence over these disorders, we can try to find way to
    prevent these disorders from happening.
 
-Initial tasks
--------------
-
-1. Clean up the existing strain\_classification.py: create functions and
-   objects.
-2. Adding new models: knn, random forests, neural networks, logistic
-   regressions.
-3. Doing unsupervised learning: k-means.
-4. Compute confidence interval for the accuracy of each model.
-5. Give insights about how mice behavior is related to their genetic
-   heritage (strain difference).
+Future work
+----------------
+The future research should focus more on feature engineering, including the questions 
+that whether more features could be added to the model. Moreover, an economized subset 
+of features should be evaluated to see whether we can reduce the model complexity
+without losing too much model accuracy. 
+To understand more about the nature of the strain difference, it would be better to 
+have a sense of relationships between different strains of mice. For instance, we have 
+explored that these 16 strains of mice belong to 7 different groups, which implied that 
+some strains were genetically similar. Considering the time limit, we have put it to 
+the future work. 
 
 References
 ----------
