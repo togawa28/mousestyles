@@ -67,7 +67,10 @@ def load_all_features():
     all_features_df = data_frames.pop(0)
     other_features = [x.iloc[:, -1] for x in data_frames]
     other_features.insert(0, all_features_df)
-    return pd.concat(other_features, axis=1)
+    final_df = pd.concat(other_features, axis=1)
+    # fix for data inconsistency
+    final_df['day'] = final_df['day'] - 5
+    return final_df
 
 
 def load_mouseday_features(features=None):
@@ -462,14 +465,14 @@ def distances(strain, mouse, day, step=50):
     # Compute distance between samples
     dist = np.sqrt(movement["x"].diff()[1:]**2 + movement["y"].diff()[1:]**2)
     time = movement['t'][1:] - movement['t'][0]
-    t_final = time[len(time)-1]
+    t_final = time[len(time) - 1]
     # Aggregate distances according to step
-    aggregate = np.zeros(int(t_final/step))
+    aggregate = np.zeros(int(t_final / step))
     j = 1
     for i in range(len(aggregate)):
-        while time[j] < i*step:
+        while time[j] < i * step:
             aggregate[i] = aggregate[i] + dist[j]
-            j = j+1
+            j = j + 1
     return(aggregate)
 
 
