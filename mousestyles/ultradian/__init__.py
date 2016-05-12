@@ -349,7 +349,6 @@ def strain_seasonal(strain, mouse, feature, bin_width, period_length):
     -------
     seasonal_all: numpy array containing the seasonal term for every
         mouse indicated by the input parameter
-    seasonal_plot: plot of seasonal term by mouse
 
     Examples
     --------
@@ -361,7 +360,7 @@ def strain_seasonal(strain, mouse, feature, bin_width, period_length):
         raise ValueError(
             'Strain must be a non-negative integer')
     if (not all([isinstance(m, int)
-                for m in mouse])) or (any([m < 0 for m in mouse])):
+                 for m in mouse])) or (any([m < 0 for m in mouse])):
         raise ValueError(
             'Mouse value must be a non-negative integer')
     if feature not in ALL_FEATURES:
@@ -381,6 +380,64 @@ def strain_seasonal(strain, mouse, feature, bin_width, period_length):
             strain, m, feature, bin_width, period_length)
         seasonal_all = np.append(seasonal_all, res.seasonal[0:freq])
     seasonal_all = seasonal_all.reshape([len(mouse), -1])
+    return(seasonal_all)
+
+
+def plot_strain_seasonal(strain, mouse, feature, bin_width, period_length):
+    """
+    Use seansonal decomposition model on the time series
+    of specified strain, mouse, feature and bin_width.
+    return the seasonal term and the plot of seasonal term
+    by mouse of a set of mouses in a strain
+
+    Parameters
+    ----------
+    strain: int
+        nonnegative integer indicating the strain number
+    mouse: list, set or tuple
+        nonnegative integer indicating the mouse number
+    feature: {"AS", "F", "M_AS", "M_IS", "W", "Distance"}
+        "AS": Active state probalibity
+        "F": Food consumed (g)
+        "M_AS": Movement outside homebase
+        "M_IS": Movement inside homebase
+        "W": Water consumed (g)
+        "Distance": Distance traveled
+    bin_width: int
+        number of minutes, the time interval for data aggregation
+    period_length: int
+        number of hours, usually the significant period
+        length indicated by Lomb-scargle model
+
+    Returns
+    -------
+    seasonal_plot: plot of seasonal term by mouse
+
+    Examples
+    --------
+    >>> res = plot_strain_seasonal(strain=0, mouse={0, 1, 2, 3}, feature="W",
+                                   bin_width=30, period_length = 24)
+    """
+
+    if (not isinstance(strain, int)) or (strain < 0):
+        raise ValueError(
+            'Strain must be a non-negative integer')
+    if (not all([isinstance(m, int)
+                 for m in mouse])) or (any([m < 0 for m in mouse])):
+        raise ValueError(
+            'Mouse value must be a non-negative integer')
+    if feature not in ALL_FEATURES:
+        raise ValueError(
+            'Input value must in {"AS", "F", "M_AS", "M_IS", "W", "Distance"}')
+    if (not isinstance(bin_width, int)) or bin_width < 0 or bin_width > 1440:
+        raise ValueError(
+            'Bin width (minutes) must be a non-negative integer below 1440')
+    if (not isinstance(period_length, int)) or period_length < 0:
+        raise ValueError(
+            'Peoriod length must be a non-negative integer')
+    # seasonal decomposition
+    seasonal_all = strain_seasonal(strain, mouse, feature,
+                                   bin_width, period_length)
     # seasonal plot
     seasonal_plot = plt.figure()
     ax = seasonal_plot.add_subplot(1, 1, 1)
@@ -392,7 +449,7 @@ def strain_seasonal(strain, mouse, feature, bin_width, period_length):
     plt.xlabel('Time')
     plt.xlabel('Time')
     plt.ylabel('Seasonal Term')
-    return seasonal_all, seasonal_plot
+    return(seasonal_plot)
 
 
 def mix_strain(data, feature):

@@ -76,7 +76,7 @@ def test_seasonal_decomposition(strain=0, mouse=1, feature='AS',
 
 # Test for strai_seasonal
 def test_strain_seasonal():
-    seasonal_all, seasonal_plot = ultradian.strain_seasonal(
+    seasonal_all = ultradian.strain_seasonal(
         strain=0, mouse={0, 1, 2}, feature="W",
         bin_width=30, period_length=24)
     assert len(seasonal_all) == 3
