@@ -473,7 +473,7 @@ def distances(strain, mouse, day, step=50):
         while time[j] < i * step:
             aggregate[i] = aggregate[i] + dist[j]
             j = j + 1
-    return(aggregate)
+    return aggregate
 
 
 def distances_bymouse(strain, mouse, step=50, verbose=False):
@@ -516,7 +516,7 @@ def distances_bymouse(strain, mouse, step=50, verbose=False):
                 print('day %s done.' % day)
         except ValueError:
             break
-    return(res)
+    return res
 
 
 def distances_bystrain(strain, step=50, verbose=False):
@@ -556,4 +556,14 @@ def distances_bystrain(strain, step=50, verbose=False):
         mouse += 1
         if verbose:
             print('mouse %s done.' % mouse)
-    return(res)
+    return res
+
+
+def load_time_matrix_dynamics():
+    """
+    Load the time matrix for dynamics pattern project
+    """
+    return pd.read_csv(
+        _os.path.join(
+           data_dir,
+           'time_matrix.csv'))
