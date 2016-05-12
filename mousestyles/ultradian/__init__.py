@@ -383,7 +383,7 @@ def strain_seasonal(strain, mouse, feature, bin_width, period_length):
     return(seasonal_all)
 
 
-def plot_strain_seasonal(strain, mouse, feature, bin_width, period_length):
+def plot_strain_seasonal(strains, mouse, feature, bin_width, period_length):
     """
     Use seansonal decomposition model on the time series
     of specified strain, mouse, feature and bin_width.
@@ -392,7 +392,7 @@ def plot_strain_seasonal(strain, mouse, feature, bin_width, period_length):
 
     Parameters
     ----------
-    strain: int
+    strain: list, set or tuple
         nonnegative integer indicating the strain number
     mouse: list, set or tuple
         nonnegative integer indicating the mouse number
@@ -415,11 +415,13 @@ def plot_strain_seasonal(strain, mouse, feature, bin_width, period_length):
 
     Examples
     --------
-    >>> res = plot_strain_seasonal(strain=0, mouse={0, 1, 2, 3}, feature="W",
+    >>> res = plot_strain_seasonal(strain={0, 1, 2,}, mouse={0, 1, 2, 3},
+                                   feature="W",
                                    bin_width=30, period_length = 24)
     """
 
-    if (not isinstance(strain, int)) or (strain < 0):
+    if (not all([isinstance(m, int)
+                 for m in mouse])) or (any([m < 0 for m in mouse])):
         raise ValueError(
             'Strain must be a non-negative integer')
     if (not all([isinstance(m, int)
@@ -435,21 +437,27 @@ def plot_strain_seasonal(strain, mouse, feature, bin_width, period_length):
     if (not isinstance(period_length, int)) or period_length < 0:
         raise ValueError(
             'Peoriod length must be a non-negative integer')
-    # seasonal decomposition
-    seasonal_all = strain_seasonal(strain, mouse, feature,
-                                   bin_width, period_length)
-    # seasonal plot
-    seasonal_plot = plt.figure()
-    ax = seasonal_plot.add_subplot(1, 1, 1)
     time = np.arange(0, period_length, bin_width / 60)
-    for i in np.arange(len(mouse)):
-        ax.plot(time, seasonal_all[i, :])
-    ax.legend(['mouse' + str(i) for i in np.arange(len(mouse))],
-              loc='upper right', prop={'size': 8})
-    plt.xlabel('Time')
-    plt.xlabel('Time')
-    plt.ylabel('Seasonal Term')
-    return(seasonal_plot)
+    fig = plt.figure(figsize=(8, 8))
+    flag = 0
+    for strain in strains:
+        if flag == 0:
+            ax = fig.add_subplot(3, 1, strain + 1)
+            flag += 1
+        else:
+            ax = fig.add_subplot(3, 1, strain + 1, sharey=ax)
+        seasonal_all = strain_seasonal(strain, mouse, feature,
+                                       bin_width, period_length)
+        for i in np.arange(len(mouse)):
+            ax.plot(time, seasonal_all[i, :])
+        ax.legend(['mouse' + str(i) for i in np.arange(len(mouse))],
+                  loc='upper right', prop={'size': 10})
+        ax.set_title('strain ' + str(strain))
+        plt.xlabel('Time')
+        plt.ylabel('Seasonal Variation')
+        plt.suptitle(feature, fontsize=20)
+    fig.show()
+    return(fig)
 
 
 def mix_strain(data, feature):
