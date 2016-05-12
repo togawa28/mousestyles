@@ -1,8 +1,11 @@
-# -*- coding: utf-8 -*-
+# coding: utf-8
 
-from scipy.stats import mannwhitneyu
+from __future__ import print_function, division, absolute_import
+
 import itertools
+
 import numpy as np
+from scipy.stats import mannwhitneyu
 import matplotlib.pyplot as plt
 
 from mousestyles.data import distances_bymouse, distances_bystrain
