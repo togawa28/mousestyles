@@ -80,6 +80,22 @@ Exploratory Analysis
 
 Methodology/Approach Description
 --------------------------------
+
+************************
+Lomb-Scargle Period Test
+************************
+
+Description
+^^^^^^^^^^^
+
+Similar to fourier analysis, the Lomb-Scargle periodogram is a common tool in the frequency analysis of unequally spaced data equivalent to least-squares fitting of sine waves. Basically we want to fit sine waves of the form:
+
+.. math::
+
+   y=a\cos\omega t+b\sin\omega t
+
+While standard fitting procedures require the solution of a set of linear equations for each sampled frequency, the Lomb-Scargle method provides an analytic solution and is therefore both convenient to use and efficient. In this case, we want to test whether each mouse/strain has a significant cycle less than 24 hours.
+
 **********************
 Seasonal decomposition
 **********************
