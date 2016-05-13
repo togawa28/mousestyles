@@ -141,9 +141,11 @@ interpretations of the model.
 
 
 **supervised learning: classification**
+
 For this project, we mainly focus on three classification algorithms, which are random forests, gradient boosting and support vector machines (SVM). 
 
-# Introduction
+***Introduction***
+
 Random forests is a notion of the general technique of random decision forests that are an ensemble learning method for classification, regression and other tasks, that operate by constructing a multitude of decision trees at training time and outputting the class that is the mode of the classes (classification) of the individual trees. The method combines Breiman's "bagging" idea and the random selection of features, correcting for decision trees' habit of overfitting to their training set.
 
 Gradient boosting is another machine learning algorithm for classification. It produces a prediction model in the form of an ensemble of weak prediction models, typically decision trees. Gradient boosting fits an additive model in a forward stage-wise manner. In each stage, it introduces a weak learner to compensate the shortcomings of existing weak learners, which allows optimization of an arbitrary differentiable loss function. 
@@ -151,7 +153,8 @@ Gradient boosting is another machine learning algorithm for classification. It p
 Support vector Machines(SVM) are set of related supervised learning methods for classification and regression, which minimizes the empirical classification error and maximize the geometric margin. SVM map the input vector into a higher dimensional space where the maximal separating hyper plane is constructed. Maximizing the distance between different parallel hyper planes, SVM come up with the classification of the input vector. 
 
 
-# Tuning Parameters
+***Tuning Parameters***
+
 For each of the algorithms, we create functions to fit them on the dataset respectively. There are two different ways to fit these methods: if the user pre-defines the set of the parameters, we will use cross validation to find the best estimators and their relative labels; if the user does not define the parameters, the functions will use the default values to fit the models.
 
 For random forests, we tune n_estimators, max_feature and importance_level. n_estimators represents the number of trees in the forest. The larger, the more accurate. However, it takes considerable amount of computational time when increasing forest size.
@@ -167,7 +170,8 @@ C represents the penalty parameter of the error term. It trades off misclassific
 Gamma is the Kernel coefficient for ‘rbf’, ‘poly’ and ‘sigmoid'. It defines how far the influence of a single training example reaches, with low values meaning ‘far’ and high values meaning ‘close’. 
 
 
-# Model Assessment
+***Model Assessment***
+
 Based on the performance 
 
 
