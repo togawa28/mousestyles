@@ -61,7 +61,9 @@ fully capturing the behavioral differences. Moreover, determining the best numbe
 of clusters is key in assessing the performance of a clustering model. Notice that
 the best number of clusters are neither necessarily equal to 16 nor the same 
 across different clustering methods. Criterion like silhouette scores would be
-evaluated to choose the best number of clusters. 
+evaluated to choose the best number of clusters.
+Petkov's paper also give us ideas about clustering and the difference between
+each strains :cite:`petkov2004efficient`.
 
 
 Exploratory Analysis & Classification Models
@@ -320,8 +322,4 @@ explored that these 16 strains of mice belong to 7 different groups, which impli
 some strains were genetically similar. Considering the time limit, we have put it to 
 the future work. 
 
-
-References
-----------
-1. `An Efficient SNP System for Mouse Genome Scanning and Elucidating Strain Relationships <http://genome.cshlp.org/content/14/9/1806/F3.expansion>`_, Genome Research
 
