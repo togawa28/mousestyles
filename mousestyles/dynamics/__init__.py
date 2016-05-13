@@ -458,7 +458,7 @@ def find_best_interval(df, strain_num, interval_length_initial=np.arange(600,
     interval_length_initial: numpy.ndarray
         a numpy.ndarray specifying the range of time interval
         that it optimizes on, with the default value of a sequence
-        from 600s to 7200s with 600s step since 10min to 2h is a 
+        from 600s to 7200s with 600s step since 10min to 2h is a
         reasonable choice.
 
     Returns
@@ -468,12 +468,12 @@ def find_best_interval(df, strain_num, interval_length_initial=np.arange(600,
         in terms of the evaluation score
     best_fake_mouse: list
         a list of around 88,283 integers indicating the simulated
-        states using the best_interval_length 
+        states using the best_interval_length
     best_score: float
         a float between 0 and 1 representing the evaluation score
         comparing the best_fake_mouse with the real mice
         behavior in the strain under the same optimized
-        time interval length. higher the score, better the 
+        time interval length. higher the score, better the
         simulation behavior.
 
     Examples
