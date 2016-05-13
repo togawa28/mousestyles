@@ -72,7 +72,23 @@ mcmc_simulation(trans_matrix, n_per_int=1000)
 ```
 
 5. Evaluation System:
+How to get a score for the performance of our simulation?
+The evaluation system is trying to create a score to evaluate the performance of the simulation. Higher the score, better
+the simulation is doing in catching the pattern in the mouse day. Because we have unbalanced data, meaning most of the
+status in one typical mouse day are IS and OTHERS and only a few of them are DRINK and EAT, we should give more weights on
+correct predictions about DRINK and EAT. We first calculate the proportion of the four status within different days we have
+for different mice from different strains and then take average to get the ratio of different status. And then we choose the
+initial weights based on the numbers we get. For example, a mouse day has 21200 timestamps on average. And on average 10000
+of them are IS, 1000 are EAT, 200 are DRINK, and the left 10000 are OTHERS. The ratio is 10000:1000:200:10000 = 1:0.1:0.02:
+0.1. Thus, the weights should be the inverse, 1:10:50:1. 
 
+But of course, users can define their own initial weights to fit in their purpose. If the user prefers equal weights, he/she
+can simply set the weight to be (1,1,1,1).
+
+The final score is calculated as the number of correct predictions times the weights divided by the number of status. For
+example, if our observed data is “IS IS DRK DRK EAT OTHERS”, and our predicted value based on it is “IS IS IS DRK EAT
+OTHERS”, the score would be (1+1+0+50+10+1)/6 = 10.5. But because our data contains a lot more IS and OTHERS, the score
+ranges from 0 to 1 for our data.
 
 Result
 ------
