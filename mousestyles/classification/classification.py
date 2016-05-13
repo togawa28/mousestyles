@@ -55,10 +55,10 @@ def fit_random_forest(train_y, train_x, test_x,
              features used to predict strains in training set
     test_x: DataFrame
             features used to predict strains in testing set
-    n_estimators: int, optional
+    n_estimators: list, optional
                   tuning parameter of RandomForest, which is the number of
                   trees in the forest
-    max_feature: int, optional
+    max_feature: list, optional
                  tuning parameter of RandomForest, which is the number of
                  features to consider when looking for the best split
     Returns
@@ -66,11 +66,26 @@ def fit_random_forest(train_y, train_x, test_x,
     DataFrame of RandomForest results based on testing strains.
         Column: prediction strain labels
     """
+    # input validation
+    if not isinstance(n_estimators, list):
+        raise TypeError("n_estimators should be a list")
+    if not all([isinstance(i, int) for i in n_estimators]):
+        raise TypeError("All the n_estimators should be integers")
+    if not all([i > 0 for i in n_estimators]):
+        raise ValueError("All the n_estimators should be positive")
+    if not isinstance(max_feature, list):
+        raise TypeError("max_feature should be a list")
+    if not all([isinstance(i, int) for i in max_feature]):
+        raise TypeError("All the max_feature should be integers")
+    if not all([i > 0 for i in max_feature]):
+        raise ValueError("max_features must be in (0, n_features]")
+    if not all([i <= train_x.shape[1] for i in max_feature]):
+        raise ValueError("max_features must be in (0, n_features]")
     # creat RF model
     scaler = StandardScaler()
     train_x = scaler.fit_transform(train_x)
-    es = [n_estimators]
-    fs = [max_feature]
+    es = n_estimators
+    fs = max_feature
     if n_estimators is None:
         es = [500, 100]
     if max_feature is None:
@@ -86,8 +101,8 @@ def fit_random_forest(train_y, train_x, test_x,
     prediction = clf.predict(scaler.fit_transform((test_x)))
     prediction = pd.DataFrame(prediction)
     prediction.columns = ['predict_strain']
-    print('The best RandomForest Model is:')
-    print(clf)
+    print ('The best RandomForest Model is:')
+    print (clf)
     return(prediction)
 
 
@@ -106,10 +121,10 @@ def fit_gradient_boosting(train_y, train_x, test_x,
              features used to predict strains in training set
     test_x: DataFrame
             features used to predict strains in testing set
-    n_estimators: int, optional
+    n_estimators: list, optional
                   tuning parameter of GradientBoosting, which is the number of
                   boosting stages to perform
-    learning_rate: int, optional
+    learning_rate: list, optional
                  learning_rate shrinks the contribution of each tree
                  learning_rate
     Returns
@@ -117,11 +132,22 @@ def fit_gradient_boosting(train_y, train_x, test_x,
     DataFrame of GradientBoosting results based on testing strains.
         Column: prediction strain labels
     """
+    # input validation
+    if not isinstance(n_estimators, list):
+        raise TypeError("n_estimators should be a list")
+    if not all([isinstance(i, int) for i in n_estimators]):
+        raise TypeError("All the n_estimators should be integers")
+    if not all([i > 0 for i in n_estimators]):
+        raise ValueError("All the n_estimators should be positive")
+    if not isinstance(learning_rate, list):
+        raise TypeError("max_feature should be a list")
+    if not all([i > 0 for i in learning_rate]):
+        raise ValueError("max_features must be greater than 0")
     # creat GradientBoosting model
     scaler = StandardScaler()
     train_x = scaler.fit_transform(train_x)
-    es = [n_estimators]
-    ls = [learning_rate]
+    es = n_estimators
+    ls = learning_rate
     if n_estimators is None:
         es = [100, 200, 300, 500]
     if learning_rate is None:
@@ -138,56 +164,8 @@ def fit_gradient_boosting(train_y, train_x, test_x,
     prediction = clf.predict(scaler.fit_transform((test_x)))
     prediction = pd.DataFrame(prediction)
     prediction.columns = ['predict_strain']
-    print('The best GradientBoosting Model is:')
-    print(clf)
-    return(prediction)
-
-
-def fit_svm(train_y, train_x, test_x, c=None, gamma=None):
-    """
-        Returns a DataFrame of svm results, containing
-        prediction strain labels and printing the best model. The
-        model's parameters will be tuned by cross validation, and
-        accepts user-defined parameters.
-        Parameters
-        ----------
-        train_y: Series
-        labels of classification results, which are predicted strains.
-        train_x: DataFrame
-        features used to predict strains in training set
-        test_x: DataFrame
-        features used to predict strains in testing set
-        c: float, optional
-        tuning parameter of svm, which is penalty parameter of the error term
-        gamma: float, optional
-        tuning parameter of svm, which is kernel coefficient
-        Returns
-        ----------
-        DataFrame of svm results based on testing strains.
-        Column: prediction strain labels
-        """
-    # creat svm model
-    scaler = StandardScaler()
-    train_x = scaler.fit_transform(train_x)
-    Cs = [c]
-    Gammas = [gamma]
-    if c is None:
-        Cs = np.logspace(-6, -1, 10)
-    if gamma is None:
-        Gammas = np.linspace(0.0001, 0.15, 10)
-    svc = svm.SVC()
-    clf = GridSearchCV(estimator=svc, param_grid=dict(C=Cs, gamma=Gammas),
-                       n_jobs=-1)
-    clf.fit(train_x, train_y)
-    clf = clf.best_estimator_
-    # fit the best model
-    clf.fit(train_x, train_y)
-    # predict the testing data and convert to data frame
-    prediction = clf.predict(scaler.fit_transform((test_x)))
-    prediction = pd.DataFrame(prediction)
-    prediction.columns = ['predict_strain']
-    print('The best SVM Model is:')
-    print(clf)
+    print ('The best GradientBoosting Model is:')
+    print (clf)
     return(prediction)
 
 
@@ -212,8 +190,8 @@ def get_summary(predict_labels, true_labels):
        Column 2: F-1 measure
 
     """
-    true_labels.index = range(true_labels.shape[0])
-    result = pd.concat([predict_labels, pd.DataFrame(true_labels)], axis=1)
+    test_y.index = range(test_y.shape[0])
+    result = pd.concat([predict_labels, pd.DataFrame(test_y)], axis=1)
     result.columns = ['predict_strain', 'true_strain']
     prediction_accurate_count_matrix = pd.crosstab(index=result.iloc[:, 0],
                                                    columns=result.iloc[:, 1],
