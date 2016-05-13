@@ -7,8 +7,6 @@ import mousestyles.ultradian as ultradian
 import pytest
 
 # aggregate_interval test
-
-
 def test_aggregate_interval():
     with pytest.raises(ValueError) as msg1:
         ultradian.aggregate_interval(-1, 1, "M_IS", 30)
@@ -46,7 +44,7 @@ def test_aggregate_movement():
         ultradian.aggregate_movement(1, 1, -30)
     assert msg3.value.args[
         0] == 'Bin width (minutes) must be a non-negative integer below 1440'
-# Check the outcome data type of function aggregate_movement()
+    # Check the outcome data type of function aggregate_movement()
     result = ultradian.aggregate_movement(0, 1, 30)
     assert type(result) is pd.core.series.Series
 
@@ -55,13 +53,13 @@ def test_aggregate_movement():
 def test_aggregate_data():
     result = ultradian.aggregate_data(feature='AS', bin_width=30)
     assert type(result) is pd.core.frame.DataFrame
-# Check the columns
+    # Check the columns
     n = len(result.columns)
     assert n == 4
-# Check the hours
+    # Check the hours
     test_1 = np.array(result['hour'])
     assert test_1.max() < 24
-# Check the strain
+    # Check the strain
     test_2 = np.array(result['strain'])
     assert len(np.unique(test_2)) == 3
 
@@ -83,16 +81,14 @@ def test_strain_seasonal():
 
 # check the outcome range of mix_strain, the result is a p-value, so it's
 # between 0 and 1
-
 def test_mix_strain():
     data = ultradian.aggregate_data("AS", 30)
     result = ultradian.mix_strain(data, "AS")
     assert result > 0
     assert result < 1
 
+
 # Test for find_cycle
-
-
 def test_find_cycle():
     # check the length of returned values
     result = ultradian.find_cycle(feature='Distance', strain=0, mouse=0,
