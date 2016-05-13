@@ -3,25 +3,19 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 
-def plot_performance(model):
+def plot_performance(result):
     """
     Plots the performance of classification model.It
     is a side-by-side barplot. For each strain, it plots
     the precision, recall and F-1 measure.
     Parameters
     ----------
-    model: string
-           The model used to classify the strain
+    result: dataframe, columns of precision, recall and
+            F-1 measure.
     Returns
     -------
     None
     """
-    if model is 'SVM':
-        result = pd.DataFrame(np.load('SVM_result.npy'))
-    elif model is 'RF':
-        result = pd.DataFrame(np.load('RF_result.npy'))
-    elif model is 'GB':
-        result = pd.DataFrame(np.load('GB_result.npy'))
     N = 16
     ind = np.arange(N)  # the x locations for the groups
     width = 0.2
