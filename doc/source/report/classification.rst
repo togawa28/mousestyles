@@ -293,9 +293,11 @@ Future Work
 ----------------
 
 The future research should focus more on feature engineering, including the questions 
-that whether more features could be added to the model. Moreover, an economized subset 
-of features should be evaluated to see whether we can reduce the model complexity
-without losing too much model accuracy. 
+that whether more features could be added to the model. Moreover, even though we have
+extracted the importance features from the random forest to evaluate the performance
+of the smaller model, it seemed that the economized model did not perform as expected.
+In future, other technique like PCA might be performed to reduce the complexity of the
+model in order to train classification models faster.
 
 To understand more about the nature of the strain difference, it would be better to 
 have a sense of relationships between different strains of mice. For instance, we have 
