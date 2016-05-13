@@ -73,20 +73,22 @@ def fit_random_forest(train_y, train_x, test_x,
         features larger than the importance level.
     """
     # input validation
-    if not isinstance(n_estimators, list):
-        raise TypeError("n_estimators should be a list")
-    if not all([isinstance(i, int) for i in n_estimators]):
-        raise TypeError("All the n_estimators should be integers")
-    if not all([i > 0 for i in n_estimators]):
-        raise ValueError("All the n_estimators should be positive")
-    if not isinstance(max_feature, list):
-        raise TypeError("max_feature should be a list")
-    if not all([isinstance(i, int) for i in max_feature]):
-        raise TypeError("All the max_feature should be integers")
-    if not all([i > 0 for i in max_feature]):
-        raise ValueError("max_features must be in (0, n_features]")
-    if not all([i <= train_x.shape[1] for i in max_feature]):
-        raise ValueError("max_features must be in (0, n_features]")
+    if n_estimators is not None:
+        if not isinstance(n_estimators, list):
+            raise TypeError("n_estimators should be a list")
+        if not all([isinstance(i, int) for i in n_estimators]):
+            raise TypeError("All the n_estimators should be integers")
+        if not all([i > 0 for i in n_estimators]):
+            raise ValueError("All the n_estimators should be positive")
+    if max_feature is not None:
+        if not isinstance(max_feature, list):
+            raise TypeError("max_feature should be a list")
+        if not all([isinstance(i, int) for i in max_feature]):
+            raise TypeError("All the max_feature should be integers")
+        if not all([i > 0 for i in max_feature]):
+            raise ValueError("max_features must be in (0, n_features]")
+        if not all([i <= train_x.shape[1] for i in max_feature]):
+            raise ValueError("max_features must be in (0, n_features]")
     # creat RF model
     scaler = StandardScaler()
     train_x = scaler.fit_transform(train_x)
@@ -147,16 +149,18 @@ def fit_gradient_boosting(train_y, train_x, test_x,
         Column: prediction strain labels
     """
     # input validation
-    if not isinstance(n_estimators, list):
-        raise TypeError("n_estimators should be a list")
-    if not all([isinstance(i, int) for i in n_estimators]):
-        raise TypeError("All the n_estimators should be integers")
-    if not all([i > 0 for i in n_estimators]):
-        raise ValueError("All the n_estimators should be positive")
-    if not isinstance(learning_rate, list):
-        raise TypeError("max_feature should be a list")
-    if not all([i > 0 for i in learning_rate]):
-        raise ValueError("max_features must be greater than 0")
+    if n_estimators is not None:
+        if not isinstance(n_estimators, list):
+            raise TypeError("n_estimators should be a list")
+        if not all([isinstance(i, int) for i in n_estimators]):
+            raise TypeError("All the n_estimators should be integers")
+        if not all([i > 0 for i in n_estimators]):
+            raise ValueError("All the n_estimators should be positive")
+    if learning_rate is not None:
+        if not isinstance(learning_rate, list):
+            raise TypeError("max_feature should be a list")
+        if not all([i > 0 for i in learning_rate]):
+            raise ValueError("max_features must be greater than 0")
     # creat GradientBoosting model
     scaler = StandardScaler()
     train_x = scaler.fit_transform(train_x)
@@ -165,7 +169,7 @@ def fit_gradient_boosting(train_y, train_x, test_x,
     if n_estimators is None:
         es = [100, 200, 300, 500]
     if learning_rate is None:
-        ls = np.linspace(0.0001, 0.15, 10)
+        ls = list(np.linspace(0.0001, 0.15, 10))
     gb = GradientBoostingClassifier()
     clf = GridSearchCV(
         estimator=gb, param_grid=dict(n_estimators=es, learning_rate=ls),
@@ -207,19 +211,21 @@ def fit_svm(train_y, train_x, test_x, c=None, gamma=None):
         Column: prediction strain labels
     """
     # input validation
-    if not isinstance(c, list):
-        raise TypeError("c should be a list")
-    if not isinstance(gamma, list):
-        raise TypeError("gamma should be a list")
+    if c is not None:
+        if not isinstance(c, list):
+            raise TypeError("c should be a list")
+    if gamma is not None:
+        if not isinstance(gamma, list):
+            raise TypeError("gamma should be a list")
     # creat svm model
     scaler = StandardScaler()
     train_x = scaler.fit_transform(train_x)
     Cs = c
     Gammas = gamma
     if c is None:
-        Cs = np.logspace(-6, -1, 10)
+        Cs = list(np.logspace(-6, -1, 10))
     if gamma is None:
-        Gammas = np.linspace(0.0001, 0.15, 10)
+        Gammas = list(np.linspace(0.0001, 0.15, 10))
     svc = svm.SVC()
     clf = GridSearchCV(estimator=svc, param_grid=dict(C=Cs, gamma=Gammas),
                        n_jobs=-1)
@@ -255,7 +261,6 @@ def get_summary(predict_labels, true_labels):
        Column 0: precision
        Column 1: recall
        Column 2: F-1 measure
-
     """
     true_labels.index = range(true_labels.shape[0])
     result = pd.concat([predict_labels, pd.DataFrame(true_labels)], axis=1)
