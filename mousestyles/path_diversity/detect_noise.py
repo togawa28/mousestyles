@@ -1,7 +1,8 @@
 from __future__ import print_function, absolute_import, division
 
 import pandas as pd
-from mousestyles import path_diversity
+
+from mousestyles.path_diversity import compute_angles
 
 
 def detect_noise(movement, paths, angle_threshold, delta_t):
@@ -61,7 +62,7 @@ def detect_noise(movement, paths, angle_threshold, delta_t):
 
         if len(path_obj) > 3:
 
-            path_obj['angles'] = path_diversity.compute_angles(path_obj, False)
+            path_obj['angles'] = compute_angles(path_obj, False)
             path_obj['sharp_angle'] = path_obj['angles'] > angle_threshold
             path_obj['noise'] = 0
 
