@@ -6,7 +6,8 @@ from math import ceil
 from mousestyles import data
 
 
-def create_time_matrix(combined_gap=4, time_gap=1, days_index=137):
+def create_time_matrix(combined_gap=4, time_gap=1,
+                       days_index=137, verbose=False):
     r"""
     Return a time matrix for estimate the MLE parobability.
     The rows are 137 mousedays. The columns are time series
@@ -24,6 +25,8 @@ def create_time_matrix(combined_gap=4, time_gap=1, days_index=137):
         The time gap for create the columns time series
     days_index: nonnegative int
         The number of days to process, from day 0 to day days_index.
+    verbose: bool
+        If True, print out helpful information to the screen
 
     Returns
     -------
@@ -114,7 +117,8 @@ def create_time_matrix(combined_gap=4, time_gap=1, days_index=137):
                 else:
                     matrix[i, j] = 3  # others
         # give you the precent of matrix has been processed
-        print(i / days.shape[0], 'has been processed')
+        if verbose:
+            print(i / days.shape[0], 'has been processed')
         if i > days_index:
             break
     # format data frame
@@ -207,7 +211,7 @@ def get_prob_matrix_list(time_df, interval_length=1000):
     return matrix_list
 
 
-def get_prob_matrix_small_interval(string_list):
+def get_prob_matrix_small_interval(string_list, verbose=False):
     r"""
     return the MLE estimate of the probability matrix
     of the markov chain model. The data used as input
@@ -222,6 +226,8 @@ def get_prob_matrix_small_interval(string_list):
     string_list: list
         a list of strings of the states in the given
         time slot.
+    verbose: bool
+        If True, print out helpful information to the screen
 
     Returns
     -------
@@ -244,7 +250,8 @@ def get_prob_matrix_small_interval(string_list):
     # check all the inputs
     condition_string_list = (type(string_list) == list)
     condition_list_item = (type(string_list[0]) == str)
-    print(string_list[0])
+    if verbose:
+        print(string_list[0])
     if not condition_string_list:
         raise ValueError("string_list should be a list")
     if not condition_list_item:
@@ -483,10 +490,10 @@ def find_best_interval(df, strain_num, interval_length_initial=np.arange(600,
     >>> time_df_eg = pd.DataFrame(time_df_eg)
     >>> time_df_eg.rename(columns={0:'strain'}, inplace=True)
     >>> find_best_interval(time_df_eg, 0, np.arange(10, 40, 10))
-    >>> (10, array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                    0, 0]), 0.98245614035087725)
-"""
+    (10, array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0]), 0.98245614035087725)
+    """
     # check all the inputs: dataframe, strain number, intitial time length
     condition_df = (type(df) == pd.core.frame.DataFrame)
     condition_strain_num = (strain_num in (0, 1, 2))
