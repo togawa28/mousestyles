@@ -141,7 +141,8 @@ Basic steps::
 
     4. Determine the "random" term
 
-The following plot shows the seasonal variation 
+The following plot shows the seasonal variation of AS using circadian 
+period. Difference between strains in rhythm patterns is obvious.
 
 .. plot:: report/plots/plot_24H_seasonal_AS.py
 
@@ -183,9 +184,21 @@ will be p-values in [0,0.001], two stars will be p-values in
 [0.001,0.01], one star will be p-values in [0.01,0.05]. The horizontal
 line is the LS power that has p-value of 0.05.
 
+Below are the ultradian analysis results found by combining seasonal decomposition
+with best periods returned by Lomb Scargle periodogram. Here we use features "AS"
+(active state probability) and "M_IS" (movement time inside homebase) as two examples,
+because other features like food, water, movement distance, movement time outside
+homebase all have similar LS plot to "AS" and we show them in Appendix. "M_IS"
+shows a rather different pattern.
 
 .. plot:: report/plots/plot_LSSeasonal.py
 
+   The ultradian analysis: seasonal decomposition using best periods returned by
+   Lomb Scargle periodogram. For "AS" feature (active state probability), 12 hours
+   is the common significant periods for all 3 strains (with p values smaller
+   that 0.001). For "M_IS" feature (movement time inside homebase), 8 hours
+   appears to be the common significant periods for all 3 strains (with p values
+   smaller than 0.01). 
 
 
 
