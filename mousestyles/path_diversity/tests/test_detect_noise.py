@@ -5,29 +5,28 @@ import pytest
 import pandas as pd
 
 from mousestyles import data
-from mousestyles.path_diversity import detect_noise
-from mousestyles.path_diversity import path_index
+from mousestyles import path_diversity
 
 
 def test_detect_noise_input():
     movement = data.load_movement(0, 0, 0)
-    paths = path_index(movement, 1, 1)
+    paths = path_diversity.path_index(movement, 1, 1)
     # Check if function raises the correct type of errors.
     # Input negative angle_threshold
     with pytest.raises(ValueError) as excinfo:
-        detect_noise.detect_noise(movement, paths, -1, 1)
+        path_diversity.detect_noise(movement, paths, -1, 1)
     assert excinfo.value.args[0] == "Input values need to be positive"
     # Input negative delta_t
     with pytest.raises(ValueError) as excinfo:
-        detect_noise.detect_noise(movement, paths, 1, -1)
+        path_diversity.detect_noise(movement, paths, 1, -1)
     assert excinfo.value.args[0] == "Input values need to be positive"
     # Input zero angle_threshold
     with pytest.raises(ValueError) as excinfo:
-        detect_noise.detect_noise(movement, paths, 0, 1)
+        path_diversity.detect_noise(movement, paths, 0, 1)
     assert excinfo.value.args[0] == "Input values need to be positive"
     # Input zero delta_t
     with pytest.raises(ValueError) as excinfo:
-        detect_noise.detect_noise(movement, paths, 1, 0)
+        path_diversity.detect_noise(movement, paths, 1, 0)
     assert excinfo.value.args[0] == "Input values need to be positive"
 
 
@@ -38,9 +37,9 @@ def test_detect_noise():
                 'isHB': pd.Series(['No', 'No', 'No', 'No'],
                                   index=[0, 1, 2, 3])}
     movement = pd.DataFrame(movement)
-    paths = path_index(movement, 2, 1)
+    paths = path_diversity.path_index(movement, 2, 1)
     # Check if function produces the correct outputs
-    noise = detect_noise.detect_noise(movement, paths, 120, 1)
+    noise = path_diversity.detect_noise(movement, paths, 120, 1)
     noise = list(noise)
     assert noise == [0, 1, 1, 0]
 
@@ -50,8 +49,8 @@ def test_detect_noise():
                 'isHB': pd.Series(['No', 'No', 'No', 'No'],
                                   index=[0, 1, 2, 3])}
     movement = pd.DataFrame(movement)
-    paths = path_index(movement, 4, 1)
+    paths = path_diversity.path_index(movement, 4, 1)
     # Check if function produces the correct outputs
-    noise = detect_noise.detect_noise(movement, paths, 120, 1)
+    noise = path_diversity.detect_noise(movement, paths, 120, 1)
     noise = list(noise)
     assert noise == [0, 0, 0, 0]
