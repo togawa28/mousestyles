@@ -52,8 +52,8 @@ def test_aggregate_movement():
 
 
 # Test for aggregate_data
-def test_aggregate_data(feature="AS", bin_width=30):
-    result = ultradian.aggregate_data(feature, bin_width)
+def test_aggregate_data():
+    result = ultradian.aggregate_data(feature='AS', bin_width=30)
     assert type(result) is pd.core.frame.DataFrame
 # Check the columns
     n = len(result.columns)
@@ -76,10 +76,10 @@ def test_seasonal_decomposition(strain=0, mouse=1, feature='AS',
 
 # Test for strai_seasonal
 def test_strain_seasonal():
-    seasonal_all = ultradian.strain_seasonal(
-        strain=0, mouse={0, 1, 2}, feature="W",
-        bin_width=30, period_length=24)
-    assert len(seasonal_all) == 3
+    res = ultradian.strain_seasonal(strain=0, mouse={0, 1, 2}, feature="W",
+                                    bin_width=30, period_length=24)
+    assert type(res) == tuple
+    assert len(res) == 2
 
 
 # check the outcome range of mix_strain, the result is a p-value, so it's
@@ -87,6 +87,64 @@ def test_strain_seasonal():
 
 def test_mix_strain():
     data = ultradian.aggregate_data("AS", 30)
-    result = ultradian.mix_strain(data, "AS", print_opt = False)
+    result = ultradian.mix_strain(data, "AS")
     assert result > 0
     assert result < 1
+
+# Test for find_cycle
+def test_find_cycle():
+    ## check the length of returned values
+    result = ultradian.find_cycle(feature='Distance', strain=0,mouse=0,
+                                  methods='LombScargleFast',
+                                  plot=False, gen_doc=False)
+    assert len(result) == 3
+    assert len(result[0]) == 10
+    ## check the gen_doc option, which prepares data for plotting
+    r2 = ultradian.find_cycle(feature='Distance', strain=0,mouse=0,
+                                   methods='LombScargleFast',
+                                   plot=False, gen_doc=True)
+    assert len(r2) == 7
+    assert type(r2[3]) == int
+    assert all(r2[6] <= 1) & all(r2[4] >0)
+    ## check search_range_fit option
+    r3 = ultradian.find_cycle(feature='Distance', strain=0,mouse=0,
+                                   methods='LombScargleFast',
+                                   plot=False,
+                                   search_range_fit=np.arange(3,15,0.1))
+    assert len(r3) == 3
+    assert len(r3[0]) == 10
+    assert all(r3[1] >= 0)
+    assert all(r3[2] <= 1)
+    ## check methods LombScargle and disturb_t option
+    r4 = ultradian.find_cycle(feature='Distance', strain=0,mouse=0,
+                                   methods='LombScargle',disturb_t=True,
+                                   plot=False)
+    assert len(r4) == 3
+    assert all(r4[2] <= 1) & all(r4[1] >= 0)
+    assert len(r4[0]) == 10
+    ## check mouse==None option
+    r5 = ultradian.find_cycle(feature='AS', strain=0,
+                                   methods='LombScargleFast',
+                                   plot=False,search_range_find=[3,10])
+    assert len(r5) == 3
+    assert all(r5[0] >= 0) & all(r5[0] <= 48)
+    assert all(r5[1] >= 0) & all(r5[2] <= 1)
+    ## check bin_width option
+    r6 = ultradian.find_cycle(feature='AS', strain=0,bin_width=45,
+                                   methods='LombScargleFast',
+                                   plot=False, gen_doc=True)
+    assert len(r6) == 7
+    assert type(r6[3]) == int
+    assert all(r6[6] <= 1) & all(r6[4] >0)
+
+    
+
+
+
+
+
+
+
+
+    
+    

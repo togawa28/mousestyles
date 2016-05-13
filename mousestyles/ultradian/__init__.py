@@ -14,7 +14,7 @@ plt.style.use('ggplot')
 
 INTERVAL_FEATURES = ["AS", "F", "M_AS", "M_IS", "W"]
 ALL_FEATURES = ["AS", "F", "M_AS", "M_IS", "W", "Distance"]
-
+METHOD = ["LombScargleFast","LombScargle"]
 
 def aggregate_interval(strain, mouse, feature, bin_width):
     """
@@ -126,6 +126,7 @@ def aggregate_interval(strain, mouse, feature, bin_width):
     ts = pd.Series(time_behaviour, index=pd.date_range(
         '01/01/2014', periods=len(time_behaviour),
         freq=str(bin_width) + 'min'))
+    
     return(ts)
 
 
@@ -168,6 +169,7 @@ def aggregate_movement(strain, mouse, bin_width):
     bin_count = int(24 * 60 / bin_width)
     time_movements = np.repeat(0.0, bin_count * len(days))
     bin_length = bin_width * 60
+    
     for j in days:
         M = data.load_movement(strain, mouse, day=int(j))
         distance_df = pd.DataFrame({"start": M["t"].values[0:-1],
@@ -195,9 +197,11 @@ def aggregate_movement(strain, mouse, bin_width):
                 time_movements[
                     start_index + j * bin_count] += dist[i] - \
                     end_time % bin_length / (end_time - start_time) * dist[i]
+                
     ts = pd.Series(time_movements, index=pd.date_range(
         '01/01/2014', periods=len(time_movements),
         freq=str(bin_width) + 'min'))
+    
     return(ts)
 
 
@@ -238,6 +242,7 @@ def aggregate_data(feature, bin_width, nmouse=4, nstrain=3):
             'Bin width (minutes) must be a non-negative integer below 1440')
 
     init = pd.DataFrame(columns=["mouse", "strain", "hour", feature])
+    
     for i in range(nstrain):
         for j in range(nmouse):
             if feature == "Distance":
@@ -253,6 +258,7 @@ def aggregate_data(feature, bin_width, nmouse=4, nstrain=3):
             tmp["mouse"] = j
             tmp["hour"] = tmp.index.hour + tmp.index.minute / 60
             init = init.append(tmp)
+            
     return(init)
 
 
@@ -276,7 +282,7 @@ def seasonal_decomposition(strain, mouse, feature, bin_width, period_length):
         "Distance": Distance traveled
     bin_width: int
         number of minutes, the time interval for data aggregation
-    period_length: int
+    period_length: int or float
         number of hours, usually the significant period
         length indicated by Lomb-scargle model
 
@@ -306,9 +312,9 @@ def seasonal_decomposition(strain, mouse, feature, bin_width, period_length):
     if (not isinstance(bin_width, int)) or bin_width < 0 or bin_width > 1440:
         raise ValueError(
             'Bin width (minutes) must be a non-negative integer below 1440')
-    if (not isinstance(period_length, int)) or period_length < 0:
+    if period_length < 0:
         raise ValueError(
-            'Peoriod length must be a non-negative integer')
+            'Peoriod length must be a non-negative integer or float')
 
     freq = int(period_length * 60 / bin_width)
     if feature == "Distance":
@@ -318,6 +324,7 @@ def seasonal_decomposition(strain, mouse, feature, bin_width, period_length):
         ts = aggregate_interval(strain=strain, mouse=mouse,
                                 feature=feature, bin_width=bin_width)
     res = sm.tsa.seasonal_decompose(ts.values, freq=freq, model="additive")
+    
     return(res)
 
 
@@ -343,7 +350,7 @@ def strain_seasonal(strain, mouse, feature, bin_width, period_length):
         "Distance": Distance traveled
     bin_width: int
         number of minutes, the time interval for data aggregation
-    period_length: int
+    period_length: int or float
         number of hours, usually the significant period
         length indicated by Lomb-scargle model
 
@@ -357,7 +364,6 @@ def strain_seasonal(strain, mouse, feature, bin_width, period_length):
     >>> res = strain_seasonal(strain=0, mouse={0, 1, 2, 3}, feature="W",
                               bin_width=30, period_length = 24)
     """
-
     if (not isinstance(strain, int)) or (strain < 0):
         raise ValueError(
             'Strain must be a non-negative integer')
@@ -371,17 +377,20 @@ def strain_seasonal(strain, mouse, feature, bin_width, period_length):
     if (not isinstance(bin_width, int)) or bin_width < 0 or bin_width > 1440:
         raise ValueError(
             'Bin width (minutes) must be a non-negative integer below 1440')
-    if (not isinstance(period_length, int)) or period_length < 0:
+    if period_length < 0:
         raise ValueError(
-            'Peoriod length must be a non-negative integer')
+            'Peoriod length must be a non-negative integer or float')
+    
     # seasonal decomposition
     seasonal_all = np.array([])
     freq = int(period_length * 60 / bin_width)
+    
     for m in mouse:
         res = seasonal_decomposition(
             strain, m, feature, bin_width, period_length)
         seasonal_all = np.append(seasonal_all, res.seasonal[0:freq])
     seasonal_all = seasonal_all.reshape([len(mouse), -1])
+    
     return(seasonal_all)
 
 
@@ -407,7 +416,7 @@ def plot_strain_seasonal(strains, mouse, feature, bin_width, period_length):
         "Distance": Distance traveled
     bin_width: int
         number of minutes, the time interval for data aggregation
-    period_length: int
+    period_length: float or int
         number of hours, usually the significant period
         length indicated by Lomb-scargle model
 
@@ -436,12 +445,14 @@ def plot_strain_seasonal(strains, mouse, feature, bin_width, period_length):
     if (not isinstance(bin_width, int)) or bin_width < 0 or bin_width > 1440:
         raise ValueError(
             'Bin width (minutes) must be a non-negative integer below 1440')
-    if (not isinstance(period_length, int)) or period_length < 0:
+    if  period_length < 0:
         raise ValueError(
-            'Peoriod length must be a non-negative integer')
+            'Peoriod length must be a non-negative float or int')
+    
     time = np.arange(0, period_length, bin_width / 60)
     fig = plt.figure(figsize=(8, 8))
     flag = 0
+    
     for strain in strains:
         if flag == 0:
             ax = fig.add_subplot(3, 1, strain + 1)
@@ -459,6 +470,7 @@ def plot_strain_seasonal(strains, mouse, feature, bin_width, period_length):
         plt.ylabel('Seasonal Variation')
     plt.suptitle(feature, fontsize=20)
     fig.show()
+    
     return(fig)
 
 
@@ -500,12 +512,14 @@ def mix_strain(data, feature, print_opt=True, nstrain=3, range=(3, 12)):
     if feature not in ALL_FEATURES:
         raise ValueError(
             'Input value must in {"AS", "F", "M_AS", "M_IS", "W", "Distance"}')
+    
     data["cycle"] = 0
     for i in range(nstrain):
         result = find_cycle(feature="W", strain=i, plot=False,
                             search_range_find=range)
         cycle = result[0][0]
         data.loc[data["strain"] == i, "cycle"] = cycle
+        
     b = pd.get_dummies(data["strain"])
     data["strain0"] = b.ix[:, 0]
     data["strain1"] = b.ix[:, 1]
@@ -520,16 +534,19 @@ def mix_strain(data, feature, print_opt=True, nstrain=3, range=(3, 12)):
         data, groups=data["mouse"])
     mdf1 = md1.fit()
     like1 = mdf1.llf
+    
     if print_opt:
         print(mdf1.summary())
     md2 = smf.mixedlm("feature ~ hour + cycle + strain0 + strain1",
                       data, groups=data["mouse"])
     mdf2 = md2.fit()
     like2 = mdf2.llf
+    
     if print_opt:
         print(mdf2.summary())
     fstat = 2 * abs(like1 - like2)
     p_v = chi2.pdf(fstat, df=2)
+    
     return(p_v)
 
 
@@ -576,6 +593,7 @@ def lombscargle_visualize(periods, power, sig, N, cycle,
     ax.set(xlim=(0, 26), ylim=(0, max(cycle_power)),
            xlabel='Period (hours)',
            ylabel='Lomb-Scargle Power')
+    
     for i in sig:
         power_sig = -2 / (N - 1) * np.log(1 -
                                           (1 - np.asarray(i)) ** (1 / 2 / N))
@@ -710,6 +728,13 @@ def find_cycle(feature, strain, mouse=None, bin_width=15,
          9.99999981e-01   9.99999998e-01]
 
     """
+    if feature not in ALL_FEATURES:
+        raise ValueError(
+            'Input value must in {"AS", "F", "M_AS", "M_IS", "W", "Distance"}')
+    if methods not in METHOD:
+        raise ValueError(
+            'Input value must in {"LombScargleFast","LombScargle"}')
+
     # get data
     if mouse is None:
         data_all = aggregate_data(feature=feature, bin_width=bin_width)
@@ -807,7 +832,11 @@ def compare_strain(feature, n_strain=3, bin_width=15, disturb_t=False):
     -------
 
     """
-    fig = plt.figure(figsize=(16, 8))
+    if feature not in ALL_FEATURES:
+        raise ValueError(
+            'Input value must in {"AS", "F", "M_AS", "M_IS", "W", "Distance"}')
+    
+    fig = plt.figure(figsize=(16,8))
 
     for i in range(n_strain):
         ax = fig.add_subplot(1, n_strain, i + 1)
