@@ -138,11 +138,7 @@ With the resulting best simulation mice, we move forward to compare the between-
 
 However, if we let the plot time range from 1 to 100, all of the three types of fake mice stay inactive. It is intuitive under the daily lives of humans. They are likely to stay home and rest right after getting up. Users of this function can change the plot time range and compare the three mice, which helps understand any differences among the three strains over time.  
 
-.. figure:: figure/strain1.PNG
-   :alt: alt tag
-.. figure:: figure/strain2.PNG
-   :alt: alt tag
-.. figure:: figure/strain3.PNG
+.. figure:: figure/dynamics_plot.PNG
    :alt: alt tag
    
 ::
