@@ -110,7 +110,7 @@ ranges from 0 to 1 for our data.
 
 The comparison function plots the simulated behavior dynamics. It plots the the simulated behavior dynamics obtained from the evaluation function for the given strain during the given time period. 
 
-The x-axis is the time range, and the default time range is from 40,000 to 40,100. It is because the behavior dynamics show clear differences across the strains during this time range and because the behavior dynamics have more active actions than the other time period. Users can, of course, define the time range of their interest. But they should be aware of the lower and upper bounds of the time range before doing comparisons. For the first strain (strain_num = 0), the time range should be between 0 and 92,400. For the second one (strain_num = 1), it should be between 0 and 90,000. The time range should be between 0 and 88,800 for the last strain (strain_num = 2). 
+The x-axis is the time range, and the default time range is from 40,000 to 40,100. It is because the behavior dynamics show clear differences across the strains during this time range and because the behavior dynamics have more active actions than the other time period. Users can, of course, define the time range of their interest. But they should be aware of the lower and upper bounds of the time range before doing comparisons. For the first strain (strain_num = 0), the time range should be between 1 and 92,400. For the second one (strain_num = 1), it should be between 1 and 90,000. The time range should be between 1 and 88,800 for the last strain (strain_num = 2). 
 
 Of note is that, based on our understadning and explanations from the research team, 0 indicates the time when a mouse wakes up and starts its day. The unit of time is understood as one second. Thus, the default time range (from 40,000 to 40,100) represents around 11 hours after the start of the day. Based on this defnintion of the time range, users can change it and compare simulated behavior dynamics across the three strains.     
 
@@ -134,10 +134,14 @@ The problem we are insteresting in here is whether the three strains of mice are
 
 As the scipt suggested, the best time interval selected is 600 seconds for the first strain which generates the simultation mouse that has 71% similarity compared to the real mice in that strain, and the simulation behavior is quoted in the numpy array format. Similarly, it shows the 600s optimal time interval with 91% similarity for the second strain and the 1800s optimal time interval with 84% similarity for the third strain. 
 
-With the resulting best simulation mice, we move forward to compare the between-strain behaviors using visulization. As you can see in the three plots, simulated mice show different behavior dynamics across the strains. During the given time period (40,000 to 40,100; around 11 hours after the start of the day), while the simulated mouse of the strain     
+With the resulting best simulation mice, we move forward to compare the between-strain behaviors using visulization. The simulated mice show different behavior dynamics across the strains, during the given time period (36,000 to 36,100; around 10 hours after the start of the day). The fake mouse from the first strain does the other active actions and stays inactive for a short period of time. The fake mice from the other two strains, on the other hand, show different dynamic patterns: do the other active actions, consume food, and stay inactive. The fake mice from the third strain 
+
+However, if we let the plot time range from 1 to 100, all of the three types of fake mice stay inactive. It is intuitive under the daily lives of humans. They are likely to stay home and rest right after getting up. Users of this function can change the plot time range and compare the three mice, which helps understand any differences among the three strains over time.  
+
 
 Discussion
 -----------
+We have written the functions and tried understanding dynamic behaviors of mice. There are three issues for further analysis. First, we can apply more statistical approach to detect the discrepancy of behaviors across the strains. Second, larger sample size of mice and longer time period can help understand behavior dynamics more accurately. Third, the inactive states and the other active states can be specified, which can help detect more detailed dynamics of mice behaviors.
 
 
 References Reading
