@@ -12,20 +12,20 @@ find the time-specific patterns in behavioral
 records, without specifying the length of the cycle in advance (but need to be
 within 1 hour to 1 day). The typical ultradian period includes 8 and 12 hours.
 The circadian rhythm refers to a roughly 24-hour cycle.
-For example, we expect the rats to be inactive in the nighttime.
-And ingestions and movements mostly happened in the daytime.
+For example, we expect the rats to be inactive in the nighttime 
+and ingestions and movements mostly happened in the daytime.
 
 The variables of interests are the summary statistics of mouse activity
 including food (F) and water (W) ingestion, distance traveled (D), Active
 State probability (AS), movement inside the home base (M_IS) and
 movement outside the home base (M_AS). We may also consider spatial variables,
-for example, to spatially discrete the data to cells each with its primary
-functions such as food cell, water cell, and examine
+for example, we can spatially discretize the data to cells containing the primary
+functions, like a food cell or a water cell, and examine the
 ultradian cycle of the spatial probability densities
 of the occupancy time in each cell.
 
 In this report, we assume strain to be the primary influence on the variation of
-ultradian rhythms across individual mouse and examine the
+ultradian rhythms across individual mice and examine the
 difference in rhythms across strains. Currently, we lack
 basic information such as weight, age, and gender. With more data available
 in the future, we may look into the cycle for each mouse and detect the most
@@ -34,7 +34,7 @@ important factors influencing the ultradian rhythms.
 The ultradian and circadian analysis is closely related to other subprojects.
 Ultradian rhythms could be treated as one feature for clustering the 16
 strains. We may also subset the data using the results of the cluster and
-analysis the rhythm similarities and differences across clusters.
+analyze the rhythm similarities and differences across clusters.
 
 Statement of statistical problem
 --------------------------------
@@ -43,10 +43,10 @@ Our statistical problems are three parts: data preparation, choice of
 the frequency or period, and modeling of rhythm patterns.
 
 - Data preparation:
-
-  Mouse behaviour are recorded based on time intervals
-  or time points. For example, the beginning and ending time
-  stamp of one food ingestion, or the coordinates of mouse
+  
+  Mouse behaviors are recorded based on time intervals
+  or time points, like the beginning and ending time
+  stamp of one food ingestion or the coordinates of mouse
   position at a specific time point. We aggregate the
   data based on given time bins and thus convert the raw data to time series.
   Then how to determine the optimal bin intervals for
@@ -209,26 +209,26 @@ Longitudinal data analysis
 
 -  Attempts for mixed models
 
-   The mixed model is frequently used for longitudinal analysis. We should
-   specify the random effects and fixed effects first. Since it is ultradian
-   analysis so we only need to focus on the hour factor and their cycle which
-   we can get from the previous LS test. The random effect is the mouse id.
-   Basically we have 4 different mouses in one strain and we only want to
-   compare the different pattern among these three strains. So if we set the
-   random effect to be mouse id, the effects from different mouses will be
-   cancelled off and we can also test the significance of these effects. The
-   response variable will be one of the six features listed before. After that
-   we can use the mixed model to get the pattern of the movements in different
-   time period.
+   The mixed model is frequently used for longitudinal analysis. We should 
+   specify the random effects and fixed effects first. Since it is ultradian 
+   analysis, we only need to focus on the hour factor and their cycle which 
+   we can get from the previous LS test. The random effect is the mouse id. 
+   We have four different mice in one strain and only want to compare the 
+   different patterns among these three strains. So if we set the random 
+   effect to be mouse id, the effects from different mouses will be 
+   cancelled out and we can also test the significance of these effects. 
+   The response variable will be one of the six features listed before. 
+   After that we can use the mixed model to get the pattern of the 
+   movements in different time period.
 
 - Build the model
 
-  Take `Food` feature as an example, and here strain0 means a dummy variable
-  indicates whether the mouse belongs to strain 0 or not. Also  strain1 means a
-  dummy variable indicates whether the mouse belongs to strain 1 or not. The
-  interaction terms means strain0*hour, strain1*hour. We add this because we
-  want to figure out whether the strain and hour have some interaction effect
-  in Food feature. (`i denote ith strain, j denote the jth mouse`)
+  Take `Food` feature as an example. Here strain0 is a dummy variable 
+  indicating whether the mouse belongs to strain 0 or not and similarly 
+  for strain1. strain0hour and strain1hour indicate the interaction 
+  terms, which we add in order to figure out whether the strain and 
+  hour have some interaction effect in the Food feature.(`i denote ith 
+  strain, j denote the jth mouse`)
 
 .. math::
 
@@ -236,20 +236,20 @@ Longitudinal data analysis
 
 - Perform significance test
 
-  Here we have two purposes, firstly we want to figure out if the effects from
-  different mouses are significant. Secondly we want to figure out if the
-  patterns for different strains are significantly different. To test the first
-  one, we just need to use the t test and get the p value from the result by
-  using the `statsmodels.formula.api` package. For the second one, we can
-  perform the likelihood ratio test on the interaction terms.
+  Here we have two purposes. The first is to figure out if the effects from 
+  different mouses are significant. The second is to figure out if the 
+  patterns for different strains are significantly different. To test the 
+  first one, we just need to use the t test and get the p value from the 
+  result by using the `statsmodels.formula.api` package. package. For the 
+  second one, we can perform the likelihood ratio test on the interaction terms.
 
-Firstly the summary of the full model result is below:(also take the Food
-feature as an example). Here is the result that we fitted the second degree
-function and since the cycles from the previous study are very similar between
-strains so we did not include it here. We can see that the effects of the mouse
-from the same strain is not significant. However the p value here seems to
-indicate that the interation terms is not as significant as the other factors.
-So we consider to conduct likelihood ratio test.
+First, we look at the summary of the full model (also take the Food feature 
+as an example). To get this result, we fit the second degree function. Since 
+the cycles from the previous study are very similar between strains, we did 
+not include it here. We can see that the effects of the mouse from the same 
+strain are not significant. However the p value here seems to indicate that 
+the interaction terms is not as significant as the other factors. So we 
+consider conducting the likelihood ratio test.
 
 
 =============  =======  ===========  ========  ======
