@@ -123,9 +123,14 @@ def compare_strain(feature, n_strain=3, bin_width=15, disturb_t=False):
             'Input value must in {"AS", "F", "M_AS", "M_IS", "W", "Distance"}')
 
     fig = plt.figure(figsize=(16, 8))
+    flag = 0
 
     for i in range(n_strain):
-        ax = fig.add_subplot(1, n_strain, i + 1)
+        if flag == 0 or feature == "M_IS":
+            ax = fig.add_subplot(1, n_strain, i + 1)
+            flag += 1
+        else:
+            ax = fig.add_subplot(1, n_strain, i + 1, sharey=ax)
         periods, power, sig, N, cycle, cycle_power, cycle_pvalue = find_cycle(
             feature=feature, strain=i, bin_width=bin_width,
             methods='LombScargleFast', disturb_t=disturb_t,
@@ -143,7 +148,8 @@ def compare_strain(feature, n_strain=3, bin_width=15, disturb_t=False):
                     str(float(i)), ha='right', va='bottom')
             idx = [i for i, x in enumerate(cycle_pvalue) if x < 0.001]
             for j in idx:
-                if cycle[j] > min(periods) and cycle[j] < max(periods):
+                if cycle[j] > min(
+                        periods) and cycle[j] < min(max(periods), 23):
                     ax.text(x=cycle[j], y=cycle_power[j],
                             s=r'$\bigstar\bigstar\bigstar$',
                             ha='right', va='top')

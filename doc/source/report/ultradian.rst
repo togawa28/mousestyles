@@ -42,7 +42,9 @@ Statement of statistical problem
 Our statistical problems are three parts: data preparation, choice of
 the frequency or period, and modeling of rhythm patterns.
 
-- Data preparation: mouse behaviour are recorded based on time intervals
+- Data preparation:
+
+  Mouse behaviour are recorded based on time intervals
   or time points. For example, the beginning and ending time
   stamp of one food ingestion, or the coordinates of mouse
   position at a specific time point. We aggregate the
@@ -51,50 +53,61 @@ the frequency or period, and modeling of rhythm patterns.
   constructing the time series? Bin interval examples includes
   5 min, 30 min, 1 hour etc.
 
-- Choice of the frequency or period: For ultradian rhythms,
-  significant period length may vary according to the
+- Choice of the frequency or period:
+
+  For ultradian rhythms, significant period length may vary according to the
   variables of interests. The Lomb-Scargle (LS) periodogram spectral
-  analysis technique, a widely used tool in
-  period detection and frequency analysis, is applied.
+  analysis technique, a widely used tool in period detection and frequency
+  analysis, is applied.
 
 - Modeling of rhythm patterns:
 
 Data Requirements
 -----------------
 
-Input: records for each strains (total of 16), each feature of interest (food,
-water, distance, active\_state probability, ...), in a duration of 12 days
-(excluding 4 acclimation days).
+In order to retrieve the data needed for analyzing mouse ultradian behaviors, we
+get input from users, including features (water, food, active state, etc.),
+strain number, mouse number and time bin width. Also, we have another function
+called “aggregate movements” to track mice’s movements intensity based on time
+bins. They enable us to specify which mouse and which kind of features to study.
+After getting bin width from users, we allocate the time used by each feature
+into selected time intervals. For example, if “30 minutes” is selected to be
+bin width and “food” is selected to be feature, then the eating time intervals
+are separated are relocated into 30-minute long bins. For one mouse day, using
+30-minute time bin gives 48 records as result in total.
 
-Processed: using one-minute time bins of movement records to binary score the
-activity into 0 (IS: inactive state) and 1 (AS: active state); using
-thirty-minute bins of food records to calculate the amount of chows consumed by
-mice; using LS periodogram technique to select the appropriate time bins for
-above.
+For eating and drinking behavior, instead of using time consumption as intensity,
+we choose to use food or water consumption amount by acquiring food/water
+consuming data, and assuming the food/water expended during feeding is
+proportional with the time used. For calculating the movements data, we figured
+out the position change by generating Euclidean distances first and then
+distributing them into different time bins.
 
-Output: different patterned visualization for each feature, with the
-appropriate time bins that presents the most significant ultradian pattern.
+The output is a pandas time series, with time index representing time
+intervals and values including feature data (such as food/water consumption,
+active state time as well as movement distance).
+
+- Input:
+  records for each strains (total of 16), each feature of interest (food,
+  water, distance, active\_state probability, ...), in a duration of 12 days
+  (excluding 4 acclimation days).
+
+- Processed:
+  using one-minute time bins of movement records to binary score the
+  activity into 0 (IS: inactive state) and 1 (AS: active state); using
+  thirty-minute bins of food records to calculate the amount of chows consumed by
+  mice; using LS periodogram technique to select the appropriate time bins for
+  above.
+
+- Output:
+  different patterned visualization for each feature, with the
+  appropriate time bins that presents the most significant ultradian pattern.
 
 Exploratory Analysis
 --------------------
 
 Methodology/Approach Description
 --------------------------------
-
-************************
-Lomb-Scargle Period Test
-************************
-
-Description
-^^^^^^^^^^^
-
-Similar to fourier analysis, the Lomb-Scargle periodogram is a common tool in the frequency analysis of unequally spaced data equivalent to least-squares fitting of sine waves. Basically we want to fit sine waves of the form:
-
-.. math::
-
-   y=a\cos\omega t+b\sin\omega t
-
-While standard fitting procedures require the solution of a set of linear equations for each sampled frequency, the Lomb-Scargle method provides an analytic solution and is therefore both convenient to use and efficient. In this case, we want to test whether each mouse/strain has a significant cycle less than 24 hours.
 
 **********************
 Seasonal decomposition
@@ -128,19 +141,75 @@ Basic steps::
 
    Seasonal variation of AS probability (circadian).
 
+************************
+Lomb-Scargle Period Test
+************************
+
+
+Similar to fourier analysis, the Lomb-Scargle periodogram is a common tool in
+the frequency analysis of unequally spaced data equivalent to least-squares
+fitting of sine waves. Basically we want to fit sine waves of the form:
+
+.. math::
+
+   y=a\cos\omega t+b\sin\omega t
+
+While standard fitting procedures require the solution of a set of linear
+equations for each sampled frequency, the Lomb-Scargle method provides an
+analytic solution and is therefore both convenient to use and efficient. In this
+case, we want to test whether each mouse/strain has a significant cycle less
+than 24 hours.
+
+For the mouse behavior data we use Lomb-Scargel method on different strain
+and mouse's data to find the best possible periods with highest p-values.
+The function can be used on specific strains and specific mouses, as well as
+just certain strains without specifying mouse number. We use the $O(N\log N)$
+fast implementation of Lomb-Scargle from the gatspy package, but the LS power
+around $0$ period is a little bit noisy. The other algorithm can give smooth results
+around $0$ point but suffer $O(N^2)$ time comlexity. Also we need to add small uniformly
+distributed noise on the regularly sampled time sequence to avoid singular matrix
+problems.
+
+The function can give the LS power as well as the P values for the corresponding periods,
+with respect to the time bin chosen to combine the data. There will also be stars and
+horizontal lines indicating the p-values of significance. Three stars
+will be p-values in [0,0.001], two stars will be p-values in
+[0.001,0.01], one star will be p-values in [0.01,0.05]. The horizontal
+line is the LS power that has p-value of 0.05.
+
+
+.. plot:: report/plots/plot_LSSeasonal.py
+
+
+
+
 **************************
 Longitudinal data analysis
 **************************
 
-Description
-^^^^^^^^^^^
+
 -  Attempts for mixed models
 
-   The mixed model is frequently used for longitudinal analysis. We should specify the random effects and fixed effects first. Since it is ultradian analysis so we only need to focus on the hour factor and their cycle which we can get from the previous LS test. The random effect is the mouse id. Basically we have 4 different mouses in one strain and we only want to compare the different pattern among these three strains. So if we set the random effect to be mouse id, the effects from different mouses will be cancelled off and we can also test the significance of these effects. The response variable will be one of the six features listed before. After that we can use the mixed model to get the pattern of the movements in different time period.
+   The mixed model is frequently used for longitudinal analysis. We should
+   specify the random effects and fixed effects first. Since it is ultradian
+   analysis so we only need to focus on the hour factor and their cycle which
+   we can get from the previous LS test. The random effect is the mouse id.
+   Basically we have 4 different mouses in one strain and we only want to
+   compare the different pattern among these three strains. So if we set the
+   random effect to be mouse id, the effects from different mouses will be
+   cancelled off and we can also test the significance of these effects. The
+   response variable will be one of the six features listed before. After that
+   we can use the mixed model to get the pattern of the movements in different
+   time period.
 
 - Build the model
 
-  Take `Food` feature as an example, and here strain0 means a dummy variable indicates whether the mouse belongs to strain 0 or not. Also  strain1 means a dummy variable indicates whether the mouse belongs to strain 1 or not. The interaction terms means strain0*hour, strain1*hour. We add this because we want to figure out whether the strain and hour have some interaction effect in Food feature. (`i denote ith strain, j denote the jth mouse`)
+  Take `Food` feature as an example, and here strain0 means a dummy variable
+  indicates whether the mouse belongs to strain 0 or not. Also  strain1 means a
+  dummy variable indicates whether the mouse belongs to strain 1 or not. The
+  interaction terms means strain0*hour, strain1*hour. We add this because we
+  want to figure out whether the strain and hour have some interaction effect
+  in Food feature. (`i denote ith strain, j denote the jth mouse`)
 
 .. math::
 
@@ -148,9 +217,20 @@ Description
 
 - Perform significance test
 
-  Here we have two purposes, firstly we want to figure out if the effects from different mouses are significant. Secondly we want to figure out if the patterns for different strains are significantly different. To test the first one, we just need to use the t test and get the p value from the result by using the `statsmodels.formula.api` package. For the second one, we can perform the likelihood ratio test on the interaction terms.
+  Here we have two purposes, firstly we want to figure out if the effects from
+  different mouses are significant. Secondly we want to figure out if the
+  patterns for different strains are significantly different. To test the first
+  one, we just need to use the t test and get the p value from the result by
+  using the `statsmodels.formula.api` package. For the second one, we can
+  perform the likelihood ratio test on the interaction terms.
 
-Firstly the summary of the full model result is below:(also take the Food feature as an example). Here is the result that we fitted the second degree fucntion and since the cycles from the previous study are very similar between strains so we did not include it here. We can see that the effects of the mouse from the same strain is not significant. However the p value here seems to indicate that the interation terms is not as significant as the other factors. So we consider to conduct likelihood ratio test.
+Firstly the summary of the full model result is below:(also take the Food
+feature as an example). Here is the result that we fitted the second degree
+function and since the cycles from the previous study are very similar between
+strains so we did not include it here. We can see that the effects of the mouse
+from the same strain is not significant. However the p value here seems to
+indicate that the interation terms is not as significant as the other factors.
+So we consider to conduct likelihood ratio test.
 
 
 =============  =======  ===========  ========  ======
@@ -163,12 +243,13 @@ strain0        -0.027    0.010        -2.624    0.009
 strain1        0.045     0.010        4.332     0.000
 strain0:hour   -0.002    0.002        -0.778    0.437
 strain1:hour   -0.004    0.000        -1.76     0.078
-strain0:hour2  0.000     0.000         2.019    0.043 
-strain1:hour2  0.000     0.000         0.540    0.589 
+strain0:hour2  0.000     0.000         2.019    0.043
+strain1:hour2  0.000     0.000         0.540    0.589
 RE             0.000     0.000
 =============  =======  ===========  ========  ======
 
-Secondly we did likelihood ratio test between the two models: full model and reduced interaction terms model. We found that the p values for 6 features below:
+Secondly we did likelihood ratio test between the two models: full model and
+reduced interaction terms model. We found that the p values for 6 features below:
 
 =======  ========  ========  =======  ========  ========
 Water    Food      AS        M_AS     M_IS      Distance
@@ -176,7 +257,8 @@ Water    Food      AS        M_AS     M_IS      Distance
 3.08e-9  2.50e-9   9.39e-12  5.11e-5  0.002     1.53e-8
 =======  ========  ========  =======  ========  ========
 
-We can see that the Water, Food, AS, M_AS, Distance have significantly different patterns for different strains.
+We can see that the Water, Food, AS, M_AS, Distance have significantly different
+patterns for different strains.
 
 Testing Framework Outline
 -------------------------
@@ -192,15 +274,6 @@ coefficients for the model.
 
 Step 3: Compare the result with our hypothesis.
 
-Reference
----------
-
--  Lloyd, David, and Ernest L. Rossi, eds. Ultradian rhythms in life
-   processes: An inquiry into fundamental principles of chronobiology
-   and psychobiology. Springer Science & Business Media, 2012.
--  Stephenson, Richard, et al. "Sleep-Wake Behavior in the Rat Ultradian
-   Rhythms in a Light-Dark Cycle and Continuous Bright Light." Journal
-   of biological rhythms 27.6 (2012): 490-501.
 
 Appendix
 --------
@@ -211,4 +284,8 @@ Appendix
 
 .. plot:: report/plots/plot_LS.py
 
-   LS plot.
+   Lomb scargle plot for different features. Different strains have different
+   ultradian periods, differing also in p-values. Here $O(N\log N)$ algorithms
+   suffer an instability around 0 points while $O(N^2)$ algorithms can be more
+   smooth. We here compare the significant ultradian periods between strains
+   and ignore the highest LS power appearing near 24 hours.
