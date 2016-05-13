@@ -1,7 +1,9 @@
-from __future__ import print_function, absolute_import, divison
+from __future__ import print_function, absolute_import
+
 import pytest
 import pandas as pd
 import numpy as np
+
 
 from mousestyles.path_diversity.path_features_advanced import compute_advanced
 
@@ -55,6 +57,13 @@ def test_compute_advanced():
     assert adv_feats['abs_distance'] == 4
     assert len(adv_feats['center_angles']) == len(path) - 1
     assert len(adv_feats['radius']) == len(path)
+    assert adv_feats['radius'] == [np.sqrt(3 ** 2 + 4 ** 2) / 2] * 4
+
+    # in area covered some error was produced
+    # so it's not exactly but approximately equal to
+    # the theoretical value
+    expected = 3 * 4 - 3 / 2 * 4 / 2
+    assert np.abs(adv_feats['area_cov'] - expected) < 0.0000001
 
     # in center_angles some errors were produced
     # so it's not exactly but approximately equal to
@@ -69,10 +78,3 @@ def test_compute_advanced():
                   expected1) < 0.0000001
     assert np.abs(np.cos(adv_feats['center_angles'][1]) -
                   expected2) < 0.0000001
-    assert adv_feats['radius'] == [np.sqrt(3 ** 2 + 4 ** 2) / 2] * 4
-
-    # in area covered some error was produced
-    # so it's not exactly but approximately equal to
-    # the theoretical value
-    expected = 3 * 4 - 3 / 2 * 4 / 2
-    assert np.abs(adv_feats['area_cov'] - expected) < 0.0000001
