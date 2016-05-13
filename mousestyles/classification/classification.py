@@ -143,6 +143,54 @@ def fit_gradient_boosting(train_y, train_x, test_x,
     return(prediction)
 
 
+def fit_svm(train_y, train_x, test_x, c=None, gamma=None):
+    """
+        Returns a DataFrame of svm results, containing
+        prediction strain labels and printing the best model. The
+        model's parameters will be tuned by cross validation, and
+        accepts user-defined parameters.
+        Parameters
+        ----------
+        train_y: Series
+        labels of classification results, which are predicted strains.
+        train_x: DataFrame
+        features used to predict strains in training set
+        test_x: DataFrame
+        features used to predict strains in testing set
+        c: float, optional
+        tuning parameter of svm, which is penalty parameter of the error term
+        gamma: float, optional
+        tuning parameter of svm, which is kernel coefficient
+        Returns
+        ----------
+        DataFrame of svm results based on testing strains.
+        Column: prediction strain labels
+        """
+    # creat svm model
+    scaler = StandardScaler()
+    train_x = scaler.fit_transform(train_x)
+    Cs = [c]
+    Gammas = [gamma]
+    if c is None:
+        Cs = np.logspace(-6, -1, 10)
+    if gamma is None:
+        Gammas = np.linspace(0.0001, 0.15, 10)
+    svc = svm.SVC()
+    clf = GridSearchCV(estimator=svc, param_grid=dict(C=Cs, gamma=Gammas),
+                       n_jobs=-1)
+    clf.fit(train_x, train_y)
+    clf = clf.best_estimator_
+    # fit the best model
+    clf.fit(train_x, train_y)
+    # predict the testing data and convert to data frame
+    prediction = clf.predict(scaler.fit_transform((test_x)))
+    prediction = pd.DataFrame(prediction)
+    prediction.columns = ['predict_strain']
+    print('The best SVM Model is:')
+    print(clf)
+    return(prediction)
+
+
 def get_summary(predict_labels, true_labels):
     """
     Returns a DataFrame of classification result summary,
