@@ -11,6 +11,8 @@ The objective of Dynamics Analysis is to analyze and characterize the state tran
 Data Source
 -----------
 
+We are using data from intervals directory for estimating the dynamics pattern.
+
 
 Methodology
 -----------
@@ -25,10 +27,21 @@ Methodology
 
 2. Data Preprocessing: 
 
-convert the data we had into strings of the events chosen. This could be done by checking out the states of a typical mouse day at a lot of equally spaced time points and store the states and the time points in the same order. In order to perform this task, we need basically do the following two steps:
+We first transform data from intervals directory to a time matrix. The rows of the matrix indicate a specific strain, specific mouse and specific day. The columns of the matrix represent the 24 hours in a day. The content of the matrix indicates the state of a specific strain, specific mouse and specific day in the column time. Here we define 0 as IS, 1 as F, 2 as W, and 3 as Others. Note that there are two important preprocessing methods we do to create such matrix:
 
-   -  Data cleaning: Clean the raw intervals given by the measurements in the experiment into interval data that makes more sense and consistent. Also need to check if any of our states overlapped.
-   -  Data reformating: Convert the cleaned interval data into strings of events or matrices containing both information from timestamps and the events at those timepoints.
+   -  Combining small intervals: Some of the intervals, especially drinking behavior intervals are significantly small, say 0.001 from the beginning to the end for an interval, which does not make sense. So we combined these intervals if the next interval start time minus the last interval stop time is smaller than a threshold. We are using 4 seconds as the default threshold. 
+   -  Choosing the gap between columns: After combining small intervals, all the current behavior intervals are at least 4 seconds long. Now we want to set a gap between columns so that we can divide 24 hours equally and map the small columns time into the behavior intervals to determine the state at that column time. We are using 1 second as the default gap.
+
+To create this matrix, one can do
+```
+from mousestyles.dynamics import create_time_matrix
+data_df = create_time_matrix()
+```
+Or, simply import the matrix from data directory::
+```
+from mousestyles.data import load_time_matrix_dynamics
+data_df = load_time_matrix_dynamics()
+```
 
 3. Estimating Transition Probability: 
 
