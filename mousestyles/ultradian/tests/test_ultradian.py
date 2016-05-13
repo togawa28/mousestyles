@@ -87,6 +87,6 @@ def test_strain_seasonal():
 
 def test_mix_strain():
     data = ultradian.aggregate_data("AS", 30)
-    result = ultradian.mix_strain(data, "AS")
+    result = ultradian.mix_strain(data, "AS", print_opt = False)
     assert result > 0
     assert result < 1

@@ -460,7 +460,7 @@ def plot_strain_seasonal(strains, mouse, feature, bin_width, period_length):
     return(fig)
 
 
-def mix_strain(data, feature):
+def mix_strain(data, feature, print_opt = True):
     """
     Fit the linear mixed model onto our aggregate data. The fixed effects
     are the hour, strain, interactions between hour and strain; The random
@@ -512,18 +512,20 @@ def mix_strain(data, feature):
     names = data.columns.tolist()
     names[names.index(feature)] = 'feature'
     data.columns = names
-    print(data)
     md1 = smf.mixedlm(
-        "feature ~ hour + strain0 + strain1 + strain0*hour + strain1*hour",
+        "feature ~ hour + strain0 + strain1 + cycle + \
+                      strain0*hour + strain1*hour",
         data, groups=data["mouse"])
     mdf1 = md1.fit()
     like1 = mdf1.llf
-    print(mdf1.summary())
-    md2 = smf.mixedlm("feature ~ hour + strain0 +strain1",
+    if print_opt:
+        print(mdf1.summary())
+    md2 = smf.mixedlm("feature ~ hour + cycle + strain0 + strain1",
                       data, groups=data["mouse"])
     mdf2 = md2.fit()
     like2 = mdf2.llf
-    print(mdf1.summary())
+    if print_opt:
+        print(mdf2.summary())
     fstat = 2*abs(like1 - like2)
     p_v = chi2.pdf(fstat, df=2)
     return(p_v)
