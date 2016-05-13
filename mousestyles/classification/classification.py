@@ -86,8 +86,8 @@ def fit_random_forest(train_y, train_x, test_x,
     prediction = clf.predict(scaler.fit_transform((test_x)))
     prediction = pd.DataFrame(prediction)
     prediction.columns = ['predict_strain']
-    print ('The best RandomForest Model is:')
-    print (clf)
+    print('The best RandomForest Model is:')
+    print(clf)
     return(prediction)
 
 
@@ -138,8 +138,8 @@ def fit_gradient_boosting(train_y, train_x, test_x,
     prediction = clf.predict(scaler.fit_transform((test_x)))
     prediction = pd.DataFrame(prediction)
     prediction.columns = ['predict_strain']
-    print ('The best GradientBoosting Model is:')
-    print (clf)
+    print('The best GradientBoosting Model is:')
+    print(clf)
     return(prediction)
 
 
@@ -164,8 +164,8 @@ def get_summary(predict_labels, true_labels):
        Column 2: F-1 measure
 
     """
-    test_y.index = range(test_y.shape[0])
-    result = pd.concat([predict_labels, pd.DataFrame(test_y)], axis=1)
+    true_labels.index = range(true_labels.shape[0])
+    result = pd.concat([predict_labels, pd.DataFrame(true_labels)], axis=1)
     result.columns = ['predict_strain', 'true_strain']
     prediction_accurate_count_matrix = pd.crosstab(index=result.iloc[:, 0],
                                                    columns=result.iloc[:, 1],
