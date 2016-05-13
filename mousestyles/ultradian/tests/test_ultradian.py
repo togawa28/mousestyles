@@ -78,7 +78,7 @@ def test_seasonal_decomposition(strain=0, mouse=1, feature='AS',
 def test_strain_seasonal():
     res = ultradian.strain_seasonal(strain=0, mouse={0, 1, 2}, feature="W",
                                     bin_width=30, period_length=24)
-    assert len(res) == 2
+    assert len(res) == 3
 
 
 # check the outcome range of mix_strain, the result is a p-value, so it's
