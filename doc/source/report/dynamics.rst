@@ -105,6 +105,18 @@ example, if our observed data is “IS IS DRK DRK EAT OTHERS”, and our predict
 OTHERS”, the score would be (1+1+0+50+10+1)/6 = 10.5. But because our data contains a lot more IS and OTHERS, the score
 ranges from 0 to 1 for our data.
 
+
+6. Comparison:
+
+The comparison function plots the simulated behavior dynamics. It plots the the simulated behavior dynamics obtained from the evaluation function for the given strain during the given time period. 
+
+The x-axis is the time range, and the default time range is from 40,000 to 40,100. It is because the behavior dynamics show clear differences across the strains during this time range and because the behavior dynamics have more active actions than the other time period. Users can, of course, define the time range of their interest. But they should be aware of the lower and upper bounds of the time range before doing comparisons. For the first strain (strain_num = 0), the time range should be between 0 and 92,400. For the second one (strain_num = 1), it should be between 0 and 90,000. The time range should be between 0 and 88,800 for the last strain (strain_num = 2). 
+
+Of note is that, based on our understadning and explanations from the research team, 0 indicates the time when a mouse wakes up and starts its day. The unit of time is understood as one second. Thus, the default time range (from 40,000 to 40,100) represents around 11 hours after the start of the day. Based on this defnintion of the time range, users can change it and compare simulated behavior dynamics across the three strains.     
+
+We do not define the y-axis for this comparison function, because our interest is to visually understand the dynamics of the four states during the given time period. For better understanding of the behavior dynamics, we assign different colors for different states. In the plot, blue represents IS, skyblue represents eating, yellow represents drinking, and red represents other activities in AS.
+
+
 Result
 ------
 
@@ -122,7 +134,7 @@ The problem we are insteresting in here is whether the three strains of mice are
 
 As the scipt suggested, the best time interval selected is 600 seconds for the first strain which generates the simultation mouse that has 71% similarity compared to the real mice in that strain, and the simulation behavior is quoted in the numpy array format. Similarly, it shows the 600s optimal time interval with 91% similarity for the second strain and the 1800s optimal time interval with 84% similarity for the third strain. 
 
-With the resulting best simulation mice, we move forward to compare the between-strain behaviors using visulization.
+With the resulting best simulation mice, we move forward to compare the between-strain behaviors using visulization. As you can see in the three plots, simulated mice show different behavior dynamics across the strains. During the given time period (40,000 to 40,100; around 11 hours after the start of the day), while the simulated mouse of the strain     
 
 Discussion
 -----------
