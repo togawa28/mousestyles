@@ -39,6 +39,7 @@ difference by assessing the classification performance of models based
 on behavioral features.
 
 **Classification**
+
 Based on the assumption, the problem is inherently a multiclass
 classification problem based on behavioral features either directly
 obtained during the experiment or artificially constructed. Here we have
@@ -52,6 +53,7 @@ those strains of mice are genetically similar or the behavior features
 we selected are actually homogeneous through different strains of mice.
 
 **Clustering**
+
 To extend the scope of the analysis, the clustering analysis may also be used 
 to analyze mouse behaviors. Though these mice had inherent strain labels,
 the clusters may not follow the strain labels because genetical differences are not
@@ -60,7 +62,6 @@ of clusters is the key assessing the performance of a clustering model. Notice t
 the best number of clusters are neither necessarily equaling to 16 nor the same 
 across different clustering methods. Criterion like silhouette scores would be
 evaluated to choose the best number of clusters. 
-
 
 
 Exploratory Analysis & Classification Models
@@ -86,6 +87,7 @@ analysis will be an important step for hypothesis testing and feature
 selection. The process will also help us to find outliers and missing
 values in each behavioral variable, and we will decide how to handle
 those values after encountering that.
+
 
 Data Requirements Description
 -----------------------------
@@ -124,22 +126,6 @@ standard deviation for each of the 9 features, resulting in possibly 18 final fe
 Methodology/ Approach Description
 ---------------------------------
 
-1.Supervised Classification: Supervised classification algorithms
-(logistic regression, random forest, KNN) will be used to detect the
-relationship between strain of mice and behavioral features. If we gain
-good model performance, we can conclude different mouse behaviors
-actually indicate different genetic differences. K-fold cross-validation
-might be used to tune model parameters, and a proportion of data would
-be used as test data to evaluate the model performance. Notice that we
-may manually manipulate so that the both the training data and the test
-data cover all strains of mice.
-
-The step after model fitting is to assess the important behavioral
-features in the classification and clustering models. A smaller set of
-feature space containing only top features might be used to gain better
-interpretations of the model.
-
-
 **supervised learning: classification**
 
 For this project, we mainly focus on three classification algorithms, which are random forests, gradient boosting and support vector machines (SVM). 
@@ -151,7 +137,6 @@ Random forests is a notion of the general technique of random decision forests t
 Gradient boosting is another machine learning algorithm for classification. It produces a prediction model in the form of an ensemble of weak prediction models, typically decision trees. Gradient boosting fits an additive model in a forward stage-wise manner. In each stage, it introduces a weak learner to compensate the shortcomings of existing weak learners, which allows optimization of an arbitrary differentiable loss function. 
 
 Support vector Machines(SVM) are set of related supervised learning methods for classification and regression, which minimizes the empirical classification error and maximize the geometric margin. SVM map the input vector into a higher dimensional space where the maximal separating hyper plane is constructed. Maximizing the distance between different parallel hyper planes, SVM come up with the classification of the input vector. 
-
 
 ***Tuning Parameters***
 
@@ -169,14 +154,11 @@ For SVM, we tune C and gamma.
 C represents the penalty parameter of the error term. It trades off misclassification of training examples against simplicity of the decision surface. A low C makes the decision surface smooth, while a high C aims at classifying all training examples correctly.
 Gamma is the Kernel coefficient for ‘rbf’, ‘poly’ and ‘sigmoid'. It defines how far the influence of a single training example reaches, with low values meaning ‘far’ and high values meaning ‘close’. 
 
-
 ***Model Assessment***
 
 After tuning our parameters, we apply our models to testing set and compare the prediction labels with the true labels. There are mainly two ways to measure the quality of the prediction process, one is a confusion matrix and the other is percentage indicators including precision, recall, and F-1 measure. A confusion matrix is a specific table layout that allows visualization of the performance of an algorithm. Each row of the matrix represents the instances in a predicted class while each column represents the instances in an actual class. The name stems from the fact that it makes it easy to see if the system is confusing two classes (i.e. commonly mislabeling one as another). 
 [add precision, recall, F1 formula]
 Thus, precision for each label is the corresponding diagonal value divided by row total in the confusion matrix and recall is the diagonal value divided by column total. 
-
-
 
 **Unsupervised learning**
 
@@ -196,32 +178,33 @@ clusters.
 ***Hierarchical Clustering***
 
 Given the above, the potentially uneven cluster sizes lead us to consider an additional clustering algorithm, *hierarchical clustering*, the functionality of which is included in the subpackage. Generally, hierarchical clustering seeks to build a hierarchy of clusters and falls into two types: agglomerative and divisive. The agglomerative approach has a “richer get richer” behavior and hence is adopted, which works in a bottom-up manner such that each observation starts in its own cluster, and pairs of clusters are merged as one moves up the hierarchy. The merges are determined in a greedy manner in the sense that the merge resulting in the greatest reduction in the total distances is chosen at each step. The results of hierarchical clustering are usually presented in a dendrogram, and thereby one may choose the cutoff to decide the optimal number of clusters.
+
 Below is a demo to fit the clustering algorithm. The loaded data is firstly standardized, and then the optimal distance measure and the optimal linkage method are determined. We have restricted the distance measure to be l1-norm (Manhattan distance), l2-norm (Euclidean distance) and infinity-norm (maximum distance), and the linkage method to be ward linkage, maximum linkage and average linkage. The maximum linkage assigns the maximum distance between any pair of points from two clusters to be the distance between the clusters, while the average linkage assigns the average. The ward linkage uses the Ward variance minimization criterion. Then, the optimal linkage method and distance measure are input to the model fitting function, and the resulting clusters and corresponding silhouette scores are recorded for cluster number determination. A plotting function from the subpackage is also called to output a plot. The output plot is included in the result section of the report.
 
-```python
-from mousestyles import data
-from mousestyles.classification import clustering
-from mousestyles.visualization import plot_clustering
+.. code-block:: python
+    from mousestyles import data
+    from mousestyles.classification import clustering
+    from mousestyles.visualization import plot_clustering
 
-# load data
-mouse_data = data.load_all_features()
+    # load data
+    mouse_data = data.load_all_features()
 
-# rescaled mouse data
-mouse_dayavgstd_rsl = clustering.prep_data(
-mouse_data, melted=False, std=True, rescale=True)
+    # rescaled mouse data
+    mouse_dayavgstd_rsl = clustering.prep_data(
+    mouse_data, melted=False, std=True, rescale=True)
 
-# get optimal parameters
-method, dist = clustering.get_optimal_hc_params(mouse_day=mouse_dayavgstd_rsl)
+    # get optimal parameters
+    method, dist = clustering.get_optimal_hc_params(mouse_day=mouse_dayavgstd_rsl)
 
-# fit hc
-sils_hc, labels_hc = clustering.fit_hc(
-    mouse_day_X=mouse_dayavgstd_rsl[:,2:],
-    method=method, dist=dist, num_clusters=range(2,17))
+    # fit hc
+    sils_hc, labels_hc = clustering.fit_hc(
+        mouse_day_X=mouse_dayavgstd_rsl[:,2:],
+        method=method, dist=dist, num_clusters=range(2,17))
 
-# plot 
-plot_clustering.plot_dendrogram(
-    mouse_day=mouse_dayavgstd_rsl, method=method, dist=dist)
-```
+    # plot 
+    plot_clustering.plot_dendrogram(
+        mouse_day=mouse_dayavgstd_rsl, method=method, dist=dist)
+
 
 Testing Framework outline
 -------------------------
@@ -235,67 +218,94 @@ to every observation. Also, since we compute silhouette score for each
 cluster and silhouette score is defined to be between -1 and 1, we also 
 checked that whether our silhouette score is appropriate.
 
+
 Result
 -------------
+
 **Classification**
 
 For three models, after tuning the parameters and output the prediction result, we create the side-by-side barplot for the different measurement of accuracy, which are precision, recall and F1. 
 **Random Forest**
-Random Forest shows a very promising result. For each strain, prediction, recall and F-1 measure are very closed to each other. Except for predicting strain 15, all the other prediction has F-1 measure exceeding 0.8. 
+Random Forest shows a very promising result. For each strain, prediction, recall and F-1 measure are very closed to each other. Except for predicting strain 15, all the other prediction has F-1 measure exceeding 0.8.
+
 .. plot:: report/plots/plot_rf_result.py
 
    Classification Performance of Random Forest
+
 We also select the most important features, including ASProbability_2, Distance_14, ASProbability_16, Distance_2, Food_4, MoveASIntensity_2, ASProbability_4, Distance_4, Distance_16.
 
 **Gradient Boosting**
-Gradient Boosting shows a decent performance on the prediction. There is no huge difference in precision and recall for predicting each strain, but bigger than Random Forest. It is shown that strain 3, 7 and 10 shows obvious higher prediction than recall.  Almost all the accuracy measurement is above 0.8. 
+
+Gradient Boosting shows a decent performance on the prediction. There is no huge difference in precision and recall for predicting each strain, but bigger than Random Forest. It is shown that strain 3, 7 and 10 shows obvious higher prediction than recall.  Almost all the accuracy measurement is above 0.8.
+
 .. plot:: report/plots/plot_gb_result.py
 
    Classification Performance of Gradient Boosting
 
 **SVM**
-SVM model shows a very inconsistent performance on the prediction. For example, the precision for predicting strain 3,4,11,12,15 is 1 while the precision for predicting strain 6,9 is below 0.5. Although precision for predicting strain 3,11,12,15 is very high, the recall for predicting these strains are much lower, resulting in a low F-1 measurement. The high precision and low recall indicates that we can trust the classification judgements, however the low rate of recall indicates that SVM is very conservative. This might be good if we are worried about incorrectly classifying the strains. 
+
+SVM model shows a very inconsistent performance on the prediction. For example, the precision for predicting strain 3,4,11,12,15 is 1 while the precision for predicting strain 6,9 is below 0.5. Although precision for predicting strain 3,11,12,15 is very high, the recall for predicting these strains are much lower, resulting in a low F-1 measurement. The high precision and low recall indicates that we can trust the classification judgements, however the low rate of recall indicates that SVM is very conservative. This might be good if we are worried about incorrectly classifying the strains.
+
 .. plot:: report/plots/plot_svm_result.py
 
    Classification Performance of SVM
 
+**Comparison**
+
+By plotting side-by-side barplot of F-1 measurement among the three models, we can clearly see that Random Forest model provides the best result and SVM is the worst.  Performance of Random Forest and Gradient Boosting are similar, but the SVM is obviously weak.  So we recommend predicting strains by implementing the Random Forest model.
+
+.. plot:: report/plots/plot_f1_result.py
+
+   Comparison of F1 measures of Different Classification Models
+
 **Clustering**
+
 ***K-means***
+
 The silhouette scores corresponding to the number of clusters ranging from 2 to 16 
 are:[0.835, 0.775, 0.423, 0.415, 0.432, 0.421, 0.404, 0.383, 0.421, 0.327, 0.388, 0.347, 0.388, 0.371,0.362]
  . We plot 6 clusters here to show, and found that Czech and CAST mice behaved 
- quite differently from each other. 
+ quite differently from each other.
+  
 .. plot:: report/plots/plot_km_result.py
-   Distribution of strains in clusters by K-means algorithm
 
+   Distribution of strains in clusters by K-means algorithm
 
 ***Hierarchical clustering***
 
-The optimal distance measure is l1-norm and the optimal linkage method is average linkage method. The silhouette scores corresponding to the number of clusters ranging from 2 to 16 are:  0.8525, 0.7548, 0.7503, 0.6695, 0.6796, 0.4536, 0.4557, 0.4574, 0.3997, 0.4057, 0.3893, 0.3959, 0.4075, 0.4088, 0.4179. It seems 6 clusters is a good choice from the silhouette scores. 
-However, the clustering dendrogram tells a different story. Below shows the last 10 merges of the hierarchical clustering algorithm. The black dots indicate the earlier merges. The leaf texts are either the mouse id (ranges from 0 to 169) or the number of mice in that leaf. Clearly, we see that almost all the mice are clustered in 2 clusters, very far from the rest individuals. Thus, the hierarchical clustering fails to correctly cluster the mice in the case. 
+The optimal distance measure is l1-norm and the optimal linkage method is average linkage method. The silhouette scores corresponding to the number of clusters ranging from 2 to 16 are:  0.8525, 0.7548, 0.7503, 0.6695, 0.6796, 0.4536, 0.4557, 0.4574, 0.3997, 0.4057, 0.3893, 0.3959, 0.4075, 0.4088, 0.4179. It seems 6 clusters is a good choice from the silhouette scores.
+
+However, the clustering dendrogram tells a different story. Below shows the last 10 merges of the hierarchical clustering algorithm. The black dots indicate the earlier merges. The leaf texts are either the mouse id (ranges from 0 to 169) or the number of mice in that leaf. Clearly, we see that almost all the mice are clustered in 2 clusters, very far from the rest individuals. Thus, the hierarchical clustering fails to correctly cluster the mice in the case.
+ 
 .. plot:: report/plots/plot_hc_dendrogram.py
 
    Dendrogram of the hierarchical clustering
+   
 The failure of the the algorithm might be due to the different importance levels of the features in determining which cluster a mouse belongs to. One improvement could be that using only the important features determined in the classification algorithms to cluster the mice, but given the unsupervised learning nature of the algorithm, not using the results from the classification is fair for clustering tasks.
+
 The distribution of strains in each cluster in the case of using 6 clusters are shown below. Obviously, the mice almost fall into the same cluster.
+
 .. plot:: report/plots/plot_hc_result.py
 
    Distribution of strains in clusters by agglomerative hierarchical clustering
 
+
 Future work
 ----------------
+
 The future research should focus more on feature engineering, including the questions 
 that whether more features could be added to the model. Moreover, an economized subset 
 of features should be evaluated to see whether we can reduce the model complexity
 without losing too much model accuracy. 
+
 To understand more about the nature of the strain difference, it would be better to 
 have a sense of relationships between different strains of mice. For instance, we have 
 explored that these 16 strains of mice belong to 7 different groups, which implied that 
 some strains were genetically similar. Considering the time limit, we have put it to 
 the future work. 
 
+
 References
 ----------
 1. [An Efficient SNP System for Mouse Genome Scanning and Elucidating Strain Relationships](http://genome.cshlp.org/content/14/9/1806/F3.expansion), Genome Research
-
 
