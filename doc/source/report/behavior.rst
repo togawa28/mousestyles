@@ -101,5 +101,5 @@ Illustrative Examples
 We illustrate the use of the ``behavior`` utilties with a
 motivating research question:
 
-*How do do key drinking metrics compare across 2 different mice
+*How do do the key drinking metrics compare across 2 different mice
 across 2 separate days?*
