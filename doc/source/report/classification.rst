@@ -3,7 +3,7 @@
 Classification and Clustering of Mice
 =====================================
 
-Statement of overall problem
+Statement of Overall Problem
 ----------------------------
 
 The mouse style research investigates mouse behaviors of different
@@ -20,7 +20,7 @@ trying to use unsupervised clustering algorithms to cluster mice, and
 ideally different strains should have different clustering distributions.
 
 
-Statement of statistical problems
+Statement of Statistical Problems
 ---------------------------------
 
 The researchers design the experiment as follow: they have 16 different
@@ -102,7 +102,7 @@ moving while in active state.
 For classification and clustering subsections, we require different processed 
 data.
 
-For classification project, we have two different dataset -- mouseday dataset 
+For **classification** project, we have two different dataset -- mouseday dataset 
 or individual mouse dataset. For the mouseday dataset, we take each 
 combination of mouse and day as a unique observation, resulting in  1921 
 observations. For the individual mouse dataset, we take the average measures 
@@ -112,7 +112,7 @@ Therefore, we have a maximum of 9 types of features * 11 time bins = 99 features
 Users can also use a subset of these 99 features to train models. The mouse 
 strain number will serve as the label for the dataset.
 
-For clustering project, we used the individual mouse dataset which has 170 
+For **clustering project**, we used the individual mouse dataset which has 170 
 observations. For clustering, we do not want too many features since these 
 features might have directions very close to each other and it would be 
 repetitive to use all of them. Therefore, instead taking each hour bin as 
@@ -126,11 +126,11 @@ standard deviation for each of the 9 features, resulting in possibly 18 final fe
 Methodology/ Approach Description
 ---------------------------------
 
-**supervised learning: classification**
+**Classification**
 
 For this project, we mainly focus on three classification algorithms, which are random forests, gradient boosting and support vector machines (SVM). 
 
-***Introduction***
+*Introduction*
 
 Random forests is a notion of the general technique of random decision forests that are an ensemble learning method for classification, regression and other tasks, that operate by constructing a multitude of decision trees at training time and outputting the class that is the mode of the classes (classification) of the individual trees. The method combines Breiman's "bagging" idea and the random selection of features, correcting for decision trees' habit of overfitting to their training set.
 
@@ -138,7 +138,7 @@ Gradient boosting is another machine learning algorithm for classification. It p
 
 Support vector Machines(SVM) are set of related supervised learning methods for classification and regression, which minimizes the empirical classification error and maximize the geometric margin. SVM map the input vector into a higher dimensional space where the maximal separating hyper plane is constructed. Maximizing the distance between different parallel hyper planes, SVM come up with the classification of the input vector. 
 
-***Tuning Parameters***
+*Tuning Parameters*
 
 For each of the algorithms, we create functions to fit them on the dataset respectively. There are two different ways to fit these methods: if the user pre-defines the set of the parameters, we will use cross validation to find the best estimators and their relative labels; if the user does not define the parameters, the functions will use the default values to fit the models.
 
@@ -154,19 +154,19 @@ For SVM, we tune C and gamma.
 C represents the penalty parameter of the error term. It trades off misclassification of training examples against simplicity of the decision surface. A low C makes the decision surface smooth, while a high C aims at classifying all training examples correctly.
 Gamma is the Kernel coefficient for ‘rbf’, ‘poly’ and ‘sigmoid'. It defines how far the influence of a single training example reaches, with low values meaning ‘far’ and high values meaning ‘close’. 
 
-***Model Assessment***
+*Model Assessment*
 
 After tuning our parameters, we apply our models to testing set and compare the prediction labels with the true labels. There are mainly two ways to measure the quality of the prediction process, one is a confusion matrix and the other is percentage indicators including precision, recall, and F-1 measure. A confusion matrix is a specific table layout that allows visualization of the performance of an algorithm. Each row of the matrix represents the instances in a predicted class while each column represents the instances in an actual class. The name stems from the fact that it makes it easy to see if the system is confusing two classes (i.e. commonly mislabeling one as another). 
 [add precision, recall, F1 formula]
 Thus, precision for each label is the corresponding diagonal value divided by row total in the confusion matrix and recall is the diagonal value divided by column total. 
 
-**Unsupervised learning**
+**Clustering**
 
-Unsupervised learning algorithms, K-means and hierarchical clustering, are included in the subpackage `classification`. Unlike other clustering problems where no ground truth is available, the biological information of the mice allows us to group the 16 strains into 6 larger mouse families, although the ‘distances’ among the families are unknown and may not be comparable at all. Hence, cluster numbers from 2 to 16 should all be tried out to find the optimal. Here, we briefly describe the two algorithms and the usage of the related functions.
+Unsupervised learning clustering algorithms, K-means and hierarchical clustering, are included in the subpackage ``classification``. Unlike other clustering problems where no ground truth is available, the biological information of the mice allows us to group the 16 strains into 6 larger mouse families, although the ‘distances’ among the families are unknown and may not be comparable at all. Hence, cluster numbers from 2 to 16 should all be tried out to find the optimal. Here, we briefly describe the two algorithms and the usage of the related functions.
 
 Above all, note that unlike the supervised classification problem where we have 11 levels for one feature (so we have up to 99 features in the classification problem), the unsupervised clustering methods could suffer from curse of high dimensionality when we input a large amount of features. In high dimension, every data point is far away from each other, and the useful feature may fail to stand out. Thus we decided to use the average amount of features over a day and the standard deviation of those features for the individual mouse (170 data points) case. 
 
-***K-means***
+*K-means*
 
 To begin with, *K-means* minimizes the within-cluster sum of squares to search for the 
 best clusters set. Then the best number of clusters was determined by a compromise 
@@ -175,13 +175,14 @@ inexpensive so we can either do the individual mouse options (170 data points).
 However, the nature of K-means makes it perform poorly when we have imbalanced 
 clusters. 
 
-***Hierarchical Clustering***
+*Hierarchical Clustering*
 
 Given the above, the potentially uneven cluster sizes lead us to consider an additional clustering algorithm, *hierarchical clustering*, the functionality of which is included in the subpackage. Generally, hierarchical clustering seeks to build a hierarchy of clusters and falls into two types: agglomerative and divisive. The agglomerative approach has a “richer get richer” behavior and hence is adopted, which works in a bottom-up manner such that each observation starts in its own cluster, and pairs of clusters are merged as one moves up the hierarchy. The merges are determined in a greedy manner in the sense that the merge resulting in the greatest reduction in the total distances is chosen at each step. The results of hierarchical clustering are usually presented in a dendrogram, and thereby one may choose the cutoff to decide the optimal number of clusters.
 
 Below is a demo to fit the clustering algorithm. The loaded data is firstly standardized, and then the optimal distance measure and the optimal linkage method are determined. We have restricted the distance measure to be l1-norm (Manhattan distance), l2-norm (Euclidean distance) and infinity-norm (maximum distance), and the linkage method to be ward linkage, maximum linkage and average linkage. The maximum linkage assigns the maximum distance between any pair of points from two clusters to be the distance between the clusters, while the average linkage assigns the average. The ward linkage uses the Ward variance minimization criterion. Then, the optimal linkage method and distance measure are input to the model fitting function, and the resulting clusters and corresponding silhouette scores are recorded for cluster number determination. A plotting function from the subpackage is also called to output a plot. The output plot is included in the result section of the report.
 
 .. code-block:: python
+
     from mousestyles import data
     from mousestyles.classification import clustering
     from mousestyles.visualization import plot_clustering
@@ -206,7 +207,7 @@ Below is a demo to fit the clustering algorithm. The loaded data is firstly stan
         mouse_day=mouse_dayavgstd_rsl, method=method, dist=dist)
 
 
-Testing Framework outline
+Testing Framework Outline
 -------------------------
 
 To ensure our functions do the correct steps and return appropriate 
@@ -234,7 +235,7 @@ Random Forest shows a very promising result. For each strain, prediction, recall
 
 We also select the most important features, including ASProbability_2, Distance_14, ASProbability_16, Distance_2, Food_4, MoveASIntensity_2, ASProbability_4, Distance_4, Distance_16.
 
-**Gradient Boosting**
+*Gradient Boosting*
 
 Gradient Boosting shows a decent performance on the prediction. There is no huge difference in precision and recall for predicting each strain, but bigger than Random Forest. It is shown that strain 3, 7 and 10 shows obvious higher prediction than recall.  Almost all the accuracy measurement is above 0.8.
 
@@ -242,7 +243,7 @@ Gradient Boosting shows a decent performance on the prediction. There is no huge
 
    Classification Performance of Gradient Boosting
 
-**SVM**
+*SVM*
 
 SVM model shows a very inconsistent performance on the prediction. For example, the precision for predicting strain 3,4,11,12,15 is 1 while the precision for predicting strain 6,9 is below 0.5. Although precision for predicting strain 3,11,12,15 is very high, the recall for predicting these strains are much lower, resulting in a low F-1 measurement. The high precision and low recall indicates that we can trust the classification judgements, however the low rate of recall indicates that SVM is very conservative. This might be good if we are worried about incorrectly classifying the strains.
 
@@ -250,7 +251,7 @@ SVM model shows a very inconsistent performance on the prediction. For example, 
 
    Classification Performance of SVM
 
-**Comparison**
+*Comparison*
 
 By plotting side-by-side barplot of F-1 measurement among the three models, we can clearly see that Random Forest model provides the best result and SVM is the worst.  Performance of Random Forest and Gradient Boosting are similar, but the SVM is obviously weak.  So we recommend predicting strains by implementing the Random Forest model.
 
@@ -260,18 +261,16 @@ By plotting side-by-side barplot of F-1 measurement among the three models, we c
 
 **Clustering**
 
-***K-means***
+*K-means*
 
 The silhouette scores corresponding to the number of clusters ranging from 2 to 16 
-are:[0.835, 0.775, 0.423, 0.415, 0.432, 0.421, 0.404, 0.383, 0.421, 0.327, 0.388, 0.347, 0.388, 0.371,0.362]
- . We plot 6 clusters here to show, and found that Czech and CAST mice behaved 
- quite differently from each other.
+are: 0.835, 0.775, 0.423, 0.415, 0.432, 0.421, 0.404, 0.383, 0.421, 0.327, 0.388, 0.347, 0.388, 0.371,0.362. We plot 6 clusters here to show, and found that Czech and CAST mice behaved quite differently from each other.
   
 .. plot:: report/plots/plot_km_result.py
 
    Distribution of strains in clusters by K-means algorithm
 
-***Hierarchical clustering***
+*Hierarchical Clustering*
 
 The optimal distance measure is l1-norm and the optimal linkage method is average linkage method. The silhouette scores corresponding to the number of clusters ranging from 2 to 16 are:  0.8525, 0.7548, 0.7503, 0.6695, 0.6796, 0.4536, 0.4557, 0.4574, 0.3997, 0.4057, 0.3893, 0.3959, 0.4075, 0.4088, 0.4179. It seems 6 clusters is a good choice from the silhouette scores.
 
@@ -290,7 +289,7 @@ The distribution of strains in each cluster in the case of using 6 clusters are 
    Distribution of strains in clusters by agglomerative hierarchical clustering
 
 
-Future work
+Future Work
 ----------------
 
 The future research should focus more on feature engineering, including the questions 
@@ -307,5 +306,5 @@ the future work.
 
 References
 ----------
-1. [An Efficient SNP System for Mouse Genome Scanning and Elucidating Strain Relationships](http://genome.cshlp.org/content/14/9/1806/F3.expansion), Genome Research
+1. `An Efficient SNP System for Mouse Genome Scanning and Elucidating Strain Relationships <http://genome.cshlp.org/content/14/9/1806/F3.expansion>`_, Genome Research
 
