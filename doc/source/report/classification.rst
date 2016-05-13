@@ -233,7 +233,15 @@ Result
 **Classification**
 
 For three models, after tuning the parameters and output the prediction result, we create the side-by-side barplot for the different measurement of accuracy, which are precision, recall and F1. 
-**Random Forest**
+
+precision(P) = $\frac{\# label\ y\ \ predicted\ correctly}{\# label\ y\ predicted}$
+
+recall(R) = $\frac{\# label\ y\ \ predicted\ correctly}{\# label\ y\ true}$
+
+F-1 = $\frac{2*P*R}{P+R}$
+
+*Random Forest*
+
 Random Forest shows a very promising result. For each strain, prediction, recall and F-1 measure are very closed to each other. Except for predicting strain 15, all the other prediction has F-1 measure exceeding 0.8.
 
 .. plot:: report/plots/plot_rf_result.py
