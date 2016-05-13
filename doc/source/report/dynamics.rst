@@ -47,7 +47,7 @@ Or, simply import the matrix from data directory::
 Estimate the transition probability matrix of the Markov Chain using the data given. One of the key challenges to estimate the transition matrix is that the model used is actually time continuous non-homogeneous Markov Chain, and the parameters are too difficult to estimate given the current data. Therefore, a new way is discovered to make the model a composite of small homogeneous discrete time Markov Chains, so that performing a rough estimation of the original time continuous non-homogeneous Markov Chain is possible. The following steps are followed to get the transistion probability matrix: 
 
 - Divide each mouse day into small time intervals, say 5 minutes. (The time interval is optimized in the future analysis)
-- For each of the small time intervals, aggregate the data from all mouses in the same strain for all mouse days and estimate the transition probability matrix of a discrete homogeneous Markov Chain model just for this small time interval.
+- For each of the small time intervals, aggregate the data from all mice in the same strain for all mouse days and estimate the transition probability matrix of a discrete homogeneous Markov Chain model just for this small time interval.
 - each of these transition probability matrices is estimated by MLE method, where e.g.: 
    .. math:: P(F_{t+1} | W_{t}) = \frac{N_{WF}}{N_{W.}}
    where $N_{WF}$ indicates the counts of transitions from W to F and $N_{W.}$ indicates the counts of transitions starting from W, no matter where it ends.
@@ -76,7 +76,7 @@ Estimate the transition probability matrix of the Markov Chain using the data gi
 
 4. Simluation: 
 
-Use the Transition Model generated to simluate a typical mouse day for a typical strain. The simulation is time sensitive which means the simulation mouse is generated depend on the time interval chosen in the transition model. The time interval length is optimized in the future analysis so as the generate the best fake mouse for each strain. 
+Use the Transition Model generated to simluate a typical mouse day for a typical strain. The simulation is time sensitive which means the simulation mouse is generated depending on the time interval chosen in the transition model. The time interval length is optimized in the future analysis so as the generate the best fake mouse for each strain. 
 
 ::
 
@@ -90,7 +90,7 @@ Use the Transition Model generated to simluate a typical mouse day for a typical
 How to get a score for the performance of our simulation?
 The evaluation system is trying to create a score to evaluate the performance of the simulation. Higher the score, better
 the simulation is doing in catching the pattern in the mouse day. Because we have unbalanced data, meaning most of the
-status in one typical mouse day are IS and OTHERS and only a few of them are DRINK and EAT, we should give more weights on
+statuses in one typical mouse day are IS and OTHERS and only a few of them are DRINK and EAT, we should give more weights on
 correct predictions about DRINK and EAT. We first calculate the proportion of the four status within different days we have
 for different mice from different strains and then take average to get the ratio of different status. And then we choose the
 initial weights based on the numbers we get. For example, a mouse day has 21200 timestamps on average. And on average 10000
@@ -108,11 +108,11 @@ ranges from 0 to 1 for our data.
 
 6. Comparison:
 
-The comparison function plots the simulated behavior dynamics. It plots the the simulated behavior dynamics obtained from the evaluation function for the given strain during the given time period. 
+The comparison function plots the simulated behavior dynamics obtained from the evaluation function for the given strain during the given time period. 
 
 The x-axis is the time range, and the default time range is from 40,000 to 40,100. It is because the behavior dynamics show clear differences across the strains during this time range and because the behavior dynamics have more active actions than the other time period. Users can, of course, define the time range of their interest. But they should be aware of the lower and upper bounds of the time range before doing comparisons. For the first strain (strain_num = 0), the time range should be between 1 and 92,400. For the second one (strain_num = 1), it should be between 1 and 90,000. The time range should be between 1 and 88,800 for the last strain (strain_num = 2). 
 
-Of note is that, based on our understadning and explanations from the research team, 0 indicates the time when a mouse wakes up and starts its day. The unit of time is understood as one second. Thus, the default time range (from 40,000 to 40,100) represents around 11 hours after the start of the day. Based on this defnintion of the time range, users can change it and compare simulated behavior dynamics across the three strains.     
+Of note is that, based on our understanding and explanations from the research team, 0 indicates the time when a mouse wakes up and starts its day. The unit of time is understood as one second. Thus, the default time range (from 40,000 to 40,100) represents around 11 hours after the start of the day. Based on this definition of the time range, users can change it and compare simulated behavior dynamics across the three strains.     
 
 We do not define the y-axis for this comparison function, because our interest is to visually understand the dynamics of the four states during the given time period. For better understanding of the behavior dynamics, we assign different colors for different states. In the plot, blue represents IS, skyblue represents eating, yellow represents drinking, and red represents other activities in AS.
 
@@ -120,7 +120,7 @@ We do not define the y-axis for this comparison function, because our interest i
 Result
 ------
 
-The problem we are insteresting in here is whether the three strains of mice are indeed acting differently in a time series manner. The behaviors are compared using the three simulation mice, each for one strain. Therefore, as the first step, the optimal time interval is selected so as to have the most-real simulation mouse that behaves the most similarly to its strain, which is evaluated using the score system we created. As a result, the best time interval length is selected for each strain as well as the corresponding simulation mice behavior and the comparison score.
+The problem we are insterested in here is whether the three strains of mice are indeed acting differently in a time series manner. The behaviors are compared using the three simulation mice, each for one strain. Therefore, as the first step, the optimal time interval is selected so as to have the most-real simulation mouse that behaves the most similarly to its strain, which is evaluated using the score system we created. As a result, the best time interval length is selected for each strain as well as the corresponding simulation mice behavior and the comparison score.
 
 ::
 
@@ -132,14 +132,26 @@ The problem we are insteresting in here is whether the three strains of mice are
     # (1800, array([0, 0, 0, ..., 0, 0, 0]), 0.83975976073161329)
 
 
-As the scipt suggested, the best time interval selected is 600 seconds for the first strain which generates the simultation mouse that has 71% similarity compared to the real mice in that strain, and the simulation behavior is quoted in the numpy array format. Similarly, it shows the 600s optimal time interval with 91% similarity for the second strain and the 1800s optimal time interval with 84% similarity for the third strain. 
+As the script suggested, the best time interval selected is 600 seconds for the first strain. This generates a simulation mouse that is 71% similar to the real mice in that strain. Note that the simulation behavior is quoted in the numpy array format. Similarly, it shows the 600s optimal time interval with 91% similarity for the second strain and the 1800s optimal time interval with 84% similarity for the third strain. 
 
 With the resulting best simulation mice, we move forward to compare the between-strain behaviors using visulization. The simulated mice show different behavior dynamics across the strains, during the given time period (36,000 to 36,100; around 10 hours after the start of the day). The fake mouse from the first strain does the other active actions and stays inactive for a short period of time. The fake mice from the other two strains, on the other hand, show different dynamic patterns: do the other active actions, consume food, and stay inactive. The fake mice from the third strain 
 
 However, if we let the plot time range from 1 to 100, all of the three types of fake mice stay inactive. It is intuitive under the daily lives of humans. They are likely to stay home and rest right after getting up. Users of this function can change the plot time range and compare the three mice, which helps understand any differences among the three strains over time.  
 
+.. figure:: figure/strain0.PNG
+   :alt: alt tag
 .. figure:: figure/strain1.PNG
    :alt: alt tag
+.. figure:: figure/strain2.PNG
+   :alt: alt tag
+   
+.. code:: python
+   from mousestyles.data import load_time_matrix_dynamics
+   from mousestyles.visualization.dynamics import plot_dynamics
+   time_matrix = load_time_matrix_dynamics()
+   plot_dynamics(time_matrix, 0) 
+```
+Users can follow the codes inside at mousestyles/doc/sources/report/plots - 'plot_dynamics0.py`, `plot_dynamics1.py`, and `plot_dynamics2.py` - for more details.   
 
 Discussion
 -----------
