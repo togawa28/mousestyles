@@ -2,6 +2,7 @@ from sklearn.grid_search import GridSearchCV
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import GradientBoostingClassifier
+from sklearn import svm
 
 import numpy as np
 import pandas as pd
@@ -42,7 +43,8 @@ def prep_data(strain, features, rseed=222):
 
 
 def fit_random_forest(train_y, train_x, test_x,
-                      n_estimators=None, max_feature=None):
+                      n_estimators=None, max_feature=None,
+                      importance_level=None):
     """
     Returns a DataFrame of RandomForest results, containing prediction strain
     labels and printing the best model. The model's parameters will be tuned by
@@ -61,10 +63,14 @@ def fit_random_forest(train_y, train_x, test_x,
     max_feature: list, optional
                  tuning parameter of RandomForest, which is the number of
                  features to consider when looking for the best split
+    importance_level: int, optional
+                      the minimum importance of features
     Returns
     ----------
-    DataFrame of RandomForest results based on testing strains.
-        Column: prediction strain labels
+    List of RandomForest results
+        The first element is the dataframe of prediction strain labels.
+        The second element is the list of tuples of score and important
+        features larger than the importance level.
     """
     # input validation
     if not isinstance(n_estimators, list):
@@ -90,20 +96,28 @@ def fit_random_forest(train_y, train_x, test_x,
         es = [500, 100]
     if max_feature is None:
         fs = [10, 20, 30, 40, 50, 60, 70, 80, 90, 99]
+    if importance_level is None:
+        importance_level = 0.05
     rf = RandomForestClassifier()
     clf = GridSearchCV(
         estimator=rf, param_grid=dict(n_estimators=es, max_features=fs))
     clf.fit(train_x, train_y)
     clf = clf.best_estimator_
+    imp = clf.feature_importances_
+    important_feature = []
+    names = test_x.columns
+    for i in range(len(imp)):
+        if sorted(zip(imp, names))[i][0] >= importance_level:
+            important_feature.append(sorted(zip(imp, names))[i])
     # fit the best model
     clf.fit(train_x, train_y)
     # predict the testing data and convert to data frame
     prediction = clf.predict(scaler.fit_transform((test_x)))
     prediction = pd.DataFrame(prediction)
     prediction.columns = ['predict_strain']
-    print ('The best RandomForest Model is:')
-    print (clf)
-    return(prediction)
+    print('The best RandomForest Model is:')
+    print(clf)
+    return(prediction, important_feature)
 
 
 def fit_gradient_boosting(train_y, train_x, test_x,
@@ -164,8 +178,61 @@ def fit_gradient_boosting(train_y, train_x, test_x,
     prediction = clf.predict(scaler.fit_transform((test_x)))
     prediction = pd.DataFrame(prediction)
     prediction.columns = ['predict_strain']
-    print ('The best GradientBoosting Model is:')
-    print (clf)
+    print('The best GradientBoosting Model is:')
+    print(clf)
+    return(prediction)
+
+
+def fit_svm(train_y, train_x, test_x, c=None, gamma=None):
+    """
+    Returns a DataFrame of svm results, containing
+    prediction strain labels and printing the best model. The
+    model's parameters will be tuned by cross validation, and
+    accepts user-defined parameters.
+    Parameters
+    ----------
+    train_y: Series
+             labels of classification results, which are predicted strains.
+    train_x: DataFrame
+             features used to predict strains in training set
+    test_x: DataFrame
+            features used to predict strains in testing set
+    c: list, optional
+       tuning parameter of svm, which is penalty parameter of the error term
+    gamma: list, optional
+           tuning parameter of svm, which is kernel coefficient
+    Returns
+    ----------
+    DataFrame of svm results based on testing strains.
+        Column: prediction strain labels
+    """
+    # input validation
+    if not isinstance(c, list):
+        raise TypeError("c should be a list")
+    if not isinstance(gamma, list):
+        raise TypeError("gamma should be a list")
+    # creat svm model
+    scaler = StandardScaler()
+    train_x = scaler.fit_transform(train_x)
+    Cs = c
+    Gammas = gamma
+    if c is None:
+        Cs = np.logspace(-6, -1, 10)
+    if gamma is None:
+        Gammas = np.linspace(0.0001, 0.15, 10)
+    svc = svm.SVC()
+    clf = GridSearchCV(estimator=svc, param_grid=dict(C=Cs, gamma=Gammas),
+                       n_jobs=-1)
+    clf.fit(train_x, train_y)
+    clf = clf.best_estimator_
+    # fit the best model
+    clf.fit(train_x, train_y)
+    # predict the testing data and convert to data frame
+    prediction = clf.predict(scaler.fit_transform((test_x)))
+    prediction = pd.DataFrame(prediction)
+    prediction.columns = ['predict_strain']
+    print('The best SVM Model is:')
+    print(clf)
     return(prediction)
 
 
@@ -190,8 +257,8 @@ def get_summary(predict_labels, true_labels):
        Column 2: F-1 measure
 
     """
-    test_y.index = range(test_y.shape[0])
-    result = pd.concat([predict_labels, pd.DataFrame(test_y)], axis=1)
+    true_labels.index = range(true_labels.shape[0])
+    result = pd.concat([predict_labels, pd.DataFrame(true_labels)], axis=1)
     result.columns = ['predict_strain', 'true_strain']
     prediction_accurate_count_matrix = pd.crosstab(index=result.iloc[:, 0],
                                                    columns=result.iloc[:, 1],
