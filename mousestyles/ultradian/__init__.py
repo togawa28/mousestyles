@@ -1,14 +1,16 @@
 from __future__ import print_function, absolute_import, division
 
 from gatspy.periodic import LombScargleFast
+from gatspy.periodic import LombScargle
 import matplotlib.pyplot as plt
+import mousestyles.data as data
 import numpy as np
 import pandas as pd
 import statsmodels.api as sm
 import statsmodels.formula.api as smf
 from scipy.stats import chi2
+plt.style.use('ggplot')
 
-import mousestyles.data as data
 
 INTERVAL_FEATURES = ["AS", "F", "M_AS", "M_IS", "W"]
 ALL_FEATURES = ["AS", "F", "M_AS", "M_IS", "W", "Distance"]
@@ -530,25 +532,183 @@ def mix_strain(data, feature, print_opt = True, nstrain = 3, range = (3, 12)):
     p_v = chi2.pdf(fstat, df=2)
     return(p_v)
 
-# methods LombScargel, FDS, visualization take out, mouse == none
 
-
-def Find_Cycle(feature, strain, mouse=None, bin_width=15,
-               methods='LombScargleFast', search_range_fit=None,
-               disturb_t=False, plot=True, nyquist_factor=3,
-               n_cycle=10, search_range_find=(2, 26), sig=np.array([0.05])):
+def lombscargle_visualize(periods, power, sig, N, cycle,
+                          cycle_power, cycle_pvalue):
     """
-    Either way of plotting or calculating power is not
-    the same method used in the find_best cycle.
+    Use Lomb-Scargel method on different strain and mouse's data to find the
+    best possible periods with highest p-values, and plot the Lomb Scargle
+    power versus periods plot. use the periods as time sequence to predict
+    the corresponding LS power, draw the plot.
+
+    There will also be stars and horizontal lines indicating the p-value of
+    significance. Three stars will be p-value in [0,0.001], two stars will be
+    p-value in [0.001,0.01], one star will be p-value in [0.01,0.05]. The
+    horizontal line is the LS power that has p-value of 0.05.
 
     Parameters
     ----------
-    search_range_fit: numpy array, like np.arange(0,26,0.1), defalut is None
+    periods: numpy array of the same length with 'power'
+        use as time sequence in LS model to make predictions
+    power: numpy array of the same length with 'periods'
+        the corresponding predicted power of periods
+    sig: list, tuple or numpy array, default is [0.05].
+        significance level to be used for plot horizontal line.
+    N: int
+        the length of time sequence in the fit model
+    cycle: numpy array
+        periods
+    cycle_power: numpy array
+        LS power corrsponding to the periods in 'cycle'
+    cycle_pvalue: numpy array
+        p-values corresponding to the periods in 'cycle'
 
     Returns
     -------
-    ts: pandas.tseries
-        a pandas time series of length 12(day)*24(hour)*60(minute)/n
+    Lomb Scargle Power versus Periods (hours) plot with significant levels.
+
+    Examples
+    --------
+
+    """
+    fig, ax = plt.subplots()
+    ax.plot(periods, power,color='steelblue')
+    ax.set(xlim=(0, 26), ylim=(0, max(cycle_power)),
+           xlabel='Period (hours)',
+           ylabel='Lomb-Scargle Power')
+    for i in sig:
+        power_sig = -2 / (N - 1) * np.log(1 -
+                                          (1 - np.asarray(i)) ** (1 / 2 / N))
+        plt.axhline(y=power_sig, color='green', ls='dashed', lw=1)
+        ax.text(x=24, y=power_sig, s='P-value:' +
+                str(float(i)), ha='right', va='bottom')
+        idx = [i for i, x in enumerate(cycle_pvalue) if x < 0.001]
+        for j in idx:
+            if cycle[j] > min(periods) and cycle[j] < max(periods):
+                ax.text(x=cycle[j],
+                        y=cycle_power[j], s=r'$\bigstar\bigstar\bigstar$',
+                        ha='right', va='top')
+        idx = [i for i, x in enumerate(cycle_pvalue) if x > 0.001 and x < 0.01]
+        for j in idx:
+            if cycle[j] > min(periods) and cycle[j] < max(periods):
+                ax.text(x=cycle[j], y=cycle_power[j],
+                        s=r'$\bigstar\bigstar$', ha='right', va='top')
+        idx = [i for i, x in enumerate(cycle_pvalue) if x > 0.01 and x < 0.05]
+        for j in idx:
+            if cycle[j] > min(periods) and cycle[j] < max(periods):
+                ax.text(x=cycle[j], y=cycle_power[j],
+                        s=r'$\bigstar$', ha='right', va='top')
+
+
+def find_cycle(feature, strain, mouse=None, bin_width=15,
+               methods='LombScargleFast', disturb_t=False, gen_doc=False,
+               plot=True, search_range_fit=None, nyquist_factor=3,
+               n_cycle=10, search_range_find=(2, 26), sig=np.array([0.05])):
+    """
+    Use Lomb-Scargel method on different strain and mouse's data to find the
+    best possible periods with highest p-values. The function can be used on
+    specific strains and specific mouses, as well as just specific strains
+    without specifying mouse number. We use the O(NlogN) fast implementation
+    of Lomb-Scargle from the gatspy package, and also provide a way to
+    visualize the result.
+
+    Note that either plotting or calculating L-S power doesn't use the same
+    method in finding best cycle. The former can use user-specified
+    search_range, while the latter uses default two grid search_range.
+
+    Parameters
+    ----------
+    feature: string in {"AS", "F", "M_AS", "M_IS", "W", "Distance"}
+        "AS": Active state probalibity
+        "F": Food consumed (g)
+        "M_AS": Movement outside homebase
+        "M_IS": Movement inside homebase
+        "W": Water consumed (g)
+        "Distance": Distance traveled
+    strain: int
+        nonnegative integer indicating the strain number
+    mouse: int, default is None
+        nonnegative integer indicating the mouse number
+    bin_width: int, minute unit, default is 15 minutes
+        number of minutes, the time interval for data aggregation
+    methods: string in {"LombScargleFast", "LombScargle"}
+        indicating the method used in determining periods and best cycle.
+        If choose 'LombScargle', 'disturb_t' must be True.
+    disturb_t: boolean, default is False
+        If True, add uniformly distributed noise to the time sequence which
+        are used to fit the Lomb Scargle model. This is to avoid the singular
+        matrix error that could happen sometimes.
+    plot: boolean, default is True
+        If True, call the visualization function to plot the Lomb Scargle
+        power versus periods plot. First use the data (either strain specific
+        or strain-mouse specific) to fit the LS model, then use the
+        search_range_fit as time sequence to predict the corresponding LS
+        power, at last draw the plot out. There will also be stars and
+        horizontal lines indicating the p-value of significance. Three stars
+        will be p-value in [0,0.001], two stars will be p-value in
+        [0.001,0.01], one star will be p-value in [0.01,0.05]. The horizontal
+        line is the LS power that has p-value of 0.05.
+    search_range_fit: list, numpy array or numpy arange, hours unit,
+        default is None
+        list of numbers as the time sequence to predict the corrsponding
+        Lomb Scargle power. If plot is 'True', these will be drawn as the
+        x-axis. Note that the number of search_range_fit points can not be
+        too small, or the prediction smooth line will not be accurate.
+        However the plot will always give the right periods and their LS
+        power with 1,2 or 3 stars. This could be a sign to check whether
+        search_range_fit is not enough to draw the correct plot.
+        We recommend the default None, which is easy to use.
+    nyquist_factor: int
+        If search_range_fit is None, the algorithm will automatically
+        choose the periods sequence.
+        5 * nyquist_factor * length(time sequence) / 2 gives the number of
+        power and periods used to make LS prediction and plot the graph.
+    n_cycle: int, default is 10
+        numbers of periods to be returned by function, which have the highest
+        Lomb Scargle power and p-value.
+    search_range_find: list, tuple or numpy array with length of 2, default is
+                       (2,26), hours unit
+        Range of periods to be searched for best cycle. Note that the minimum
+        should be strictly larger than 0 to avoid 1/0 issues.
+    sig: list or numpy array, default is [0.05].
+        significance level to be used for plot horizontal line.
+    gen_doc: boolean, default is False
+        If true, return the parameters needed for visualize the LS power versus
+        periods
+
+    Returns
+    -------
+    cycle: numpy array of length 'n_cycle'
+         The best periods with highest LS power and p-values.
+    cycle_power: numpy array of length 'n_cycle'
+         The corrsponding LS power of 'cycle'.
+    cycle_pvalue: numpy array of length 'n_cycle'
+         The corrsponding p-value of 'cycle'.
+    periods: numpy array of the same length with 'power'
+        use as time sequence in LS model to make predictions.Only return when
+        gen_doc is True.
+    power: numpy array of the same length with 'periods'
+        the corresponding predicted power of periods. Only return when
+        gen_doc is True.
+    sig: list, tuple or numpy array, default is [0.05].
+        significance level to be used for plot horizontal line.
+        Only return when gen_doc is True.
+    N: int
+        the length of time sequence in the fit model. Only return when
+        gen_doc is True.
+
+    Examples
+    -------
+    >>> a,b,c = find_cycle(feature='F', strain = 0,mouse = 0, plot=False,)
+    >>> print(a,b,c)
+    >>> [ 23.98055016   4.81080233  12.00693952   6.01216335   8.0356203
+         3.4316698    2.56303353   4.9294791   21.37925713   3.5697756 ]
+        [ 0.11543449  0.05138839  0.03853218  0.02982237  0.02275952
+        0.0147941  0.01151601  0.00998443  0.00845883  0.0082382 ]
+        [  0.00000000e+00   3.29976046e-10   5.39367189e-07   8.10528027e-05
+          4.71001953e-03   3.70178834e-01   9.52707020e-01   9.99372657e-01
+         9.99999981e-01   9.99999998e-01]
+
     """
     # get data
     if mouse is None:
@@ -585,27 +745,81 @@ def Find_Cycle(feature, strain, mouse=None, bin_width=15,
     if disturb_t is True:
         t = t + np.random.uniform(-bin_width / 600, bin_width / 600, N)
 
-    model = LombScargleFast(fit_period=False).fit(t=t, y=y)
+    if methods == 'LombScargleFast':
+        model = LombScargleFast(fit_period=False).fit(t=t, y=y)
+    elif methods == 'LombScargle':
+        model = LombScargle(fit_period=False).fit(t=t, y=y)
+
     # calculate periods' LS power
     if search_range_fit is None:
         periods, power = model.periodogram_auto(nyquist_factor=nyquist_factor)
     else:
         periods = search_range_fit
         power = model.periodogram(periods=search_range_fit)
-    # print(periods[:15]); print(len(periods));
-    # print(5*nyquist_factor/2*N)
+
     # find best cycle
     model.optimizer.period_range = search_range_find
     cycle, cycle_power = model.find_best_periods(
         return_scores=True, n_periods=n_cycle)
     cycle_pvalue = 1 - (1 - np.exp(cycle_power / (-2) * (N - 1))) ** (2 * N)
+
     # visualization
     if plot is True:
-        fig, ax = plt.subplots()
-        ax.plot(periods, power)
-        ax.set(xlim=(0, 25),  # ylim=(0, 0.5),
-               xlabel='period (hours)',
+        lombscargle_visualize(periods=periods, power=power, sig=sig, N=N,
+                              cycle_power=cycle_power,
+                              cycle_pvalue=cycle_pvalue, cycle=cycle)
+
+    if gen_doc is True:
+        return periods, power, sig, N, cycle, cycle_power, cycle_pvalue
+
+    return cycle, cycle_power, cycle_pvalue
+
+
+def compare_strain(feature, n_strain=3, bin_width=15, disturb_t=False):
+    """
+    Use the data from function find_cycle and plotting method from function
+    lombscargle_visualize to compare the Lomb-Scargle plots between different
+    strains.
+
+    Parameters
+    ----------
+    feature: string in {"AS", "F", "M_AS", "M_IS", "W", "Distance"}
+        "AS": Active state probalibity
+        "F": Food consumed (g)
+        "M_AS": Movement outside homebase
+        "M_IS": Movement inside homebase
+        "W": Water consumed (g)
+        "Distance": Distance traveled
+    n_strain: int, defalt is 3
+        nonnegative integer indicating total number of strains to be compared
+    bin_width: int, minute unit, default is 15 minutes
+        number of minutes, the time interval for data aggregation
+    disturb_t: boolean, default is False
+        If True, add uniformly distributed noise to the time sequence which
+        are used to fit the Lomb Scargle model. This is to avoid the singular
+        matrix error that could happen sometimes.
+
+    Returns
+    -------
+    Lomb Scargle Power versus Periods (hours) plot with significant levels.
+
+    Examples
+    -------
+
+    """
+    fig = plt.figure(figsize=(16, 8))
+
+    for i in range(n_strain):
+        ax = fig.add_subplot(1, n_strain, i + 1)
+        periods, power, sig, N, cycle, cycle_power, cycle_pvalue = find_cycle(
+            feature=feature, strain=i, bin_width=bin_width,
+            methods='LombScargleFast', disturb_t=disturb_t,
+            gen_doc=True, plot=False)
+        ax.plot(periods, power, color='steelblue')
+        ax.set(xlim=(0, 26), ylim=(0, max(cycle_power)),
+               xlabel='Period (hours)',
                ylabel='Lomb-Scargle Power')
+        ax.set_title('strain'+str(i))
         for i in sig:
             power_sig = -2 / (N - 1) * np.log(
                 1 - (1 - np.asarray(i)) ** (1 / 2 / N))
@@ -614,18 +828,23 @@ def Find_Cycle(feature, strain, mouse=None, bin_width=15,
                     str(float(i)), ha='right', va='bottom')
             idx = [i for i, x in enumerate(cycle_pvalue) if x < 0.001]
             for j in idx:
-                ax.text(x=cycle[j], y=cycle_power[j],
-                        s=r'$\bigstar\bigstar\bigstar$',
-                        ha='right', va='top')
+                if cycle[j] > min(periods) and cycle[j] < max(periods):
+                    ax.text(x=cycle[j], y=cycle_power[j],
+                            s=r'$\bigstar\bigstar\bigstar$',
+                            ha='right', va='top')
             idx = [i for i, x in enumerate(
                 cycle_pvalue) if x > 0.001 and x < 0.01]
             for j in idx:
-                ax.text(x=cycle[j], y=cycle_power[j],
-                        s=r'$\bigstar\bigstar$', ha='right', va='top')
+                if cycle[j] > min(periods) and cycle[j] < max(periods):
+                    ax.text(x=cycle[j], y=cycle_power[
+                            j], s=r'$\bigstar\bigstar$', ha='right', va='top')
             idx = [i for i, x in enumerate(
                 cycle_pvalue) if x > 0.01 and x < 0.05]
             for j in idx:
-                ax.text(x=cycle[j], y=cycle_power[j],
-                        s=r'$\bigstar$', ha='right', va='top')
+                if cycle[j] > min(periods) and cycle[j] < max(periods):
+                    ax.text(x=cycle[j], y=cycle_power[j],
+                            s=r'$\bigstar$', ha='right', va='top')
 
-    return cycle, cycle_power, cycle_pvalue
+    plt.suptitle('Feature: '+feature, fontsize=20)
+
+    return fig
