@@ -73,6 +73,12 @@ def smooth_noise(movement, paths, angle_threshold, delta_t):
         movement['y'][noise_chunk.index[0]] = y_avg
         movement['t'][noise_chunk.index[0]] = t_avg
 
+        # Note: The above DataFrame manipulations result in a
+        # SettingWithCopyWarning. The warning persists even after
+        # attempting the following format:
+        # .loc[row_indexer,col_indexer] = value. Despite this,
+        # the output of the function is working as intended.
+
         drop_ind = np.append(drop_ind, noise_chunk.index[1:])
 
     new_movement = movement.drop(drop_ind)

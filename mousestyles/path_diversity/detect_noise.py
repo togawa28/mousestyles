@@ -65,6 +65,12 @@ def detect_noise(movement, paths, angle_threshold, delta_t):
             path_obj['sharp_angle'] = path_obj['angles'] > angle_threshold
             path_obj['noise'] = 0
 
+            # Note: The above DataFrame manipulations result in a
+            # SettingWithCopyWarning. The warning persists even after
+            # attempting the following format:
+            # .loc[row_indexer,col_indexer] = value. Despite this,
+            # the output of the function is working as intended.
+
             for i in range(0, len(path_obj) - 1):
                 if path_obj['sharp_angle'].iloc[i]:
                     if path_obj['sharp_angle'].iloc[i + 1]:
