@@ -27,11 +27,17 @@ path patterns that were unique to each mouse strain and each mouse within a
 strain. The major statistical problem associated with this project was to
 collapse the data in such a way as to increase our understanding of physical
 and psychological behavior through visualization of mouse paths. With the
-Tecott lab's visualization graphics as a launching point, we continued on to
-create features that could be adapted to their plots and also generated new
-plotting methods to find the optimal method of expression. These features
-might prove useful in the classification subproject and potentially help us
-understand the relationship between behavior and genetics in mice and humans.
+Tecott lab's visualization graphics as a launching point (see the image
+below), we continued on to create features that could be adapted to their
+plots and also generated new plotting methods to find the optimal method of
+expression. These features might prove useful in the classification
+subproject and potentially help us understand the relationship between
+behavior and genetics in mice and humans.
+
+.. figure:: figure/mice_path.png
+   :alt: alt tag
+
+   Path (image courtesy of Tecott Lab)
 
 Exploratory Analysis
 --------------------
@@ -61,11 +67,6 @@ The data required to perform our analysis included the ``<x, y, t>``
 coordinates for the mice as well as a boolean indicating whether the mouse
 was situated in its home base. Additionally, we required the daily coordinates
 of the home base for each mouse.
-
-.. figure:: figure/mice_path.png
-   :alt: alt tag
-
-   Path (image courtesy of Tecott Lab)
 
 Methodology/Approach Description
 --------------------------------
@@ -98,16 +99,18 @@ the paths so, while it is a trivial removal, it is necessary.
 **Step 3**: Choose Key Features
 
 The path features we wrapped up into functions are as follows:
-    - Path Length: Total distance covered
-    - Path Speed: Average speed
-    - Acceleration: Ratio of speed to the time difference at each point
-    - Angles: Angle between adjacent vectors
-    - Radius of Path: Distance between the center point and every other point
-    - Center Angles: Angle created by two adjacent radius vectors
-    - Area Covered: Area covered by the path, computed with center angle and
-      radii
-    - Area of Rectangle: Area of rectangle that contains the entire path
-    - Absolute Distance: Distance between the first and last points
+
+-  Path Length: Total distance covered
+-  Path Speed: Average speed
+-  Acceleration: Ratio of speed to the time difference at each point
+-  Angles: Angle between adjacent vectors
+-  Radius of Path: Distance between the center point and every other
+   point
+-  Center Angles: Angle created by two adjacent radius vectors
+-  Area Covered: Area covered by the path, computed with center angle
+   and radii
+-  Area of Rectangle: Area of rectangle that contains the entire path
+-  Absolute Distance: Distance between the first and last points
 
 **Step 4**:  Interpretation
 
@@ -118,25 +121,43 @@ about differences between strains in the results section.
 Results
 -------------------------
 
+The main findings in this subproject involved the distributions of path
+distance, average speed, acceleration, and angle. The plots illustrating
+these distributions can be found below.
+
+In the distribution of path distances plot, we see that Strain 0 appeared to
+be the most active overall. For all mice in this strain, activeness peaked
+around days 6-8 and fell off after that. In contrast, there appears to be
+huge variation in the activeness among mice of Strain 1 with Mouse 2 seeming
+to exhibit odd behavior compared to the other mice in that strain. Finally,
+Strain 2 appeared to be the least active strain. However, further inspection
+is necessary.
+
 .. figure:: figure/dist_path.png
-   :alt: alt tag
+
+
+From the distribution of average speed plot, we see similar patterns as that
+of path distance. This is likely due to the correlation between the two
+features.
 
 .. figure:: figure/dist_speed.png
-   :alt: alt tag
+
+
+We have also included a distribution of acceleration plot that goes along
+nicely with the average speed and distance plots. The distributions were
+centered around 0, symmetrical across the mean. In general, Strain 2 had the
+least variation while Strain 0 had the most. This implies that Strain 0
+reached higher speeds than the other two strains.
 
 .. figure:: figure/dist_acceleration.png
-   :alt: alt tag
+
+
+In terms of the distribution of angle, we found that Strain 1 Mouse 1 and 3
+along with Strain 2 Mouse 3 had the least sharp turns compared to the other
+mice. However, this result is likely skewed by the presence of noise in the
+sensor data.
 
 .. figure:: figure/dist_angle.png
-   :alt: alt tag
-
-Testing Framework Outline
--------------------------
-
--  Run simulations of machine learning algorithm with a set seed to
-   ensure reproducibility
--  Correct warning message or error message.
--  Develop tests for python functions in methodology section above
 
 Additional Remarks
 ------------------
