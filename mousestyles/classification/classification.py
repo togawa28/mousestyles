@@ -41,31 +41,40 @@ def prep_data(strain, features, rseed=222):
     return [train_y, train_x, test_y, test_x]
 
 
-def RandomForest(strain, features, rseed=222):
+def fit_random_forest(train_y, train_x, test_x,
+                      n_estimators=None, max_feature=None):
     """
-    Returns a ndarray of RandomForest results, containing prediction strain
-    labels and true strain labels for test data set. Use cross validation
-    to tune Parameters.
+    Returns a DataFrame of RandomForest results, containing prediction strain
+    labels and printing the best model. The model's parameters will be tuned by
+    cross validation, and accepts user-defined parameters.
     Parameters
     ----------
-    strain: ndarray, shape of (1921,)
-            classification labels
-    features: ndarray, shape of (1921, 99)
-              classification features
-    rseed: int, optional
-           random seed for shuffling the data set to separate train and test
+    train_y: Series
+             labels of classification results, which are predicted strains.
+    train_x: DataFrame
+             features used to predict strains in training set
+    test_x: DataFrame
+            features used to predict strains in testing set
+    n_estimators: int, optional
+                  tuning parameter of RandomForest, which is the number of
+                  trees in the forest
+    max_feature: int, optional
+                 tuning parameter of RandomForest, which is the number of
+                 features to consider when looking for the best split
     Returns
     ----------
-    ndarray of RandomForest results in test data set.
-        Column 0: prediction strain labels
-        Column 1: true strain labels
+    DataFrame of RandomForest results based on testing strains.
+        Column: prediction strain labels
     """
-    train_y, train_x, test_y, test_x = prep_data(strain, features, rseed)
     # creat RF model
     scaler = StandardScaler()
     train_x = scaler.fit_transform(train_x)
-    es = [500, 1000]
-    fs = [8, 9]
+    es = [n_estimators]
+    fs = [max_feature]
+    if n_estimators is None:
+        es = [500, 100]
+    if max_feature is None:
+        fs = [10, 20, 30, 40, 50, 60, 70, 80, 90, 99]
     rf = RandomForestClassifier()
     clf = GridSearchCV(
         estimator=rf, param_grid=dict(n_estimators=es, max_features=fs))
@@ -76,32 +85,88 @@ def RandomForest(strain, features, rseed=222):
     # predict the testing data and convert to data frame
     prediction = clf.predict(scaler.fit_transform((test_x)))
     prediction = pd.DataFrame(prediction)
-    # reindex test_y so that it starts from 0
-    test_y.index = range(test_y.shape[0])
-    predict_true = pd.concat([prediction, test_y], axis=1)
-    predict_true.columns = ['predict_strain', 'true_strain']
-    return(predict_true)
+    prediction.columns = ['predict_strain']
+    print ('The best RandomForest Model is:')
+    print (clf)
+    return(prediction)
 
 
-def GetSummary(result):
+def fit_gradient_boosting(train_y, train_x, test_x,
+                          n_estimators=None, learning_rate=None):
     """
-    Returns a ndarray of classification result summary,
+    Returns a DataFrame of Gradient Boosting results, containing
+    prediction strain labels and printing the best model. The
+    model's parameters will be tuned by cross validation, and
+    accepts user-defined parameters.
+    Parameters
+    ----------
+    train_y: Series
+             labels of classification results, which are predicted strains.
+    train_x: DataFrame
+             features used to predict strains in training set
+    test_x: DataFrame
+            features used to predict strains in testing set
+    n_estimators: int, optional
+                  tuning parameter of GradientBoosting, which is the number of
+                  boosting stages to perform
+    learning_rate: int, optional
+                 learning_rate shrinks the contribution of each tree
+                 learning_rate
+    Returns
+    ----------
+    DataFrame of GradientBoosting results based on testing strains.
+        Column: prediction strain labels
+    """
+    # creat GradientBoosting model
+    scaler = StandardScaler()
+    train_x = scaler.fit_transform(train_x)
+    es = [n_estimators]
+    ls = [learning_rate]
+    if n_estimators is None:
+        es = [100, 200, 300, 500]
+    if learning_rate is None:
+        ls = np.linspace(0.0001, 0.15, 10)
+    gb = GradientBoostingClassifier()
+    clf = GridSearchCV(
+        estimator=gb, param_grid=dict(n_estimators=es, learning_rate=ls),
+        n_jobs=-1)
+    clf.fit(train_x, train_y)
+    clf = clf.best_estimator_
+    # fit the best model
+    clf.fit(train_x, train_y)
+    # predict the testing data and convert to data frame
+    prediction = clf.predict(scaler.fit_transform((test_x)))
+    prediction = pd.DataFrame(prediction)
+    prediction.columns = ['predict_strain']
+    print ('The best GradientBoosting Model is:')
+    print (clf)
+    return(prediction)
+
+
+def get_summary(predict_labels, true_labels):
+    """
+    Returns a DataFrame of classification result summary,
     including precision, recall, F1 measure in terms of different
     strains.
     Parameters
     ----------
-    result: classification results in test data set
-        Column 0: prediction strain labels
-        Column 1: true strain labels
+    predict_labels: DataFrame
+                    prediction strain labels
+    true_labels: Series
+                 true strain labels, used to measure the prediction
+                 accuracy
     Returns
     ----------
-    ndarray of classification result summary, shape(16,3).
+    DataFrame of classification result summary, shape(16,3).
        16 rows, for each strain 0-15
        Column 0: precision
        Column 1: recall
        Column 2: F-1 measure
 
     """
+    test_y.index = range(test_y.shape[0])
+    result = pd.concat([predict_labels, pd.DataFrame(test_y)], axis=1)
+    result.columns = ['predict_strain', 'true_strain']
     prediction_accurate_count_matrix = pd.crosstab(index=result.iloc[:, 0],
                                                    columns=result.iloc[:, 1],
                                                    margins=True)
@@ -126,46 +191,3 @@ def GetSummary(result):
                          pd.DataFrame(recall), pd.DataFrame(f1)], axis=1)
     summary.columns = ['precision', 'recall', "F1_score"]
     return(summary)
-
-
-def GradientBoosting(strain, features, rseed=222):
-    """
-    Returns a ndarray of GradientBoosting results, containing prediction strain
-    labels and true strain labels for test data set. Use cross validation
-    to tune Parameters.
-    Parameters
-    ----------
-    strain: ndarray, shape of (1921,)
-    classification labels
-    features: ndarray, shape of (1921, 99)
-    classification features
-    rseed: int, optional
-    random seed for shuffling the data set to separate train and test
-    Returns
-    ----------
-    ndarray of RandomForest results in test data set.
-    Column 0: prediction strain labels
-    Column 1: true strain labels
-    """
-    train_y, train_x, test_y, test_x = prep_data(strain, features, rseed)
-    # creat GradientBoosting model
-    scaler = StandardScaler()
-    train_x = scaler.fit_transform(train_x)
-    es = [200]
-    ls = np.linspace(0.0001, 0.15, 10)
-    gb = GradientBoostingClassifier()
-    clf = GridSearchCV(
-        estimator=gb, param_grid=dict(n_estimators=es, learning_rate=ls),
-        n_jobs=-1)
-    clf.fit(train_x, train_y)
-    clf = clf.best_estimator_
-    # fit the best model
-    clf.fit(train_x, train_y)
-    # predict the testing data and convert to data frame
-    prediction = clf.predict(scaler.fit_transform((test_x)))
-    prediction = pd.DataFrame(prediction)
-    # reindex test_y so that it starts from 0
-    test_y.index = range(test_y.shape[0])
-    predict_true = pd.concat([prediction, test_y], axis=1)
-    predict_true.columns = ['predict_strain', 'true_strain']
-    return(predict_true)
