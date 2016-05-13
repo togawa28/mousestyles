@@ -23,11 +23,11 @@ ideally different strains should have different clustering distributions.
 Statement of Statistical Problems
 ---------------------------------
 
-The researchers design the experiment as follow: they have 16 different
+The researchers design the experiment as follows: they have 16 different
 strains of mice, and each strain has 9 to 12 almost identical male mice
-in terms of gene.
+in terms of genes.
 
-We need to firstly verify the assumption that mouse of different strains
+We first need to verify the assumption that mouse of different strains
 do exhibit different behaviors. One way to do this is to perform
 hypothesis testing based on the joint distribution of all the features.
 A simpler alternative is to perform EDA on each of the features. If we
@@ -58,8 +58,8 @@ To extend the scope of the analysis, the clustering analysis may also be used
 to analyze mouse behaviors. Though these mice had inherent strain labels,
 the clusters may not follow the strain labels because genetical differences are not
 fully capturing the behavioral differences. Moreover, determining the best number
-of clusters is the key assessing the performance of a clustering model. Notice that
-the best number of clusters are neither necessarily equaling to 16 nor the same 
+of clusters is key in assessing the performance of a clustering model. Notice that
+the best number of clusters are neither necessarily equal to 16 nor the same 
 across different clustering methods. Criterion like silhouette scores would be
 evaluated to choose the best number of clusters. 
 
@@ -102,7 +102,7 @@ moving while in active state.
 For classification and clustering subsections, we require different processed 
 data.
 
-For **classification** project, we have two different dataset -- mouseday dataset 
+For **classification** project, we have two different datasets -- mouseday dataset 
 or individual mouse dataset. For the mouseday dataset, we take each 
 combination of mouse and day as a unique observation, resulting in  1921 
 observations. For the individual mouse dataset, we take the average measures 
@@ -140,11 +140,11 @@ Random forests is a notion of the general technique of random decision forests t
 
 Gradient boosting is another machine learning algorithm for classification. It produces a prediction model in the form of an ensemble of weak prediction models, typically decision trees. Gradient boosting fits an additive model in a forward stage-wise manner. In each stage, it introduces a weak learner to compensate the shortcomings of existing weak learners, which allows optimization of an arbitrary differentiable loss function. 
 
-Support vector Machines(SVM) are set of related supervised learning methods for classification and regression, which minimizes the empirical classification error and maximize the geometric margin. SVM map the input vector into a higher dimensional space where the maximal separating hyper plane is constructed. Maximizing the distance between different parallel hyper planes, SVM come up with the classification of the input vector. 
+Support vector Machines (SVM) are set of related supervised learning methods for classification and regression, which minimize the empirical classification error and maximize the geometric margin. SVMs map the input vector into a higher dimensional space where the maximal separating hyper plane is constructed. By maximizing the distance between different parallel hyper planes, SVMs come up with the classification of the input vector.
 
 *Tuning Parameters*
 
-For each of the algorithms, we create functions to fit them on the dataset respectively. There are two different ways to fit these methods: if the user pre-defines the set of the parameters, we will use cross validation to find the best estimators and their relative labels; if the user does not define the parameters, the functions will use the default values to fit the models.
+For each of the algorithms, we create functions to fit them on the dataset. There are two different ways to fit these methods: if the user pre-defines the set of the parameters, we will use cross validation to find the best estimators and their relative labels; if the user does not define the parameters, the functions will use the default values to fit the models.
 
 For random forests, we tune n_estimators, max_feature and importance_level. n_estimators represents the number of trees in the forest. The larger, the more accurate. However, it takes considerable amount of computational time when increasing forest size.
 max_features represents the number of features to consider when looking for the best split.
@@ -160,7 +160,7 @@ Gamma is the Kernel coefficient for ‘rbf’, ‘poly’ and ‘sigmoid'. It de
 
 *Model Assessment*
 
-After tuning our parameters, we apply our models to testing set and compare the prediction labels with the true labels. There are mainly two ways to measure the quality of the prediction process, one is a confusion matrix and the other is percentage indicators including precision, recall, and F-1 measure. A confusion matrix is a specific table layout that allows visualization of the performance of an algorithm. Each row of the matrix represents the instances in a predicted class while each column represents the instances in an actual class. The name stems from the fact that it makes it easy to see if the system is confusing two classes (i.e. commonly mislabeling one as another). 
+After tuning our parameters, we apply our models to testing set and compare the prediction labels with the true labels. There are two major ways to measure the quality of the prediction process, one is a confusion matrix and the other is percentage indicators including precision, recall, and F-1 measure. A confusion matrix is a specific table layout that allows visualization of the performance of an algorithm. Each row of the matrix represents the instances in a predicted class while each column represents the instances in an actual class. The name stems from the fact that it makes it easy to see if the system is confusing two classes (i.e. commonly mislabeling one as another). 
 [add precision, recall, F1 formula]
 Thus, precision for each label is the corresponding diagonal value divided by row total in the confusion matrix and recall is the diagonal value divided by column total. 
 
@@ -242,7 +242,7 @@ F-1 = $\frac{2*P*R}{P+R}$
 
 *Random Forest*
 
-Random Forest shows a very promising result. For each strain, prediction, recall and F-1 measure are very closed to each other. Except for predicting strain 15, all the other prediction has F-1 measure exceeding 0.8.
+Random Forest shows a very promising result. For each strain, prediction, recall and F-1 measure are very close to each other. Except for predicting strain 15, all the other prediction has F-1 measure exceeding 0.8.
 
 .. plot:: report/plots/plot_rf_result.py
 
@@ -281,9 +281,9 @@ By plotting side-by-side barplot of F-1 measurement among the three models, we c
 The silhouette scores corresponding to the number of clusters ranging from 2 to 16 
 are: 0.835, 0.775, 0.423, 0.415, 0.432, 0.421, 0.404, 0.383, 0.421, 0.327, 0.388, 0.347, 0.388, 0.371,0.362. We plot 6 clusters here to show, and found that Czech and CAST mice behaved quite differently from each other.
   
-.. plot:: report/plots/plot_km_result.py
+.. figure:: figure/km_result.png
 
-   Distribution of strains in clusters by K-means algorithm
+   Distribution of strains in clusters by K-means algorithm (Generated by `plot_strain_cluster` function; script can be found in `report/plots` directory.)
 
 *Hierarchical Clustering*
 
@@ -299,19 +299,19 @@ The failure of the the algorithm might be due to the different importance levels
 
 The distribution of strains in each cluster in the case of using 6 clusters are shown below. Obviously, the mice almost fall into the same cluster.
 
-.. plot:: report/plots/plot_hc_result.py
+.. figure:: figure/hc_result.png
 
-   Distribution of strains in clusters by agglomerative hierarchical clustering
+   Distribution of strains in clusters by agglomerative hierarchical clustering (Generated by `plot_strain_cluster` function; script can be found in `report/plots` directory.)
 
 
 Future Work
 ----------------
 
 The future research should focus more on feature engineering, including the questions 
-that whether more features could be added to the model. Moreover, even though we have
-extracted the importance features from the random forest to evaluate the performance
+of whether more features could be added to the model. Moreover, even though we have
+extracted the important features from the random forest to evaluate the performance
 of the smaller model, it seemed that the economized model did not perform as expected.
-In future, other technique like PCA might be performed to reduce the complexity of the
+In the future, other techniques like PCA might be performed to reduce the complexity of the
 model in order to train classification models faster.
 
 To understand more about the nature of the strain difference, it would be better to 
