@@ -26,8 +26,8 @@ def kde(x, x_grid=np.linspace(0, 3, 300)):
     """
     # use GridSearchCV to search for the best bandwidth by 10 fold cross-validation max loglikelihood
     grid = GridSearchCV(KernelDensity(),
-                    {'bandwidth': np.linspace(0.1, 1.0, 30)},
-                    cv=min(10, len(x)))
+                    {'bandwidth': np.linspace(0.1, 1.0, 10)},
+                    cv=min(5, len(x)))
     grid.fit(x[:, None])
     bandwidth = grid.best_params_['bandwidth']
     # setup and do desity estimation
