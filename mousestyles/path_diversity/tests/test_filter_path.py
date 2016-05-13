@@ -14,11 +14,11 @@ def test_filter_path_input():
     # checking functions raise the correct errors
     # input negative number
     with pytest.raises(ValueError) as excinfo:
-        path_diversity.filter_paths(movement, paths, -1)
+        path_diversity.filter_path(movement, paths, -1)
     assert excinfo.value.args[0] == "Input values need to be positive"
     # input zeros
     with pytest.raises(ValueError) as excinfo:
-        path_diversity.filter_paths(movement, paths, 0)
+        path_diversity.filter_path(movement, paths, 0)
     assert excinfo.value.args[0] == "Input values need to be positive"
 
 
@@ -35,5 +35,5 @@ def test_filter_path():
     movement = pd.DataFrame(movement)
     paths = path_diversity.path_index(movement, 1, 1)
     # Checking functions output the correct path
-    pass_paths = path_diversity.filter_paths(movement, paths, 1)
+    pass_paths = path_diversity.filter_path(movement, paths, 1)
     assert pass_paths == [[6, 8]]

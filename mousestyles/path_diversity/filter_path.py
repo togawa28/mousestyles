@@ -1,7 +1,7 @@
 from __future__ import print_function, absolute_import, division
 
 
-def filter_paths(movement, paths, time_threshold):
+def filter_path(movement, paths, time_threshold):
     r"""
     Return a list object containing start and end indices for
     movements lasting equal to or longer than the specified time
@@ -26,7 +26,7 @@ def filter_paths(movement, paths, time_threshold):
     --------
     >>> movement = data.load_movement(1, 2, 1)
     >>> paths = path_index(movement, 1, 1)
-    >>> filter_paths(movement, paths, 20)
+    >>> filter_path(movement, paths, 20)
     [[26754, 26897], [28538, 28627]
     """
 
