@@ -6,7 +6,7 @@ Dynamics of AS Patterns
 Introduction
 ------------
 
-The objective of Dynamics Analysis is to analyze and characterize the state transforming behaviors of different strains of mice. The analysis is mainly focused on the three strains of mice included in the interval dataset. Using Markov Chain Model, a sequence of state transition probability matrix is retrieved for each strain depends on the time intervals and a simulation mouse is generated based on the model. A evaluation system is created for comparing the behaviors of two certain mice, and based on which the optimal time interval is choosen so as to have the most realistic simulation mice.Further visualizatoin on those fake mice is done to explore the discrepancy between different strains's behaviors. 
+The objective of Dynamics Analysis is to analyze and characterize the state transforming behaviors of different strains of mice. The analysis is mainly focused on the three strains of mice included in the interval dataset. Using a Markov Chain Model, a sequence of state transition probability matrix is retrieved for each strain depending on the time intervals. A simulation mouse is then generated based on the model and an evaluated. The evaluation system is created using the time interval that produces the most realistic simulation mouse. Further visualization of the fake mice is done to explore the discrepancy between different strain's behaviors. 
 
 Data Source
 -----------
