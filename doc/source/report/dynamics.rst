@@ -50,7 +50,7 @@ Estimate the transition probability matrix of the Markov Chain using the data gi
 - For each of the small time intervals, aggregate the data from all mouses in the same strain for all mouse days and estimate the transition probability matrix of a discrete homogeneous Markov Chain model just for this small time interval.
 - each of these transition probability matrices is estimated by MLE method, where e.g.: 
    .. math:: P(F_{t+1} | W_{t}) = \frac{N_{WF}}{N_{W.}}
-   where ``N_{WF}`` indicates the counts of transitions from W to F and ``N_{W.}`` indicates the counts of transitions starting from W, no matter where it ends.
+   where $N_{WF}$ indicates the counts of transitions from W to F and $N_{W.}$ indicates the counts of transitions starting from W, no matter where it ends.
 - Build the whole model by compositing the models for each small time intervals. 
 
 ::
