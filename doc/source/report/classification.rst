@@ -120,7 +120,11 @@ different features like in the classification dataset, we take each hour bin
 as different observations, resulting in only 9 features for the clustering 
 data. Then we take average of days for each mouse. While preparing the input 
 data, users will also have the choice to standardize data and/or add the 
-standard deviation for each of the 9 features, resulting in possibly 18 final features.
+standard deviation for each of the 9 features, resulting in possibly 18 final 
+features. One thing to note is that we did not use mouseday data to perform 
+clustering, although it is possible to do with our function. The reason we are 
+not using big dataset is because the hierarchical clustering is computationally 
+expensive and silhouette score also takes fairly long time to calculate.
 
 
 Methodology/ Approach Description
@@ -218,6 +222,9 @@ check we perform is to test whether we successfully assign cluster numbers
 to every observation. Also, since we compute silhouette score for each 
 cluster and silhouette score is defined to be between -1 and 1, we also 
 checked that whether our silhouette score is appropriate.
+For classification, we also checked whether our final predictions of mouse 
+strains only include numbers 0 through 15 since they are the only strains 
+for data we have and we should predict those strains.
 
 
 Result
