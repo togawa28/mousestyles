@@ -475,97 +475,6 @@ def plot_strain_seasonal(strains, mouse, feature, bin_width, period_length):
     return(fig)
 
 
-def mix_strain(data, feature, print_opt=True, nstrain=3, range=(3, 12), degree = 1):
-    """
-    Fit the linear mixed model onto our aggregate data. The fixed effects
-    are the hour, strain, interactions between hour and strain; The random
-    effect is mouse because we want to make sure that the different mouses
-    will not give out any differences. We added two dummy variables:
-    strain0 and strain1 to be our fixed effects.
-
-    Parameters
-    ----------
-        data: data frame output from aggregate_data function
-        feature: {"AS", "F", "IS", "M_AS", "M_IS", "W", "Distance"}
-        print_opt: True or False
-        nstrain: positive integer
-        range: array contains two elements
-        degree: positive integer
-
-    Returns
-    -------
-    Two mixed model regression results which includes all the coefficients,
-    t statistics and p values for corresponding coefficients; The first model
-    includes interaction terms while the second model does not include the
-    interaction terms
-
-    Likelihood ratio test p values, if it is below our significance level,
-    we can conclude that the different strains have significantly different
-    time patterns
-
-    Examples
-    --------
-    >>> result = mix_strain(data = aggregate_data("F",30), feature = "F",
-    >>>          print_opt = False, degree = 2)
-    >>> print(result)
-    2.5025846540930469e-09
-
-    """
-    if not isinstance(data, pd.DataFrame):
-        raise ValueError(
-            'Data must be a pandas data frame')
-    if feature not in ALL_FEATURES:
-        raise ValueError(
-            'Input value must in {"AS", "F", "M_AS", "M_IS", "W", "Distance"}')
-
-    data["cycle"] = 0
-    for i in range(nstrain):
-        result = find_cycle(feature="W", strain=i, plot=False,
-                            search_range_find=range)
-        cycle = result[0][0]
-        data.loc[data["strain"] == i, "cycle"] = cycle
-
-    b = pd.get_dummies(data["strain"])
-    data["strain0"] = b.ix[:, 0]
-    data["strain1"] = b.ix[:, 1]
-    data["strain2"] = b.ix[:, 2]
-    data["hour2"] = np.array(data["hour"].values)**degree
-    data = data.drop('strain', 1)
-    names = data.columns.tolist()
-    names[names.index(feature)] = 'feature'
-    data.columns = names
-    if degree == 1:
-        md1 = smf.mixedlm("feature ~ hour + strain0 + strain1 + cycle \
-                          + strain0*hour + strain1*hour", data,
-                          groups=data["mouse"])
-    else:
-        md1 = smf.mixedlm("feature ~ hour + hour2 + strain0 + strain1 + \
-                          strain0*hour+ strain1*hour + strain0*hour2+ \
-                          strain1*hour2", data, groups=data["mouse"])
-
-    mdf1 = md1.fit()
-    like1 = mdf1.llf
-
-    if print_opt:
-        print(mdf1.summary())
-    if degree == 1:
-        md2 = smf.mixedlm("feature ~ hour + cycle + strain0 \
-                          + strain1", data, groups=data["mouse"])
-    else:
-        md2 = smf.mixedlm("feature ~ hour + hour2 + cycle + strain0 + \
-                          strain1", data, groups=data["mouse"])
-
-    mdf2 = md2.fit()
-    like2 = mdf2.llf
-
-    if print_opt:
-        print(mdf2.summary())
-    fstat = 2 * abs(like1 - like2)
-    p_v = chi2.pdf(fstat, df=2)
-
-    return(p_v)
-
-
 def lombscargle_visualize(periods, power, sig, N, cycle,
                           cycle_power, cycle_pvalue):
     """
@@ -893,3 +802,95 @@ def compare_strain(feature, n_strain=3, bin_width=15, disturb_t=False):
     plt.suptitle('Feature: ' + feature, fontsize=20)
 
     return fig
+
+
+def mix_strain(data, feature, print_opt=True,
+               nstrain=3, search_range=(3, 12), degree=1):
+    """
+    Fit the linear mixed model onto our aggregate data. The fixed effects
+    are the hour, strain, interactions between hour and strain; The random
+    effect is mouse because we want to make sure that the different mouses
+    will not give out any differences. We added two dummy variables:
+    strain0 and strain1 to be our fixed effects.
+
+    Parameters
+    ----------
+        data: data frame output from aggregate_data function
+        feature: {"AS", "F", "IS", "M_AS", "M_IS", "W", "Distance"}
+        print_opt: True or False
+        nstrain: positive integer
+        range: array contains two elements
+        degree: positive integer
+
+    Returns
+    -------
+    Two mixed model regression results which includes all the coefficients,
+    t statistics and p values for corresponding coefficients; The first model
+    includes interaction terms while the second model does not include the
+    interaction terms
+
+    Likelihood ratio test p values, if it is below our significance level,
+    we can conclude that the different strains have significantly different
+    time patterns
+
+    Examples
+    --------
+    >>> result = mix_strain(data = aggregate_data("F",30), feature = "F",
+    >>>          print_opt = False, degree = 2)
+    >>> print(result)
+    2.5025846540930469e-09
+
+    """
+    if not isinstance(data, pd.DataFrame):
+        raise ValueError(
+            'Data must be a pandas data frame')
+    if feature not in ALL_FEATURES:
+        raise ValueError(
+            'Input value must in {"AS", "F", "M_AS", "M_IS", "W", "Distance"}')
+
+    data["cycle"] = 0
+    for i in range(nstrain):
+        result = find_cycle(feature="W", strain=i, plot=False,
+                            search_range_find=search_range)
+        cycle = result[0][0]
+        data.loc[data["strain"] == i, "cycle"] = cycle
+
+    b = pd.get_dummies(data["strain"])
+    data["strain0"] = b.ix[:, 0]
+    data["strain1"] = b.ix[:, 1]
+    data["strain2"] = b.ix[:, 2]
+    data["hour2"] = np.array(data["hour"].values)**degree
+    data = data.drop('strain', 1)
+    names = data.columns.tolist()
+    names[names.index(feature)] = 'feature'
+    data.columns = names
+    if degree == 1:
+        md1 = smf.mixedlm("feature ~ hour + strain0 + strain1 + cycle \
+                          + strain0*hour + strain1*hour", data,
+                          groups=data["mouse"])
+    else:
+        md1 = smf.mixedlm("feature ~ hour + hour2 + strain0 + strain1 + \
+                          strain0*hour+ strain1*hour + strain0*hour2+ \
+                          strain1*hour2", data, groups=data["mouse"])
+
+    mdf1 = md1.fit()
+    like1 = mdf1.llf
+
+    if print_opt:
+        print(mdf1.summary())
+    if degree == 1:
+        md2 = smf.mixedlm("feature ~ hour + cycle + strain0 \
+                          + strain1", data, groups=data["mouse"])
+    else:
+        md2 = smf.mixedlm("feature ~ hour + hour2 + cycle + strain0 + \
+                          strain1", data, groups=data["mouse"])
+
+    mdf2 = md2.fit()
+    like2 = mdf2.llf
+
+    if print_opt:
+        print(mdf2.summary())
+    fstat = 2 * abs(like1 - like2)
+    p_v = chi2.pdf(fstat, df=2)
+
+    return(p_v)
