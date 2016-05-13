@@ -114,7 +114,7 @@ The x-axis is the time range, and the default time range is from 40,000 to 40,10
 
 Of note is that, based on our understanding and explanations from the research team, 0 indicates the time when a mouse wakes up and starts its day. The unit of time is understood as one second. Thus, the default time range (from 36,000 to 36,100) represents around 10 hours after the start of the day. Based on this definition of the time range, users can change it and compare simulated behavior dynamics across the three strains.     
 
-We do not define the y-axis for this comparison function, because our interest is to visually understand the dynamics of the four states during the given time period. For better understanding of the behavior dynamics, we assign different colors for different states. In the plot, blue represents IS, skyblue represents eating, yellow represents drinking, and red represents other activities in AS.
+We do not define the y-axis for this comparison function, because our interest is to visually understand the dynamics of the four states during the given time period. For better understanding of the behavior dynamics, we assign different colors for different states. In the plot, blue represents IS, bright green represents eating, yellow represents drinking, and red represents other activities in AS.
 
 
 Result
