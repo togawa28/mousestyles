@@ -41,7 +41,7 @@ Estimate the transition probability matrix of the Markov Chain using the data gi
      where ..math::N_{WF} indicates the counts of transitions from W to F and ..math::N_{W.} indicates the counts of transitions starting from W, no matter where it ends.
    - Build the whole model by compositing the models for each small time intervals. 
 
-```python
+```
 strain_df = data_df[data_df.strain == 2]
 get_prob_matrix_list(time_df=strain_df,interval_length=1000)
 # [array([[ 1.,  0.,  0.,  0.],
@@ -65,7 +65,7 @@ get_prob_matrix_list(time_df=strain_df,interval_length=1000)
 
 Use the Transition Model generated to simluate a typical mouse day for a typical strain. The simulation is time sensitive which means the simulation mouse is generated depend on the time interval chosen in the transition model. The time interval length is optimized in the future analysis so as the generate the best fake mouse for each strain. 
 
-```python
+```
 trans_matrix = get_prob_matrix_list(time_df=strain_df,interval_length=1000)
 mcmc_simulation(trans_matrix, n_per_int=1000)
 # array([0, 0, 0, ..., 0, 0, 0])
@@ -79,7 +79,7 @@ Result
 
 The problem we are insteresting in here is whether the three strains of mice are indeed acting differently in a time series manner. The behaviors are compared using the three simulation mice, each for one strain. Therefore, as the first step, the optimal time interval is selected so as to have the most-real simulation mouse that behaves the most similarly to its strain, which is evaluated using the score system we created. As a result, the best time interval length is selected for each strain as well as the corresponding simulation mice behavior and the comparison score.
 
-```python
+```
 # data_df: 
 find_best_interval(data_df,strain=0)
 # (600, array([0, 0, 0, ..., 0, 0, 0]), 0.70509736459572225)
