@@ -9,6 +9,7 @@ from mousestyles.dynamics import create_time_matrix
 from mousestyles.dynamics import get_prob_matrix_list
 from mousestyles.dynamics import get_prob_matrix_small_interval
 from mousestyles.dynamics import mcmc_simulation, get_score
+from mousestyles.dynamics import find_best_interval
 
 
 def test_creat_time_matrix_input():
@@ -190,3 +191,45 @@ def test_get_score():
 
     assert score_1 == 0.0
     assert score_2 == 10.0
+
+
+def test_find_best_interval_input():
+    # checking functions raise the correct errors for wrong input
+    # time_df is not DataFrame
+    with pytest.raises(ValueError) as excinfo:
+        find_best_interval(df=5, strain_num=2)
+    assert excinfo.value.args[0] == "df should be pandas DataFrame"
+    # strain_num is not integer in 0,1,2
+    row_i = np.hstack((np.zeros(13), np.ones(10),
+                      np.ones(10)*2, np.ones(10)*3))
+    time_df_eg = np.vstack((row_i, row_i, row_i))
+    time_df_eg = pd.DataFrame(time_df_eg)
+    time_df_eg.rename(columns={0: 'strain'}, inplace=True)
+    with pytest.raises(ValueError) as excinfo:
+        find_best_interval(df=time_df_eg, strain_num=3)
+    assert excinfo.value.args[0] == "strain_num can only be 0, 1, 2"
+    # interval_length_initial is a numpy array with positive integers
+    with pytest.raises(ValueError) as excinfo:
+        find_best_interval(df=time_df_eg, strain_num=0,
+                           interval_length_initial=3)
+    assert excinfo.value.args[0] == "interval_length_initial positive np.array"
+    with pytest.raises(ValueError) as excinfo:
+        find_best_interval(df=time_df_eg, strain_num=0,
+                           interval_length_initial=np.array([1, 2, -1]))
+    assert excinfo.value.args[0] == "interval_length_initial positive np.array"
+    with pytest.raises(ValueError) as excinfo:
+        find_best_interval(df=time_df_eg, strain_num=0,
+                           interval_length_initial=np.array([1, 2, 3.1]))
+    assert excinfo.value.args[0] == "interval_length_initial positive np.array"
+
+
+def test_find_best_interval():
+    row_i = np.hstack((np.zeros(40)))
+    time_df_eg = np.vstack((row_i, row_i, row_i))
+    time_df_eg = pd.DataFrame(time_df_eg)
+    time_df_eg.rename(columns={0: 'strain'}, inplace=True)
+    time, fake, score = find_best_interval(time_df_eg, 0,
+                                           np.arange(10, 40, 10))
+    assert time == 10
+    assert np.array_equal(fake, np.zeros(40))
+    assert 1-score < 0.05
