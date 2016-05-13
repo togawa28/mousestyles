@@ -136,19 +136,22 @@ As the script suggested, the best time interval selected is 600 seconds for the 
 
 With the resulting best simulation mice, we move forward to compare the between-strain behaviors using visulization. The simulated mice show different behavior dynamics across the strains, during the given time period (36,000 to 36,100; around 10 hours after the start of the day). The fake mouse from the first strain does the other active actions and stays inactive for a short period of time. The fake mice from the other two strains, on the other hand, show different dynamic patterns: do the other active actions, consume food, and stay inactive. The fake mice from the third strain consumes food for the longer time for the given time period.
 
-However, if we let the plot time range from 1 to 100, all of the three types of fake mice stay inactive. It is intuitive under the daily lives of humans. They are likely to stay home and rest right after getting up. Users of this function can change the plot time range and compare the three mice, which helps understand any differences among the three strains over time.  
-
-.. figure:: figure/dynamics_plot.PNG
+.. figure:: figure/dynamics_plot1.PNG
    :alt: alt tag
-   
-::
+ 
+However, if we let the plot time range from 1 to 100, all of the three types of fake mice stay inactive. It is intuitive under the daily lives of humans. They are likely to stay home and rest right after getting up. Users can change the plot time range and compare the three mice, which helps understand any differences among the three strains over time.  
 
+.. figure:: figure/dynamics_plot2.PNG
+   :alt: alt tag
+
+Users can also follow the example codes inside at mousestyles/doc/sources/report/plots - plot_dynamics0.py, plot_dynamics1.py, and plot_dynamics2.py - for more details.  
+  
+::
    from mousestyles.data import load_time_matrix_dynamics
    from mousestyles.visualization.dynamics import plot_dynamics
    time_matrix = load_time_matrix_dynamics()
    plot_dynamics(time_matrix, 0) 
 
-Users can follow the codes inside at mousestyles/doc/sources/report/plots - plot_dynamics0.py, plot_dynamics1.py, and plot_dynamics2.py - for more details.   
 
 Discussion
 -----------
