@@ -139,6 +139,40 @@ features in the classification and clustering models. A smaller set of
 feature space containing only top features might be used to gain better
 interpretations of the model.
 
+
+**supervised learning: classification**
+For this project, we mainly focus on three classification algorithms, which are random forests, gradient boosting and support vector machines (SVM). 
+
+# Introduction
+Random forests is a notion of the general technique of random decision forests that are an ensemble learning method for classification, regression and other tasks, that operate by constructing a multitude of decision trees at training time and outputting the class that is the mode of the classes (classification) of the individual trees. The method combines Breiman's "bagging" idea and the random selection of features, correcting for decision trees' habit of overfitting to their training set.
+
+Gradient boosting is another machine learning algorithm for classification. It produces a prediction model in the form of an ensemble of weak prediction models, typically decision trees. Gradient boosting fits an additive model in a forward stage-wise manner. In each stage, it introduces a weak learner to compensate the shortcomings of existing weak learners, which allows optimization of an arbitrary differentiable loss function. 
+
+Support vector Machines(SVM) are set of related supervised learning methods for classification and regression, which minimizes the empirical classification error and maximize the geometric margin. SVM map the input vector into a higher dimensional space where the maximal separating hyper plane is constructed. Maximizing the distance between different parallel hyper planes, SVM come up with the classification of the input vector. 
+
+
+# Tuning Parameters
+For each of the algorithms, we create functions to fit them on the dataset respectively. There are two different ways to fit these methods: if the user pre-defines the set of the parameters, we will use cross validation to find the best estimators and their relative labels; if the user does not define the parameters, the functions will use the default values to fit the models.
+
+For random forests, we tune n_estimators, max_feature and importance_level. n_estimators represents the number of trees in the forest. The larger, the more accurate. However, it takes considerable amount of computational time when increasing forest size.
+max_features represents the number of features to consider when looking for the best split.
+max_depth represents the maximum depth of the tree. The larger, the more accurate. However, it takes considerable amount of computational time when increasing tree size.
+
+For gradient boosting, we tune n_estimators and learning_rate.
+n_estimators represent the number of boosting stages to perform. Gradient boosting is fairly robust to over-fitting, therefore, a larger number represents more performing stages, usually leading to better performance.
+learning_rate will shrink the contribution of each tree by the value of learning_rate. There is a trade-off between learning_rate and n_estimators. We use GridSearch to tune the learning_rate in order to find the best estimator.
+
+For SVM, we tune C and gamma.
+C represents the penalty parameter of the error term. It trades off misclassification of training examples against simplicity of the decision surface. A low C makes the decision surface smooth, while a high C aims at classifying all training examples correctly.
+Gamma is the Kernel coefficient for ‘rbf’, ‘poly’ and ‘sigmoid'. It defines how far the influence of a single training example reaches, with low values meaning ‘far’ and high values meaning ‘close’. 
+
+
+# Model Assessment
+Based on the performance 
+
+
+
+
 **Unsupervised learning**
 
 Unsupervised learning algorithms, K-means and hierarchical clustering, are included in the subpackage `classification`. Unlike other clustering problems where no ground truth is available, the biological information of the mice allows us to group the 16 strains into 6 larger mouse families, although the ‘distances’ among the families are unknown and may not be comparable at all. Hence, cluster numbers from 2 to 16 should all be tried out to find the optimal. Here, we briefly describe the two algorithms and the usage of the related functions.
