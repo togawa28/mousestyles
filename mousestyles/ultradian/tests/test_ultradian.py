@@ -92,59 +92,49 @@ def test_mix_strain():
     assert result < 1
 
 # Test for find_cycle
+
+
 def test_find_cycle():
-    ## check the length of returned values
-    result = ultradian.find_cycle(feature='Distance', strain=0,mouse=0,
+    # check the length of returned values
+    result = ultradian.find_cycle(feature='Distance', strain=0, mouse=0,
                                   methods='LombScargleFast',
                                   plot=False, gen_doc=False)
     assert len(result) == 3
     assert len(result[0]) == 10
-    ## check the gen_doc option, which prepares data for plotting
-    r2 = ultradian.find_cycle(feature='Distance', strain=0,mouse=0,
-                                   methods='LombScargleFast',
-                                   plot=False, gen_doc=True)
+    # check the gen_doc option, which prepares data for plotting
+    r2 = ultradian.find_cycle(feature='Distance', strain=0, mouse=0,
+                              methods='LombScargleFast',
+                              plot=False, gen_doc=True)
     assert len(r2) == 7
     assert type(r2[3]) == int
-    assert all(r2[6] <= 1) & all(r2[4] >0)
-    ## check search_range_fit option
-    r3 = ultradian.find_cycle(feature='Distance', strain=0,mouse=0,
-                                   methods='LombScargleFast',
-                                   plot=False,
-                                   search_range_fit=np.arange(3,15,0.1))
+    assert all(r2[6] <= 1) & all(r2[4] > 0)
+    # check search_range_fit option
+    r3 = ultradian.find_cycle(feature='Distance', strain=0, mouse=0,
+                              methods='LombScargleFast',
+                              plot=False,
+                              search_range_fit=np.arange(3, 15, 0.1))
     assert len(r3) == 3
     assert len(r3[0]) == 10
     assert all(r3[1] >= 0)
     assert all(r3[2] <= 1)
-    ## check methods LombScargle and disturb_t option
-    r4 = ultradian.find_cycle(feature='Distance', strain=0,mouse=0,
-                                   methods='LombScargle',disturb_t=True,
-                                   plot=False)
+    # check methods LombScargle and disturb_t option
+    r4 = ultradian.find_cycle(feature='Distance', strain=0, mouse=0,
+                              methods='LombScargle', disturb_t=True,
+                              plot=False)
     assert len(r4) == 3
     assert all(r4[2] <= 1) & all(r4[1] >= 0)
     assert len(r4[0]) == 10
-    ## check mouse==None option
+    # check mouse==None option
     r5 = ultradian.find_cycle(feature='AS', strain=0,
-                                   methods='LombScargleFast',
-                                   plot=False,search_range_find=[3,10])
+                              methods='LombScargleFast',
+                              plot=False, search_range_find=[3, 10])
     assert len(r5) == 3
     assert all(r5[0] >= 0) & all(r5[0] <= 48)
     assert all(r5[1] >= 0) & all(r5[2] <= 1)
-    ## check bin_width option
-    r6 = ultradian.find_cycle(feature='AS', strain=0,bin_width=45,
-                                   methods='LombScargleFast',
-                                   plot=False, gen_doc=True)
+    # check bin_width option
+    r6 = ultradian.find_cycle(feature='AS', strain=0, bin_width=45,
+                              methods='LombScargleFast',
+                              plot=False, gen_doc=True)
     assert len(r6) == 7
     assert type(r6[3]) == int
-    assert all(r6[6] <= 1) & all(r6[4] >0)
-
-    
-
-
-
-
-
-
-
-
-    
-    
+    assert all(r6[6] <= 1) & all(r6[4] > 0)
