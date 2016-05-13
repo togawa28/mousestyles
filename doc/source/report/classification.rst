@@ -173,7 +173,9 @@ Gamma is the Kernel coefficient for ‘rbf’, ‘poly’ and ‘sigmoid'. It de
 ***Model Assessment***
 
 Based on the performance 
-
+After tuning our parameters, we apply our models to testing set and compare the prediction labels with the true labels. There are mainly two ways to measure the quality of the prediction process, one is a confusion matrix and the other is percentage indicators including precision, recall, and F-1 measure. A confusion matrix is a specific table layout that allows visualization of the performance of an algorithm. Each row of the matrix represents the instances in a predicted class while each column represents the instances in an actual class. The name stems from the fact that it makes it easy to see if the system is confusing two classes (i.e. commonly mislabeling one as another). 
+[add precision, recall, F1 formula]
+Thus, precision for each label is the corresponding diagonal value divided by row total in the confusion matrix and recall is the diagonal value divided by column total. 
 
 
 
