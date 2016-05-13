@@ -201,7 +201,7 @@ def aggregate_movement(strain, mouse, bin_width):
     return(ts)
 
 
-def aggregate_data(feature, bin_width, nmouse = 4, nstrain = 3):
+def aggregate_data(feature, bin_width, nmouse=4, nstrain=3):
     r"""
     Aggregate all the strains and mouses with any feature together
     in one dataframe. It combines the results you got from
@@ -417,7 +417,7 @@ def plot_strain_seasonal(strains, mouse, feature, bin_width, period_length):
 
     Examples
     --------
-    >>> res = plot_strain_seasonal(strain={0, 1, 2,}, mouse={0, 1, 2, 3},
+    >>> res = plot_strain_seasonal(strains={0, 1, 2,}, mouse={0, 1, 2, 3},
                                    feature="W",
                                    bin_width=30, period_length = 24)
     """
@@ -457,12 +457,12 @@ def plot_strain_seasonal(strains, mouse, feature, bin_width, period_length):
         ax.set_title('strain ' + str(strain))
         plt.xlabel('Time')
         plt.ylabel('Seasonal Variation')
-        plt.suptitle(feature, fontsize=20)
+    plt.suptitle(feature, fontsize=20)
     fig.show()
     return(fig)
 
 
-def mix_strain(data, feature, print_opt = True, nstrain = 3, range = (3, 12)):
+def mix_strain(data, feature, print_opt=True, nstrain=3, range=(3, 12)):
     """
     Fit the linear mixed model onto our aggregate data. The fixed effects
     are the hour, strain, interactions between hour and strain; The random
@@ -502,8 +502,8 @@ def mix_strain(data, feature, print_opt = True, nstrain = 3, range = (3, 12)):
             'Input value must in {"AS", "F", "M_AS", "M_IS", "W", "Distance"}')
     data["cycle"] = 0
     for i in range(nstrain):
-        result = Find_Cycle(feature = "W", strain = i, plot = False,
-                            search_range_find = range)
+        result = find_cycle(feature="W", strain=i, plot=False,
+                            search_range_find=range)
         cycle = result[0][0]
         data.loc[data["strain"] == i, "cycle"] = cycle
     b = pd.get_dummies(data["strain"])
@@ -528,7 +528,7 @@ def mix_strain(data, feature, print_opt = True, nstrain = 3, range = (3, 12)):
     like2 = mdf2.llf
     if print_opt:
         print(mdf2.summary())
-    fstat = 2*abs(like1 - like2)
+    fstat = 2 * abs(like1 - like2)
     p_v = chi2.pdf(fstat, df=2)
     return(p_v)
 
@@ -572,7 +572,7 @@ def lombscargle_visualize(periods, power, sig, N, cycle,
 
     """
     fig, ax = plt.subplots()
-    ax.plot(periods, power,color='steelblue')
+    ax.plot(periods, power, color='steelblue')
     ax.set(xlim=(0, 26), ylim=(0, max(cycle_power)),
            xlabel='Period (hours)',
            ylabel='Lomb-Scargle Power')
@@ -819,7 +819,7 @@ def compare_strain(feature, n_strain=3, bin_width=15, disturb_t=False):
         ax.set(xlim=(0, 26), ylim=(0, max(cycle_power)),
                xlabel='Period (hours)',
                ylabel='Lomb-Scargle Power')
-        ax.set_title('strain'+str(i))
+        ax.set_title('strain' + str(i))
         for i in sig:
             power_sig = -2 / (N - 1) * np.log(
                 1 - (1 - np.asarray(i)) ** (1 / 2 / N))
@@ -845,6 +845,6 @@ def compare_strain(feature, n_strain=3, bin_width=15, disturb_t=False):
                     ax.text(x=cycle[j], y=cycle_power[j],
                             s=r'$\bigstar$', ha='right', va='top')
 
-    plt.suptitle('Feature: '+feature, fontsize=20)
+    plt.suptitle('Feature: ' + feature, fontsize=20)
 
     return fig
