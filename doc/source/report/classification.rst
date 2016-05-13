@@ -172,7 +172,6 @@ Gamma is the Kernel coefficient for ‘rbf’, ‘poly’ and ‘sigmoid'. It de
 
 ***Model Assessment***
 
-Based on the performance 
 After tuning our parameters, we apply our models to testing set and compare the prediction labels with the true labels. There are mainly two ways to measure the quality of the prediction process, one is a confusion matrix and the other is percentage indicators including precision, recall, and F-1 measure. A confusion matrix is a specific table layout that allows visualization of the performance of an algorithm. Each row of the matrix represents the instances in a predicted class while each column represents the instances in an actual class. The name stems from the fact that it makes it easy to see if the system is confusing two classes (i.e. commonly mislabeling one as another). 
 [add precision, recall, F1 formula]
 Thus, precision for each label is the corresponding diagonal value divided by row total in the confusion matrix and recall is the diagonal value divided by column total. 
@@ -239,6 +238,26 @@ checked that whether our silhouette score is appropriate.
 Result
 -------------
 **Classification**
+
+For three models, after tuning the parameters and output the prediction result, we create the side-by-side barplot for the different measurement of accuracy, which are precision, recall and F1. 
+**Random Forest**
+Random Forest shows a very promising result. For each strain, prediction, recall and F-1 measure are very closed to each other. Except for predicting strain 15, all the other prediction has F-1 measure exceeding 0.8. 
+.. plot:: report/plots/plot_rf_result.py
+
+   Classification Performance of Random Forest
+We also select the most important features, including ASProbability_2, Distance_14, ASProbability_16, Distance_2, Food_4, MoveASIntensity_2, ASProbability_4, Distance_4, Distance_16.
+
+**Gradient Boosting**
+Gradient Boosting shows a decent performance on the prediction. There is no huge difference in precision and recall for predicting each strain, but bigger than Random Forest. It is shown that strain 3, 7 and 10 shows obvious higher prediction than recall.  Almost all the accuracy measurement is above 0.8. 
+.. plot:: report/plots/plot_gb_result.py
+
+   Classification Performance of Gradient Boosting
+
+**SVM**
+SVM model shows a very inconsistent performance on the prediction. For example, the precision for predicting strain 3,4,11,12,15 is 1 while the precision for predicting strain 6,9 is below 0.5. Although precision for predicting strain 3,11,12,15 is very high, the recall for predicting these strains are much lower, resulting in a low F-1 measurement. The high precision and low recall indicates that we can trust the classification judgements, however the low rate of recall indicates that SVM is very conservative. This might be good if we are worried about incorrectly classifying the strains. 
+.. plot:: report/plots/plot_svm_result.py
+
+   Classification Performance of SVM
 
 **Clustering**
 ***K-means***
