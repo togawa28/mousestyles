@@ -5,7 +5,7 @@ import pytest
 import numpy as np
 import pandas as pd
 
-from mousestyles.dynamics import plot_dynamics
+from mousestyles.visualization.dynamics import plot_dynamics
 
 
 def test_plot_dynamics_input():

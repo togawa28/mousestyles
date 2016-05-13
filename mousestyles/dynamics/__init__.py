@@ -6,7 +6,8 @@ from math import ceil
 from mousestyles import data
 
 
-def create_time_matrix(combined_gap=4, time_gap=1, days_index=137, verbose=False):
+def create_time_matrix(combined_gap=4, time_gap=1,
+                       days_index=137, verbose=False):
     r"""
     Return a time matrix for estimate the MLE parobability.
     The rows are 137 mousedays. The columns are time series
