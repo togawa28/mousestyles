@@ -198,7 +198,7 @@ def aggregate_movement(strain, mouse, bin_width):
     return(ts)
 
 
-def aggregate_data(feature, bin_width):
+def aggregate_data(feature, bin_width, nmouse = 4, nstrain = 3):
     r"""
     Aggregate all the strains and mouses with any feature together
     in one dataframe. It combines the results you got from
@@ -236,8 +236,8 @@ def aggregate_data(feature, bin_width):
             'Bin width (minutes) must be a non-negative integer below 1440')
 
     init = pd.DataFrame(columns=["mouse", "strain", "hour", feature])
-    for i in range(3):
-        for j in range(4):
+    for i in range(nstrain):
+        for j in range(nmouse):
             if feature == "Distance":
                 tmp = aggregate_movement(strain=i, mouse=j,
                                          bin_width=bin_width)
@@ -460,7 +460,7 @@ def plot_strain_seasonal(strains, mouse, feature, bin_width, period_length):
     return(fig)
 
 
-def mix_strain(data, feature, print_opt = True):
+def mix_strain(data, feature, print_opt = True, nstrain = 3, range = (3, 12)):
     """
     Fit the linear mixed model onto our aggregate data. The fixed effects
     are the hour, strain, interactions between hour and strain; The random
@@ -499,9 +499,9 @@ def mix_strain(data, feature, print_opt = True):
         raise ValueError(
             'Input value must in {"AS", "F", "M_AS", "M_IS", "W", "Distance"}')
     data["cycle"] = 0
-    for i in range(3):
+    for i in range(nstrain):
         result = Find_Cycle(feature = "W", strain = i, plot = False,
-                            search_range_find = (3, 12))
+                            search_range_find = range)
         cycle = result[0][0]
         data.loc[data["strain"] == i, "cycle"] = cycle
     b = pd.get_dummies(data["strain"])
