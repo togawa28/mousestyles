@@ -15,6 +15,7 @@ VERSION = '0.1dev'
 
 INSTALL_REQUIRES = [
     'numexpr>=2.5.2',
+    'gatspy>=0.3',
     'numpy>=1.10.1',
     'pandas>=0.17.0',
     'pytest>=2.9.1',
