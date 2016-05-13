@@ -146,7 +146,9 @@ However, if we let the plot time range from 1 to 100, all of the three types of 
 
 Users can also follow the example codes inside at mousestyles/doc/sources/report/plots - plot_dynamics0.py, plot_dynamics1.py, and plot_dynamics2.py - for more details.  
   
+  
 ::
+
    from mousestyles.data import load_time_matrix_dynamics
    from mousestyles.visualization.dynamics import plot_dynamics
    time_matrix = load_time_matrix_dynamics()
