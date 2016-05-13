@@ -62,6 +62,11 @@ the frequency or period, and modeling of rhythm patterns.
 
 - Modeling of rhythm patterns:
 
+  We are not only interested in the period length of circadian and
+  ultradian rhythms, but also the variation of features over time within the
+  discovered circles. To model the time trajectory of features, we propose 
+  to use seasonal decomposition and mixed effects model.
+
 Data Requirements
 -----------------
 
@@ -113,7 +118,6 @@ Methodology/Approach Description
 Seasonal decomposition
 **********************
 
-
 Seasonal decomposition is a very common method used in
 time series analysis. One of the main objectives for a decomposition is to
 estimate seasonal effects that can be used to create and present seasonally
@@ -136,6 +140,8 @@ Basic steps::
     3. Estimate seasonal factors by using the "de-trended" series
 
     4. Determine the "random" term
+
+The following plot shows the seasonal variation 
 
 .. plot:: report/plots/plot_24H_seasonal_AS.py
 
