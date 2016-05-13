@@ -150,30 +150,30 @@ Description
 
   Here we have two purposes, firstly we want to figure out if the effects from different mouses are significant. Secondly we want to figure out if the patterns for different strains are significantly different. To test the first one, we just need to use the t test and get the p value from the result by using the `statsmodels.formula.api` package. For the second one, we can perform the likelihood ratio test on the interaction terms.
 
-Result
-^^^^^^
-Firstly the summary of the full model result is below:(also take the Food feature as an example)
+Firstly the summary of the full model result is below:(also take the Food feature as an example). Here is the result that we fitted the second degree fucntion and since the cycles from the previous study are very similar between strains so we did not include it here. We can see that the effects of the mouse from the same strain is not significant. However the p value here seems to indicate that the interation terms is not as significant as the other factors. So we consider to conduct likelihood ratio test.
 
 
-============  =================  ===========  ========  ======
-factors       Coef.              Std.Err.       z       P>|z|
-============  =================  ===========  ========  ======
-Intercept     -1311245600.366    2868292.58   -457.152  0.000
-hour                   -0.005    0.000        -11.649   0.000
-strain0           5990116.561    3103.119     457.152   0.000
-strain1           3491829.461    7638.225     457.152   0.000
-cycle           109224897.792    238924.702   457.152   0.000
-strain0:hour            0.002    0.001        4.294     0.000
-strain1:hour           -0.003    0.001        -4.526    0.000
-RE                      0.016
-============  =================  ===========  ========  ======
+=============  =======  ===========  ========  ======
+factors        Coef.     Std.Err.       z       P>|z|
+=============  =======  ===========  ========  ======
+Intercept      0.049     0.008        6.095     0.000
+hour           -0.005    0.001        14.961    0.000
+hour2          -0.001    0.000        -18.767   0.000
+strain0        -0.027    0.010        -2.624    0.009
+strain1        0.045     0.010        4.332     0.000
+strain0:hour   -0.002    0.002        -0.778    0.437
+strain1:hour   -0.004    0.000        -1.76     0.078
+strain0:hour2  0.000     0.000         2.019    0.043 
+strain1:hour2  0.000     0.000         0.540    0.589 
+RE             0.000     0.000
+=============  =======  ===========  ========  ======
 
-We can see that the effects of the mouse from the same strain is not significant. Also we did likelihood ratio test and found that the p values for 6 features below:
+Secondly we did likelihood ratio test between the two models: full model and reduced interaction terms model. We found that the p values for 6 features below:
 
 =======  ========  ========  =======  ========  ========
 Water    Food      AS        M_AS     M_IS      Distance
 =======  ========  ========  =======  ========  ========
-3.08e-9  1.40e-12  9.39e-12  5.11e-5  0.002     1.53e-8
+3.08e-9  2.50e-9   9.39e-12  5.11e-5  0.002     1.53e-8
 =======  ========  ========  =======  ========  ========
 
 We can see that the Water, Food, AS, M_AS, Distance have significantly different patterns for different strains.
