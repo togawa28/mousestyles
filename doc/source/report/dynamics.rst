@@ -112,7 +112,6 @@ The problem we are insteresting in here is whether the three strains of mice are
 
 ::
 
-    # data_df: 
     find_best_interval(data_df,strain=0)
     # (600, array([0, 0, 0, ..., 0, 0, 0]), 0.70509736459572225)
     find_best_interval(data_df,strain=1)
