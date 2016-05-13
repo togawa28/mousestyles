@@ -11,32 +11,31 @@ import pandas as pd
 def prep_data(strain, features, rseed=222):
     """
     Returns a list of 4: [train_y, train_x, test_y, test_x]
-        train_y: list of strain labels in train data sets,
-        train_x: list of features in train data sets,
-        test_y: list of strain labels in test data sets,
-        test_x: list of features in train data sets
+        train_y: pandas.Series of strain labels in train data sets,
+        train_x: pandas.DataFrame of features in train data sets,
+        test_y: pandas.Series of strain labels in test data sets,
+        test_x: pandas.DataFrame of features in train data sets
     Parameters
     ----------
-    strain: ndarray, shape of (1921,)
+    strain: pandas.Series
             classification labels
-    features: ndarray, shape of (1921, 99)
+    features: pandas.DataFrame
               classification features
     rseed: int, optional
            random seed for shuffling the data set to separate train and test
     Returns
     ----------
-    The list as specified
+    splitted data: list
+        A list of 4 as explained above
     """
-    # total: 21131 rows
+    # shuffle observations
     index = np.arange(features.shape[0])
     np.random.seed(rseed)
     np.random.shuffle(index)
     # split the dataset to 75% training and 25% testing
     sep = int(features.shape[0] * 0.75)
-    # total 15848 rows
     train_x = features.iloc[index[:sep]]
     train_y = strain.iloc[index[:sep]]
-    # total 5283 rows
     test_x = features.iloc[index[sep:]]
     test_y = strain.iloc[index[sep:]]
     return [train_y, train_x, test_y, test_x]
@@ -51,11 +50,11 @@ def fit_random_forest(train_y, train_x, test_x,
     cross validation, and accepts user-defined parameters.
     Parameters
     ----------
-    train_y: Series
+    train_y: pandas.Series
              labels of classification results, which are predicted strains.
-    train_x: DataFrame
+    train_x: pandas.DataFrame
              features used to predict strains in training set
-    test_x: DataFrame
+    test_x: pandas.DataFrame
             features used to predict strains in testing set
     n_estimators: list, optional
                   tuning parameter of RandomForest, which is the number of
@@ -67,7 +66,7 @@ def fit_random_forest(train_y, train_x, test_x,
                       the minimum importance of features
     Returns
     ----------
-    List of RandomForest results
+    RandomForest results: list
         The first element is the dataframe of prediction strain labels.
         The second element is the list of tuples of score and important
         features larger than the importance level.
@@ -109,8 +108,9 @@ def fit_random_forest(train_y, train_x, test_x,
     important_feature = []
     names = test_x.columns
     for i in range(len(imp)):
-        if sorted(zip(imp, names))[i][0] >= importance_level:
-            important_feature.append(sorted(zip(imp, names))[i])
+        sorted_imp = sorted(zip(imp, names))
+        if sorted_imp[i][0] >= importance_level:
+            important_feature.append(sorted_imp[i])
     # fit the best model
     clf.fit(train_x, train_y)
     # predict the testing data and convert to data frame
@@ -131,22 +131,22 @@ def fit_gradient_boosting(train_y, train_x, test_x,
     accepts user-defined parameters.
     Parameters
     ----------
-    train_y: Series
+    train_y: pandas.Series
              labels of classification results, which are predicted strains.
-    train_x: DataFrame
+    train_x: pandas.DataFrame
              features used to predict strains in training set
-    test_x: DataFrame
+    test_x: pandas.DataFrame
             features used to predict strains in testing set
     n_estimators: list, optional
                   tuning parameter of GradientBoosting, which is the number of
                   boosting stages to perform
     learning_rate: list, optional
-                 learning_rate shrinks the contribution of each tree
-                 learning_rate
+                   learning_rate shrinks the contribution of each tree
+                   learning_rate
     Returns
     ----------
-    DataFrame of GradientBoosting results based on testing strains.
-        Column: prediction strain labels
+    GradientBoosting results: pandas.DataFrame
+        Prediction strain labels
     """
     # input validation
     if n_estimators is not None:
@@ -195,11 +195,11 @@ def fit_svm(train_y, train_x, test_x, c=None, gamma=None):
     accepts user-defined parameters.
     Parameters
     ----------
-    train_y: Series
+    train_y: pandas.Series
              labels of classification results, which are predicted strains.
-    train_x: DataFrame
+    train_x: pandas.DataFrame
              features used to predict strains in training set
-    test_x: DataFrame
+    test_x: pandas.DataFrame
             features used to predict strains in testing set
     c: list, optional
        tuning parameter of svm, which is penalty parameter of the error term
@@ -207,8 +207,8 @@ def fit_svm(train_y, train_x, test_x, c=None, gamma=None):
            tuning parameter of svm, which is kernel coefficient
     Returns
     ----------
-    DataFrame of svm results based on testing strains.
-        Column: prediction strain labels
+    svm results: pandas.DataFrame
+        Prediction strain labels
     """
     # input validation
     if c is not None:
@@ -249,14 +249,14 @@ def get_summary(predict_labels, true_labels):
     strains.
     Parameters
     ----------
-    predict_labels: DataFrame
+    predict_labels: pandas.DataFrame
                     prediction strain labels
-    true_labels: Series
+    true_labels: pandas.Series
                  true strain labels, used to measure the prediction
                  accuracy
     Returns
     ----------
-    DataFrame of classification result summary, shape(16,3).
+    classification result summary: pandas.DataFrame, shape (16,3).
        16 rows, for each strain 0-15
        Column 0: precision
        Column 1: recall
