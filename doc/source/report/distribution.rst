@@ -305,6 +305,34 @@ Small, next to 0.0005. This is a strong evidence that we should not think
 power law is a better fit than exponential. Thus, we conclude that we should
 use exponential to fit and do further research.
 
+Mann-Whitney U test on distances:
+---------------------------------
+Given the distribution of distances, we perform a hypothesis test on the distributions of these distances. The goal is to identify some similarity on mice in the same strain when only looking at the distances covered every second.
+
+To do so we chose a non parametric test since we only have access to sample distributions. The Kolmogorov Smirnov test is a very popular test used in this case but I chose to explore the Mann-Whitney U test instead for the following reasons:
+
+- The KS test is sensitive to any differences in the two distributions. Substantial differences in shape, spread or median will result in a small P value. (see here for more details). Here we can feel that the distances have high variance. Therefore, the KS test would be too strict for our study.
+
+- In contrast, the MW test is mostly sensitive to changes in the median, which is less sensitive of noise in the case of mice.
+
+The MannWhitney U test is a test for assessing whether two independent samples come from the same distribution. The null hypothesis for this test is that the two groups have the same distribution, while the alternative hypothesis is that one group has larger (or smaller) values than the other.
+
+- $H_0$: $P(X>Y)=P(Y>X)$
+- $H_1$: $P(X>Y)\neq P(Y>X)$
+
+.. figure:: figure/strains_cor.png
+   :alt: alt tag
+
+   MW U test p-values for different strains of mice. Dark blue is close to 1 and very light blue is close to zero.
+
+.. figure:: figure/allmice_cor.png
+   :alt: alt tag
+
+   MW U test p-values for mice within the same strains. Dark blue is close to 1 and very light blue is close to zero.
+
+
+From the figures above, we notice that in terms of p-values, strain 1 is closer to strain 0 than strain 2. But we also notice that the p-values are still very low, which means that there is evidence for rejecting $H_0$. Moreover, when looking closer within each strain of mice, we can see that mice have different distributions too. Therefore, based on the inter-distances,  we cannot conclude that mice behave similarly depending on their strains.
+
 Further Work:
 -------------
 Here are some further research we could do. However, because of 
