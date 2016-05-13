@@ -1,92 +1,66 @@
 .. _ultradian:
 
-Ultradian Analysis
-==================
+Ultradian and Circadian Analysis
+================================
 
 Statement of problem
 --------------------
 
-Ultradian rhythm is widely observed in mammalian behavioral patterns.
-Ultradian analysis aims to find the time-specific patterns in behavioral
-records, without specifying the length of cycle in advance (but need to be
-within 1 hour to 1 day). Typical ultradian period for rats includes 4, 12 and
-24 hours. For example, we expect rats to be inactive in the nighttime.
-Ingestions and movements mostly happened in the daytime. It would be
-informative to study the ultradian cycle of the behavior of mouse and we need
-to answer the following questions for this study:
+Ultradian and circadian rhythm are widely observed in mammalian 
+behavioral patterns. The ultradian analysis aims to 
+find the time-specific patterns in behavioral
+records, without specifying the length of the cycle in advance (but need to be
+within 1 hour to 1 day). The typical ultradian period includes 8 and 12 hours. 
+The circadian rhythm refers to a roughly 24-hour cycle. 
+For example, we expect the rats to be inactive in the nighttime.
+And ingestions and movements mostly happened in the daytime. 
 
-What is the variable of interest for the periodic patterns? 
+The variables of interests are the summary statistics of mouse activity 
+including food (F) and water (W) ingestion, distance traveled (D), Active 
+State probability (AS), movement inside the home base (M_IS) and 
+movement outside the home base (M_AS). We may also consider spatial variables, 
+for example, to spatially discrete the data to cells each with its primary 
+functions such as food cell, water cell, and examine 
+ultradian cycle of the spatial probability densities 
+of the occupancy time in each cell.
 
-- Summary of activity: Food and water ingestion, distance traveled , movement
-  intensity, AS probability.
+In this report, we assume strain to be the primary influence on the variation of 
+ultradian rhythms across individual mouse and examine the 
+difference in rhythms across strains. Currently, we lack 
+basic information such as weight, age, and gender. With more data available 
+in the future, we may look into the cycle for each mouse and detect the most
+important factors influencing the ultradian rhythms.
 
-- Spatial variable: Spatially discrete the data to cells each with its primary
-  functions such as food cell, water cell, etc. Examine ultradian cycle of the
-  spatial probability densities of the occupancy time in each cells.
-
-How to subset the data?
-
-- Basic subset: 16 strains.
-
-- Strains may not be the primary influence for the variation of ultradian
-  rhythms. We may look into the cycle for each mouse and detect the most
-  important factors influencing the ultradian rhythms.
-
-How to choose the frequency or period ?
-
-- The Lomb-Scargle (LS) periodogram spectral analysis technique, a widely used
-  tool in period detection and frequency analysis.
-
-What is the connection with other subprojects?
-
-- Ultradian rhythms could be treated as one feature for clustering the 16
-  strains. We may also subset the data using the results of the cluster and
-  analysis the rhythm similarities and differences across clusters.
+The ultradian and circadian analysis is closely related to other subprojects.
+Ultradian rhythms could be treated as one feature for clustering the 16 
+strains. We may also subset the data using the results of the cluster and 
+analysis the rhythm similarities and differences across clusters.
 
 Statement of statistical problem
 --------------------------------
 
-How to determine the optimal bin intervals for constructing the time series?
+Our statistical problems are three parts: data preparation, choice of 
+the frequency or period, and modeling of rhythm patterns.
 
--  The bin interval may vary according to the frequency. Bin interval
-   examples: 5 min, 30 min, 1 hour etc. Need to look into the data.
+- Data preparation: mouse behaviour are recorded based on time intervals 
+  or time points. For example, the beginning and ending time 
+  stamp of one food ingestion, or the coordinates of mouse
+  position at a specific time point. We aggregate the 
+  data based on given time bins and thus convert the raw data to time series. 
+  Then how to determine the optimal bin intervals for 
+  constructing the time series? Bin interval examples includes 
+  5 min, 30 min, 1 hour etc.
 
-How to test the autocorrelation coefficient for the data and assess the model?
+- Choice of the frequency or period: For ultradian rhythms, 
+  significant period length may vary according to the 
+  variables of interests. The Lomb-Scargle (LS) periodogram spectral 
+  analysis technique, a widely used tool in 
+  period detection and frequency analysis, is applied.
 
--  Use the AIC to select best time lags for the time series model and
-   the K statistics to test the goodness of fit.
+- Modeling of rhythm patterns: 
 
-For longitudinal data analysis, how to build the model? Which is the fixed
-effect or random effect?
-
-Exploratory Analysis
---------------------
-
-Data investigation
-
--  Think about known/expected cycles - time to digest, IS/AS cycle,
-   etc.
--  Try to investigate cycles that are greater than 24 hours to avoid
-   missing cycles.
--  During the acclimatization period, investigate difference in
-   cycles.
-
-Plots
-
--  Plots for determining optimal bin intervals for constructing the
-   time series.
--  Plots for discovering the frequency or period.
--  General time series plots for getting intuitions for each
-   variables.
-
-Models
-
--  Usage of Lomb-Scargle (LS) periodogram spectral analysis
-   technique, a widely used tool in period detection and frequency
-   analysis
-
-Data Requirements Description
------------------------------
+Data Requirements
+-----------------
 
 Input: records for each strains (total of 16), each feature of interest (food,
 water, distance, active\_state probability, ...), in a duration of 12 days
@@ -100,6 +74,9 @@ above.
 
 Output: different patterned visualization for each feature, with the
 appropriate time bins that presents the most significant ultradian pattern.
+
+Exploratory Analysis
+--------------------
 
 Methodology/Approach Description
 --------------------------------
@@ -130,6 +107,10 @@ Basic steps::
     3. Estimate seasonal factors by using the "de-trended" series
 
     4. Determine the "random" term
+
+.. plot:: report/plots/plot_24H_seasonal_AS.py  
+
+   Seasonal variation of AS probability (circadian).
 
 **************************
 Longitudinal data analysis
@@ -204,3 +185,10 @@ Reference
 -  Stephenson, Richard, et al. "Sleep-Wake Behavior in the Rat Ultradian
    Rhythms in a Light-Dark Cycle and Continuous Bright Light." Journal
    of biological rhythms 27.6 (2012): 490-501.
+
+Appendix
+--------
+
+.. plot:: report/plots/plot_24H_seasonal_features.py  
+
+   Seasonal variation of other features (circadian).
