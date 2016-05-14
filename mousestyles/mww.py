@@ -15,16 +15,16 @@ def get_pvalues(m):
     This function takes a bunch of sampled distributions and compute the
     p-values of the two sided Mann Whitney U test for each couple of samples.
 
-    The Mann–Whitney U test is a test for assessing whether two independent
+    The Mann-Whitney U test is a test for assessing whether two independent
     samples come from the same distribution. The null hypothesis for this test
     is that the two groups have the same distribution, while the alternative
     hypothesis is that one group has larger (or smaller) values than the other.
 
-    Null hypothesis H0: P(X>Y)=P(Y>X).
-    Alternative H1: not H0.
+    Null hypothesis $H_0$: $P(X>Y)=P(Y>X)$.
+    Alternative $H_1: not $H_0$.
 
     The Mann-Whitney U test is similar to the Wilcoxon test, but can be used to
-    compare multiple samples that aren’t necessarily paired.
+    compare multiple samples that aren't necessarily paired.
 
     Parameters
     ----------
@@ -43,7 +43,7 @@ def get_pvalues(m):
 
     References:
     -----------
-        1. Mann–Whitney U test:
+        1. Mann-Whitney U test:
             http://tqmp.org/RegularArticles/vol04-1/p013/p013.pdf
         2. Non parametric tests
             http://www.mit.edu/~6.s085/notes/lecture5.pdf
@@ -63,7 +63,7 @@ def get_pvalues(m):
 def MWW_mice(strain, step=50, verbose=False):
     """
     Compare distributions of distances among mice of the same strain.
-    Use p-values of the Mann–Whitney U test.
+    Use p-values of the Mann-Whitney U test.
 
     Parameters
     ----------
@@ -76,7 +76,7 @@ def MWW_mice(strain, step=50, verbose=False):
 
     Returns
     -------
-    cor: pvalues of the Mann–Whitney U test for each couple of distances
+    cor: pvalues of the Mann-Whitney U test for each couple of distances
         samples among mice of the corresponding strain.
 
     Examples:
@@ -132,7 +132,7 @@ def MWW_strains(step=50, verbose=False):
     """
     Compare distributions of distances among strains. Proceed as if
     the mice in each strain are i.i.d. samples, and compare the p-values
-    of the Mann–Whitney U test.
+    of the Mann-Whitney U test.
 
     Parameters
     ----------
@@ -142,7 +142,7 @@ def MWW_strains(step=50, verbose=False):
 
     Returns
     -------
-    cor: pvalues of the Mann–Whitney U test for each couple of distances
+    cor: pvalues of the Mann-Whitney U test for each couple of distances
         samples among strains of mice.
 
     Examples:
@@ -165,7 +165,7 @@ def MWW_strains(step=50, verbose=False):
 
 def plot_cor(data):
     """
-    Plot the p-values outputed by the Mann–Whitney U test using
+    Plot the p-values outputed by the Mann-Whitney U test using
     a correlation matrix representation.
 
     Parameters
