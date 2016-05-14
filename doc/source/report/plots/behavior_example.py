@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 import mousestyles.behavior as bh
 import numpy as np
 import pandas as pd
@@ -9,7 +11,7 @@ mouse2_trees = [bh.compute_tree('F', 0, 1, d) for d in range(11)]
 print(mouse1_trees[0])
 print(mouse2_trees[0])
 
-# merge each the trees for the two mice
+# merge each of the trees for the two mice
 mouse1_merged = bh.BehaviorTree.merge(*mouse1_trees)
 mouse2_merged = bh.BehaviorTree.merge(*mouse2_trees)
 print(mouse1_merged)
