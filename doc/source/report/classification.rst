@@ -163,7 +163,13 @@ Gamma is the Kernel coefficient for ‘rbf’, ‘poly’ and ‘sigmoid'. It de
 *Model Assessment*
 
 After tuning our parameters, we apply our models to testing set and compare the prediction labels with the true labels. There are two major ways to measure the quality of the prediction process, one is a confusion matrix and the other is percentage indicators including precision, recall, and F-1 measure. A confusion matrix is a specific table layout that allows visualization of the performance of an algorithm. Each row of the matrix represents the instances in a predicted class while each column represents the instances in an actual class. The name stems from the fact that it makes it easy to see if the system is confusing two classes (i.e. commonly mislabeling one as another). 
-[add precision, recall, F1 formula]
+
+precision(P) = $\frac{\# label\ y\ \ predicted\ correctly}{\# label\ y\ predicted}$
+
+recall(R) = $\frac{\# label\ y\ \ predicted\ correctly}{\# label\ y\ true}$
+
+F-1 = $\frac{2*P*R}{P+R}$
+
 Thus, precision for each label is the corresponding diagonal value divided by row total in the confusion matrix and recall is the diagonal value divided by column total. 
 
 **Clustering**
@@ -235,12 +241,6 @@ Result
 **Classification**
 
 For three models, after tuning the parameters and output the prediction result, we create the side-by-side barplot for the different measurement of accuracy, which are precision, recall and F1. 
-
-precision(P) = $\frac{\# label\ y\ \ predicted\ correctly}{\# label\ y\ predicted}$
-
-recall(R) = $\frac{\# label\ y\ \ predicted\ correctly}{\# label\ y\ true}$
-
-F-1 = $\frac{2*P*R}{P+R}$
 
 *Random Forest*
 
