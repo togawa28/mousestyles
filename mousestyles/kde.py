@@ -38,4 +38,4 @@ def kde(x, x_grid=np.linspace(0, 3, 300)):
     log_pdf = kde_skl.score_samples(x_grid[:, np.newaxis])
     # transform the fuction score function to density
     pdf = np.exp(log_pdf)
-    return(pdf)
+    return pdf
