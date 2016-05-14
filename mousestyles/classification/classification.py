@@ -1,3 +1,6 @@
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
+
 from sklearn.grid_search import GridSearchCV
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import StandardScaler
@@ -119,7 +122,7 @@ def fit_random_forest(train_y, train_x, test_x,
     prediction.columns = ['predict_strain']
     print('The best RandomForest Model is:')
     print(clf)
-    return(prediction, important_feature)
+    return prediction, important_feature
 
 
 def fit_gradient_boosting(train_y, train_x, test_x,
@@ -184,7 +187,7 @@ def fit_gradient_boosting(train_y, train_x, test_x,
     prediction.columns = ['predict_strain']
     print('The best GradientBoosting Model is:')
     print(clf)
-    return(prediction)
+    return prediction
 
 
 def fit_svm(train_y, train_x, test_x, c=None, gamma=None):
@@ -239,7 +242,7 @@ def fit_svm(train_y, train_x, test_x, c=None, gamma=None):
     prediction.columns = ['predict_strain']
     print('The best SVM Model is:')
     print(clf)
-    return(prediction)
+    return prediction
 
 
 def get_summary(predict_labels, true_labels):
@@ -276,16 +279,16 @@ def get_summary(predict_labels, true_labels):
         prediction_accurate_count_matrix["rowTotal"]
     # get the precision list
     precision = [prediction_accurate_rate_matrix.T.iloc[i, i]
-                 for i in range(prediction_accurate_rate_matrix.shape[1]-1)]
+                 for i in range(prediction_accurate_rate_matrix.shape[1] - 1)]
     prediction_accurate_rate_matrix = prediction_accurate_count_matrix /\
         prediction_accurate_count_matrix.ix["colTotal"]
     # get the recall list
     recall = [prediction_accurate_rate_matrix.T.iloc[i, i]
-              for i in range(prediction_accurate_rate_matrix.shape[1]-1)]
+              for i in range(prediction_accurate_rate_matrix.shape[1] - 1)]
     # get the F1 list
-    f1 = [2*precision[i]*recall[i]/(precision[i]+recall[i])
-          for i in range(prediction_accurate_rate_matrix.shape[1]-1)]
+    f1 = [2 * precision[i] * recall[i] / (precision[i] + recall[i])
+          for i in range(prediction_accurate_rate_matrix.shape[1] - 1)]
     summary = pd.concat([pd.DataFrame(precision),
                          pd.DataFrame(recall), pd.DataFrame(f1)], axis=1)
     summary.columns = ['precision', 'recall', "F1_score"]
-    return(summary)
+    return summary

@@ -1,7 +1,7 @@
 .. _path:
 
-Exploration & Path Diversity
-============================
+Exploration and Path Diversity
+==============================
 
 Statement of Problem
 --------------------
@@ -61,16 +61,16 @@ water locations of the cage.
 
 .. figure:: figure/path_first_day.png
 
-Data Requirements
------------------
+Data
+----
 
 The data required to perform our analysis included the ``<x, y, t>``
 coordinates for the mice as well as a boolean indicating whether the mouse
 was situated in its home base. Additionally, we required the daily coordinates
 of the home base for each mouse.
 
-Methodology/Approach Description
---------------------------------
+Methodology
+-----------
 
 **Step 1** : Define “Path”
 
@@ -160,8 +160,8 @@ sensor data.
 
 .. figure:: figure/dist_angle.png
 
-Future Studies
----------------
+Future Work
+-----------
 
 In the future, we would like to explore the following areas:
 
@@ -210,8 +210,8 @@ noted an instance in the data where the coordinates from (t) to (t+1) did not
 change, but resulted in a new observation. This was accounted for in the data
 cleaning process.
 
-Reference reading:
-------------------
+Reference Reading
+-----------------
 
 -  Spatial memory: the part of memory that is responsible for recording
    information about one's environment and its spatial orientation

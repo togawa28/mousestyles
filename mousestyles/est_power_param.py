@@ -1,4 +1,5 @@
-from __future__ import print_function, absolute_import, division
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
 
 import numpy as np
 import pandas as pd
@@ -36,7 +37,7 @@ def getdistance(strain, mouse, day):
     distance_vector = np.sqrt(np.diff(xcood)**2 + np.diff(ycood)**2)
     msk = distance_vector > 1
     cut_dist = distance_vector[msk]
-    return(cut_dist)
+    return cut_dist
 
 
 def fit_powerlaw(strain, mouse, day):

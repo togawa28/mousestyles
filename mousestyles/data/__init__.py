@@ -1,4 +1,5 @@
-from __future__ import print_function, absolute_import, division
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
 
 import os as _os
 
@@ -565,5 +566,5 @@ def load_time_matrix_dynamics():
     """
     return pd.read_csv(
         _os.path.join(
-           data_dir,
-           'time_matrix.csv'))
+            data_dir,
+            'time_matrix.csv'))

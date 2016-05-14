@@ -1,4 +1,5 @@
-from __future__ import print_function, absolute_import, division
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
 
 import pandas as pd
 import numpy as np
@@ -84,4 +85,4 @@ def smooth_noise(movement, paths, angle_threshold, delta_t):
     new_movement = movement.drop(drop_ind)
     new_movement.index = range(len(new_movement))
 
-    return(new_movement)
+    return new_movement

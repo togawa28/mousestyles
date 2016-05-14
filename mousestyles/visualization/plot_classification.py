@@ -1,3 +1,6 @@
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
+
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -23,16 +26,15 @@ def plot_performance(result):
     precision = result.iloc[:, 0]
     rects1 = ax.bar(ind, precision, width, color='Coral')
     recall = result.iloc[:, 1]
-    rects2 = ax.bar(ind+width, recall, width, color='LightSeaGreen')
+    rects2 = ax.bar(ind + width, recall, width, color='LightSeaGreen')
     f1 = result.iloc[:, 2]
-    rects3 = ax.bar(ind+width*2, f1, width, color='DodgerBlue')
+    rects3 = ax.bar(ind + width * 2, f1, width, color='DodgerBlue')
     ax.set_ylabel('Performance Measures')
     ax.set_xlabel('Strains')
-    ax.set_xticks(ind+width)
+    ax.set_xticks(ind + width)
     ax.set_xticklabels(range(16))
     ax.legend((rects1[0], rects2[0], rects3[0]), ('precision', 'recall', 'F1'))
     plt.show()
-    return()
 
 
 def plot_comparison(comparison):
@@ -57,14 +59,13 @@ def plot_comparison(comparison):
     rf = comparison.iloc[:, 0]
     rects1 = ax.bar(ind, rf, width, color='Coral')
     gb = comparison.iloc[:, 1]
-    rects2 = ax.bar(ind+width, gb, width, color='LightSeaGreen')
+    rects2 = ax.bar(ind + width, gb, width, color='LightSeaGreen')
     svm = comparison.iloc[:, 2]
-    rects3 = ax.bar(ind+width*2, svm, width, color='DodgerBlue')
+    rects3 = ax.bar(ind + width * 2, svm, width, color='DodgerBlue')
     ax.set_ylabel('F-1 measures')
     ax.set_xlabel('Strains')
-    ax.set_xticks(ind+width)
+    ax.set_xticks(ind + width)
     ax.set_xticklabels(range(16))
     ax.legend((rects1[0], rects2[0], rects3[0]),
               ('RandomForest', 'GradientBoosting', 'SVM'))
     plt.show()
-    return()

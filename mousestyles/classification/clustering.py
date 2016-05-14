@@ -1,3 +1,6 @@
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
+
 from scipy.cluster.hierarchy import linkage
 from sklearn.cluster import AgglomerativeClustering, KMeans
 from sklearn import metrics
@@ -40,7 +43,7 @@ def prep_data(mouse_data, melted=False, std=True, rescale=True):
         column's maximum)
 
     Returns
-    ----------
+    -------
     The ndarray as specified
     """
     if melted:
@@ -57,13 +60,13 @@ def prep_data(mouse_data, melted=False, std=True, rescale=True):
     mouse_dayavgstd_scl = np.hstack(
         [mouse_dayavgstd[:, 0:2], mouse_dayavgstd_X_scl])
     if (std is False and rescale is False):
-        return(mouse_dayavg)
+        return mouse_dayavg
     elif (std is True and rescale is True):
-        return(mouse_dayavgstd)
+        return mouse_dayavgstd
     elif (std is False and rescale is True):
-        return(mouse_dayavgstd_scl[:, 0:(mouse_dayavg.shape[1])])
+        return mouse_dayavgstd_scl[:, 0:(mouse_dayavg.shape[1])]
     else:
-        return(mouse_dayavgstd_scl)
+        return mouse_dayavgstd_scl
 
 
 # model fitting functions
@@ -101,7 +104,7 @@ def get_optimal_hc_params(mouse_day):
 
     # determine the distance method
     method, dist = method_dists[np.argmax(cs)]
-    return([method, dist])
+    return [method, dist]
 
 
 def fit_hc(mouse_day_X, method, dist, num_clusters=range(2, 17)):
@@ -139,7 +142,7 @@ def fit_hc(mouse_day_X, method, dist, num_clusters=range(2, 17)):
             mouse_day_X, labels, metric=dist))
         cluster_labels.append(list(labels))
 
-    return([silhouettes, cluster_labels])
+    return [silhouettes, cluster_labels]
 
 
 def get_optimal_fit_kmeans(mouse_X, num_clusters, raw=False):
@@ -158,6 +161,7 @@ def get_optimal_fit_kmeans(mouse_X, num_clusters, raw=False):
         range of number of clusters
     raw: a boolean with default is False
        False if using the 170 * M array
+
     Returns
     -------
     A list of 2: [silhouettes, cluster_labels]
@@ -178,7 +182,7 @@ def get_optimal_fit_kmeans(mouse_X, num_clusters, raw=False):
                 mouse_X, labels, metric="euclidean",
                 sample_size=sample_amount))
         cluster_labels.append(list(labels))
-    return([silhouettes, cluster_labels])
+    return [silhouettes, cluster_labels]
 
 
 def cluster_in_strain(labels_first, labels_second):
@@ -219,4 +223,4 @@ def cluster_in_strain(labels_first, labels_second):
         for label_1 in np.unique(labels_first):
             count_list.append(sum(label_1_sub == label_1))
         count_data[label_2] = count_list
-    return(count_data)
+    return count_data

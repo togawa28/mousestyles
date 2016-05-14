@@ -1,4 +1,5 @@
-from __future__ import print_function, absolute_import, division
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
 
 import numpy as np
 
@@ -71,4 +72,4 @@ def path_index(movement, stop_threshold, min_path_length):
         i += 1
     path = [p for p in path if (p[1] - p[0]) > min_path_length]
 
-    return(path)
+    return path

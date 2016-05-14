@@ -1,4 +1,5 @@
-from __future__ import print_function, absolute_import, division
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
 
 import pandas as pd
 
@@ -91,4 +92,4 @@ def detect_noise(movement, paths, angle_threshold, delta_t):
 
         noise_path = noise_path.append(path_obj.noise)
 
-    return(noise_path)
+    return noise_path

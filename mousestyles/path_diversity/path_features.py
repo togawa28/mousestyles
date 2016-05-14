@@ -1,4 +1,6 @@
-from __future__ import print_function, absolute_import, division
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
+
 import numpy as np
 import pandas as pd
 import math
@@ -42,14 +44,14 @@ def compute_accelerations(speeds, timestamps):
 
     speeds_diff = [x - y for x, y in zip(speeds[:len(speeds)], speeds[1:])]
     time_diffs = [x - y for x, y in zip(timestamps[:len(timestamps) - 1],
-                  timestamps[2:])]
+                                        timestamps[2:])]
 
     test = "timestamps should not contain same times in i th and i+2 th rows."
     if np.count_nonzero(time_diffs) is not len(time_diffs):
         raise ValueError(test)
 
     accel = [v / t for v, t in zip(speeds_diff, time_diffs)]
-    return(accel)
+    return accel
 
 
 def angle_between(v1, v2):
@@ -151,4 +153,4 @@ def compute_angles(path_obj, radian=False):
     # the first and last elements should be None
     angles.insert(len(angles), None)
     angles.insert(0, None)
-    return(angles)
+    return angles

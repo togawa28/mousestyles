@@ -44,10 +44,26 @@ mousestyles.visualization.plot_clustering module
     :undoc-members:
     :show-inheritance:
 
+mousestyles.visualization.plot_lomb_scargle module
+--------------------------------------------------
+
+.. automodule:: mousestyles.visualization.plot_lomb_scargle
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 mousestyles.visualization.plot_path module
 ------------------------------------------
 
 .. automodule:: mousestyles.visualization.plot_path
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+mousestyles.visualization.plot_ultradian module
+-----------------------------------------------
+
+.. automodule:: mousestyles.visualization.plot_ultradian
     :members:
     :undoc-members:
     :show-inheritance:

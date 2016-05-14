@@ -3,7 +3,7 @@
 Ultradian and Circadian Analysis
 ================================
 
-Statement of problem
+Statement of Problem
 --------------------
 
 Ultradian and circadian rhythm are widely observed in mammalian
@@ -36,7 +36,7 @@ Ultradian rhythms could be treated as one feature for clustering the 16
 strains. We may also subset the data using the results of the cluster and
 analyze the rhythm similarities and differences across clusters.
 
-Statement of statistical problem
+Statement of Statistical Problem
 --------------------------------
 
 Our statistical problems are three parts: data preparation, choice of
@@ -44,31 +44,31 @@ the frequency or period, and modeling of rhythm patterns.
 
 - Data preparation:
 
-  Mouse behaviors are recorded based on time intervals
-  or time points, like the beginning and ending time
-  stamp of one food ingestion or the coordinates of mouse
-  position at a particular time point. We aggregate the
-  data based on given time bins and thus convert the raw data to time series.
-  Then how to determine the optimal bin intervals for
-  constructing the time series? Bin interval examples include
-  5 min, 30 min, 1 hour, etc.
+    Mouse behaviors are recorded based on time intervals
+    or time points, like the beginning and ending time
+    stamp of one food ingestion or the coordinates of mouse
+    position at a particular time point. We aggregate the
+    data based on given time bins and thus convert the raw data to time series.
+    Then how to determine the optimal bin intervals for
+    constructing the time series? Bin interval examples include
+    5 min, 30 min, 1 hour, etc.
 
 - Choice of the frequency or period:
 
-  For ultradian rhythms, the significant period length may vary according to the
-  variables of interests. The Lomb-Scargle (LS) periodogram spectral
-  analysis technique, a widely used tool in period detection and frequency
-  analysis, is applied.
+    For ultradian rhythms, the significant period length may vary according to the
+    variables of interests. The Lomb-Scargle (LS) periodogram spectral
+    analysis technique, a widely used tool in period detection and frequency
+    analysis, is applied.
 
 - Modeling of rhythm patterns:
 
-  We are not only interested in the period length of circadian and
-  ultradian rhythms, but also the variation of features over time within the
-  discovered circles. To model the time trajectory of features, we propose
-  to use seasonal decomposition and mixed effects model.
+    We are not only interested in the period length of circadian and
+    ultradian rhythms, but also the variation of features over time within the
+    discovered circles. To model the time trajectory of features, we propose
+    to use seasonal decomposition and mixed effects model.
 
-Data Requirements
------------------
+Data
+----
 
 In order to retrieve the data needed for analyzing mouse ultradian behaviors, we
 get input from users, including features (water, food, active state, etc.),
@@ -93,24 +93,24 @@ intervals and values including feature data (such as food/water consumption,
 active state time as well as movement distance).
 
 - Input:
-  records for each strain (total of 16), each feature of interest (food,
-  water, distance, active\_state probability, ...), in a duration of 12 days
-  (excluding 4 acclimation days).
+    records for each strain (total of 16), each feature of interest (food,
+    water, distance, active\_state probability, ...), in a duration of 12 days
+    (excluding 4 acclimation days).
 
 - Processed:
-  using one-minute time bins of movement records to binary score the
-  activity into 0 (IS: inactive state) and 1 (AS: active state); using
-  thirty-minute bins of food records to calculate the amount of chows consumed by
-  mice; using LS periodogram technique to select the appropriate time bins for
-  above.
+    using one-minute time bins of movement records to binary score the
+    activity into 0 (IS: inactive state) and 1 (AS: active state); using
+    thirty-minute bins of food records to calculate the amount of chows consumed by
+    mice; using LS periodogram technique to select the appropriate time bins for
+    above.
 
 - Output:
-  different patterned visualization for each feature, with the
-  appropriate time bins that present the most significant ultradian pattern.
+    different patterned visualization for each feature, with the
+    appropriate time bins that present the most significant ultradian pattern.
 
 
-Methodology/Approach Description
---------------------------------
+Methodology
+-----------
 
 **********************
 Seasonal decomposition
@@ -165,7 +165,7 @@ fitting of sine waves. Basically, we want to fit sine waves of the form:
 
 .. math::
 
-   y=a\cos\omega t+b\sin\omega t
+    y=a\cos\omega t+b\sin\omega t
 
 While standard fitting procedures require the solution of a set of linear
 equations for each sampled frequency, the Lomb-Scargle method provides an
@@ -199,14 +199,14 @@ shows a rather different pattern.
 
 .. plot:: report/plots/plot_LSSeasonal.py
 
-   The ultradian analysis: seasonal decomposition using best periods returned by
-   Lomb Scargle periodogram. For "AS" feature (active state probability), 12 hours
-   is the common significant periods for all 3 strains (with p values smaller
-   than 0.001). For "M_IS" feature (movement time inside home base), 8 hours
-   appears to be the common significant periods for all 3 strains (with p values
-   smaller than 0.01). There are certain kinds of consistent patterns within each
-   strain. However, the signals are not as strong as in circadian ones (24 hours)
-   shown in Seasonal decomposition and Appendix parts.
+    The ultradian analysis: seasonal decomposition using best periods returned by
+    Lomb Scargle periodogram. For "AS" feature (active state probability), 12 hours
+    is the common significant periods for all 3 strains (with p values smaller
+    than 0.001). For "M_IS" feature (movement time inside home base), 8 hours
+    appears to be the common significant periods for all 3 strains (with p values
+    smaller than 0.01). There are certain kinds of consistent patterns within each
+    strain. However, the signals are not as strong as in circadian ones (24 hours)
+    shown in Seasonal decomposition and Appendix parts.
 
 
 
@@ -217,39 +217,39 @@ Longitudinal data analysis
 
 -  Attempts for mixed models
 
-   The mixed model is frequently used for longitudinal analysis. We should
-   specify the random effects and fixed effects first. Since it is ultradian
-   analysis, we only need to focus on the hour factor and their cycle which
-   we can get from the previous LS test. The random effect is the mouse id.
-   We have four different mice in one strain and only want to compare the
-   different patterns among these three strains. So if we set the random
-   effect to be mouse id, the effects from different mouses will be
-   cancelled out and we can also test the significance of these effects.
-   The response variable will be one of the six features listed before.
-   After that we can use the mixed model to get the pattern of the
-   movements in different time period.
+    The mixed model is frequently used for longitudinal analysis. We should
+    specify the random effects and fixed effects first. Since it is ultradian
+    analysis, we only need to focus on the hour factor and their cycle which
+    we can get from the previous LS test. The random effect is the mouse id.
+    We have four different mice in one strain and only want to compare the
+    different patterns among these three strains. So if we set the random
+    effect to be mouse id, the effects from different mouses will be
+    cancelled out and we can also test the significance of these effects.
+    The response variable will be one of the six features listed before.
+    After that we can use the mixed model to get the pattern of the
+    movements in different time period.
 
 - Build the model
 
-  Take `Food` feature as an example. Here strain0 is a dummy variable
-  indicating whether the mouse belongs to strain 0 or not and similarly
-  for strain1. strain0hour and strain1hour indicate the interaction
-  terms, which we add in order to figure out whether the strain and
-  hour have some interaction effect in the Food feature.(`i denote ith
-  strain, j denote the jth mouse`)
+    Take `Food` feature as an example. Here strain0 is a dummy variable
+    indicating whether the mouse belongs to strain 0 or not and similarly
+    for strain1. strain0hour and strain1hour indicate the interaction
+    terms, which we add in order to figure out whether the strain and
+    hour have some interaction effect in the Food feature.(`i denote ith
+    strain, j denote the jth mouse`)
 
 .. math::
 
-  Food_{ij} = f(strain0_{ij} , strain1_{ij} , hour_{ij} , cycle_{ij}) + interactions + \beta_j mouse
+    Food_{ij} = f(strain0_{ij} , strain1_{ij} , hour_{ij} , cycle_{ij}) + interactions + \beta_j mouse
 
 - Perform significance test
 
-  Here we have two purposes. The first is to figure out if the effects from
-  different mouses are significant. The second is to figure out if the
-  patterns for different strains are significantly different. To test the
-  first one, we just need to use the t-test and get the p-value from the
-  result by using the `statsmodels.formula.api` package. package. For the
-  second one, we can perform the likelihood ratio test on the interaction terms.
+    Here we have two purposes. The first is to figure out if the effects from
+    different mouses are significant. The second is to figure out if the
+    patterns for different strains are significantly different. To test the
+    first one, we just need to use the t-test and get the p-value from the
+    result by using the `statsmodels.formula.api` package. package. For the
+    second one, we can perform the likelihood ratio test on the interaction terms.
 
 First, we look at the summary of the full model (also take the Food feature
 as an example). To get this result, we fit the second-degree function. Since
@@ -305,66 +305,66 @@ Appendix
 --------
 
 .. figure:: figure/SeasonW.png
-   :alt: alt tag
+    :alt: alt tag
 
-   Seasonal variation of other features (circadian). Strain0 and strain1 have
-   more obvious patterns than strain3, which is consistent with the findings in
-   longitudinal data analysis.
+    Seasonal variation of other features (circadian). Strain0 and strain1 have
+    more obvious patterns than strain3, which is consistent with the findings in
+    longitudinal data analysis.
 
 
 .. figure:: figure/SeasonF.png
-   :alt: alt tag
+    :alt: alt tag
 
-   Seasonal variation of other features (circadian).
+    Seasonal variation of other features (circadian).
 
 .. figure:: figure/SeasonDistance.png
-   :alt: alt tag
+    :alt: alt tag
 
-   Seasonal variation of other features (circadian).
+    Seasonal variation of other features (circadian).
 
 
 .. figure:: figure/SeasonM_AS.png
-   :alt: alt tag
+    :alt: alt tag
 
-   Seasonal variation of other features (circadian).
+    Seasonal variation of other features (circadian).
 
 .. figure:: figure/SeasonM_IS.png
-   :alt: alt tag
+    :alt: alt tag
 
-   Seasonal variation of other features (circadian). Strain0 and strain1 have
-   more obvious patterns than strain3, which is consistent with the findings in
-   longitudinal data analysis.
+    Seasonal variation of other features (circadian). Strain0 and strain1 have
+    more obvious patterns than strain3, which is consistent with the findings in
+    longitudinal data analysis.
 
 
 .. figure:: figure/LSW.png
-   :alt: alt tag
+    :alt: alt tag
 
-   Lomb scargle plot for different features. Different strains have different
-   ultradian periods, differing also in p-values. Here $O(N\log N)$
-   algorithms suffer an instability around 0 points while $O(N^2)$
-   algorithms can be more smooth. We here compare the significant ultradian
-   periods between strains and ignore the highest LS power appearing near
-   24 hours.
+    Lomb scargle plot for different features. Different strains have different
+    ultradian periods, differing also in p-values. Here $O(N\log N)$
+    algorithms suffer an instability around 0 points while $O(N^2)$
+    algorithms can be more smooth. We here compare the significant ultradian
+    periods between strains and ignore the highest LS power appearing near
+    24 hours.
 
 
 .. figure:: figure/LSF.png
-   :alt: alt tag
+    :alt: alt tag
 
 
 .. figure:: figure/LSDistance.png
-   :alt: alt tag
+    :alt: alt tag
 
 
 .. figure:: figure/LSM_AS.png
-   :alt: alt tag
+    :alt: alt tag
 
 
 .. figure:: figure/LSM_IS.png
-   :alt: alt tag
+    :alt: alt tag
 
-   Lomb scargle plot for different features. Different strains have different
-   ultradian periods, differing also in p-values. Here $O(N\log N)$
-   algorithms suffer an instability around 0 points while $O(N^2)$
-   algorithms can be more smooth. We here compare the significant ultradian
-   periods between strains and ignore the highest LS power appearing near
-   24 hours.
+    Lomb scargle plot for different features. Different strains have different
+    ultradian periods, differing also in p-values. Here $O(N\log N)$
+    algorithms suffer an instability around 0 points while $O(N^2)$
+    algorithms can be more smooth. We here compare the significant ultradian
+    periods between strains and ignore the highest LS power appearing near
+    24 hours.

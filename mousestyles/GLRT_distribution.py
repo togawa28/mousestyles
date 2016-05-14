@@ -1,4 +1,6 @@
-from __future__ import print_function, absolute_import, division
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
+
 
 import numpy as np
 from mousestyles import data
@@ -8,11 +10,9 @@ def random_powerlaw(n, a, seed=-1):
     """
     Random generate points of truncated power law.
 
-    Description
-    -----------
     The method we generate is to inverse Cumulative Density Function
     of truncated powerlaw function, and put random number draw from
-    Unif[0,1]. The theory behind it is F^{-1}(U)~F.
+    Unif[0,1]. The theory behind it is $F^{-1}(U) \sim F$.
 
     Parameters
     ----------
@@ -34,15 +34,13 @@ def random_powerlaw(n, a, seed=-1):
     if seed != -1:
         np.random.seed(seed)
     y = np.random.sample(n)
-    return((1 - y)**(-1 / (a - 1)))
+    return (1 - y)**(-1 / (a - 1))
 
 
 def random_exp(n, l, seed=-1):
     """
     Random generate points of truncated exponential.
 
-    Description
-    -----------
     The method we generate is to use the memorylessness property
     of exponential distribution. As the survival function of
     exponential distribution is always the same, for truncated
@@ -70,15 +68,13 @@ def random_exp(n, l, seed=-1):
     if seed != -1:
         np.random.seed(seed)
     y = np.random.exponential(1.0 / l, n)
-    return(y + 1)
+    return y + 1
 
 
 def hypo_powerLaw_null(strain, mouse, day, law_est=0, seed=-1):
     """
     Return the outcome from GLRT with null hypothesis law distribution.
 
-    Description
-    -----------
     This function used the Generalized Likelihood Ratio Test to test the
     goodness of fit: in other words, which distribution is more likely.
 
@@ -105,9 +101,9 @@ def hypo_powerLaw_null(strain, mouse, day, law_est=0, seed=-1):
     ----------
     strain : int
         the strain number of the mouse
-    mouse  : int
+    mouse : int
         the mouse number in its strain
-    day       :  int
+    day :  int
         the day number
     law_est: double (optional)
         the estimated parameter in law distribution
@@ -132,7 +128,7 @@ def hypo_powerLaw_null(strain, mouse, day, law_est=0, seed=-1):
     cut_dist = distance_vector[msk]
     if law_est == 0:
         law_est = 1 + len(cut_dist) * 1 / \
-                          (np.sum(np.log(cut_dist / np.min(cut_dist))))
+            (np.sum(np.log(cut_dist / np.min(cut_dist))))
     n = len(cut_dist)
     log_cut = np.log(cut_dist)
     sum_cut = np.sum(log_cut)
@@ -143,19 +139,18 @@ def hypo_powerLaw_null(strain, mouse, day, law_est=0, seed=-1):
         sum_sam = np.sum(sample)
         log_sam = np.log(sample)
         sum_log_sam = np.log(np.sum(log_sam))
-        tmp = n*(np.log(sum_sam-n)-sum_log_sam) - law_est*np.sum(log_sam)
+        tmp = n * (np.log(sum_sam - n) - sum_log_sam) - \
+            law_est * np.sum(log_sam)
         sample_stat.append(tmp)
     # critical_value = ss.mstats.mquantiles(sample_stat, prob = 0.05)[0]
     p_value = np.sum(sample_stat > test_stat) / len(sample_stat)
-    return (p_value)
+    return p_value
 
 
 def hypo_exp_null(strain, mouse, day, law_est=0, exp_est=0, seed=-1):
     """
     Return the outcome from GLRT with null hypothesis law distribution.
 
-    Description
-    -----------
     This function also used the Generalized Likelihood Ratio Test to test
     goodness of fit: in other words, which distribution is more likely.
 
@@ -211,7 +206,7 @@ def hypo_exp_null(strain, mouse, day, law_est=0, exp_est=0, seed=-1):
     cut_dist = distance_vector[msk]
     if law_est == 0:
         law_est = 1 + len(cut_dist) * 1 / \
-                        (np.sum(np.log(cut_dist / np.min(cut_dist))))
+            (np.sum(np.log(cut_dist / np.min(cut_dist))))
     if exp_est == 0:
         exp_est = len(cut_dist) / (np.sum(cut_dist) - len(cut_dist))
     n = len(cut_dist)
@@ -231,4 +226,4 @@ def hypo_exp_null(strain, mouse, day, law_est=0, exp_est=0, seed=-1):
         sample_stat.append(tmp)
     # critical_value = ss.mstats.mquantiles(sample_stat, prob = 0.95)[0]
     p_value = np.sum(sample_stat <= test_stat) / len(sample_stat)
-    return (p_value)
+    return p_value

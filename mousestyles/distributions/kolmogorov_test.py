@@ -1,4 +1,5 @@
-from __future__ import print_function, absolute_import, division
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
 
 import numpy as np
 from scipy import stats, optimize
@@ -40,7 +41,7 @@ def perform_kstest(x, distribution=stats.pareto,
     fit of the distribution using Kolmogorov-Smirnov test.
 
     The Kolmogorov-Smirnov test constructs the test statistic, which is defined
-    as \sup |F_n(x) - F(x)|, for F_n is the sample CDF, and F is the
+    as $\sup |F_n(x) - F(x)|$, for $F_n$ is the sample CDF, and F is the
     theoretical CDF. This statistics can be considered as a measure of
     distance between the sample distribution and the theoretical distribution.
     The smaller it is, the more similar the two distributions.
@@ -49,7 +50,7 @@ def perform_kstest(x, distribution=stats.pareto,
     statistic.
 
     The Pareto distribution is sometimes known as the Power Law distribution,
-    with the PDF:  b / x**(b + 1) for x >= 1, b > 0.
+    with the PDF:  $b / x**(b + 1)$ for $x >= 1, b > 0$.
     The truncated exponential distribution is the same as the rescaled
     exponential distribution.
 

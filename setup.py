@@ -75,9 +75,9 @@ if __name__ == "__main__":
                   "mousestyles.classification",
                   "mousestyles.classification.tests",
                   "mousestyles.dynamics", "mousestyles.dynamics.tests",
-                  "mousestyles.path_diversity", 
+                  "mousestyles.path_diversity",
                   "mousestyles.path_diversity.tests",
-                  "mousestyles.visualization", 
+                  "mousestyles.visualization",
                   "mousestyles.visualization.tests",
                   "mousestyles.ultradian", "mousestyles.ultradian.tests"],
 

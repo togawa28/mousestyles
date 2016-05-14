@@ -1,4 +1,5 @@
-from __future__ import print_function, absolute_import, division
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
 
 import numpy as np
 
@@ -58,13 +59,13 @@ def get_dist_speed(movement, start, end, return_array=True):
         or equal to total observations")
 
     if start == end:
-        return(0, 0)
+        return [0, 0]
 
-    x = movement['x'][start:(end+1)].ravel()
-    y = movement['y'][start:(end+1)].ravel()
+    x = movement['x'][start:(end + 1)].ravel()
+    y = movement['y'][start:(end + 1)].ravel()
 
     if return_array:
-        t = movement['t'][start:(end+1)].ravel()
+        t = movement['t'][start:(end + 1)].ravel()
         time = np.diff(t)
         dist = np.sqrt((x[1:] - x[:-1])**2 + (y[1:] - y[:-1])**2).tolist()
         speed = (dist / time).tolist()
@@ -74,4 +75,4 @@ def get_dist_speed(movement, start, end, return_array=True):
         dist = sum(np.sqrt((x[1:] - x[:-1])**2 + (y[1:] - y[:-1])**2))
         speed = dist / time
 
-    return([dist, speed])
+    return [dist, speed]

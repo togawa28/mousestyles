@@ -1,9 +1,15 @@
-from __future__ import print_function, absolute_import, division
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
 
 import pandas as pd
 import numpy as np
-from math import ceil
 from mousestyles import data
+
+
+try:
+    basestring
+except NameError:
+    basestring = str
 
 
 def create_time_matrix(combined_gap=4, time_gap=1,
@@ -51,7 +57,7 @@ def create_time_matrix(combined_gap=4, time_gap=1,
     """
     # check all the inputs
     condition_combined_gap = ((type(combined_gap) == int or
-                              type(combined_gap) == float) and
+                               type(combined_gap) == float) and
                               combined_gap >= 0)
     condition_time_gap = ((type(time_gap) == int or type(time_gap) ==
                            float) and time_gap > 0)
@@ -91,17 +97,17 @@ def create_time_matrix(combined_gap=4, time_gap=1,
                                    (intervals_AS['day'] == days[i, 2])].
                       iloc[:, 3:5])
         n = W.shape[0]
-        index = (np.array(np.where(W[1:, 0]-W[0:n - 1, 1] >
+        index = (np.array(np.where(W[1:, 0] - W[0:n - 1, 1] >
                                    combined_gap))).ravel()
         stop_W = W[np.append(index, n - 1), 1]
         start_W = W[np.append(0, index + 1), 0]
         n = F.shape[0]
-        index = (np.array(np.where(F[1:, 0]-F[0:n-1, 1] >
+        index = (np.array(np.where(F[1:, 0] - F[0:n - 1, 1] >
                                    combined_gap))).ravel()
         stop_F = F[np.append(index, n - 1), 1]
         start_F = F[np.append(0, index + 1), 0]
         n = AS.shape[0]
-        index = (np.array(np.where(AS[1:, 0]-AS[0:n - 1, 1] >
+        index = (np.array(np.where(AS[1:, 0] - AS[0:n - 1, 1] >
                                    combined_gap))).ravel()
         stop_AS = AS[np.append(index, n - 1), 1]
         start_AS = AS[np.append(0, index + 1), 0]
@@ -125,7 +131,7 @@ def create_time_matrix(combined_gap=4, time_gap=1,
     matrix = pd.DataFrame(matrix, columns=columns)
     title = pd.DataFrame(days, columns=['strain', 'mouse', 'day'])
     time_matrix = pd.concat([title, matrix], axis=1)
-    return(time_matrix)
+    return time_matrix
 
 
 def get_prob_matrix_list(time_df, interval_length=1000):
@@ -189,20 +195,21 @@ def get_prob_matrix_list(time_df, interval_length=1000):
 
     """
     # check all the inputs
-    condition_time_df = (type(time_df) == pd.core.frame.DataFrame)
-    condition_interval_length = (type(interval_length) == int and
-                                 interval_length > 0)
+    condition_time_df = isinstance(time_df, pd.core.frame.DataFrame)
+    condition_interval_length = isinstance(interval_length, int) and \
+        interval_length > 0
+
     if not condition_time_df:
         raise ValueError("time_df should be pandas DataFrame")
     if not condition_interval_length:
         raise ValueError("interval_length should be positive int")
 
     time_array = np.array(time_df)[:, 3:]
-    n = ceil(time_array.shape[1]/interval_length)
+    n = np.ceil(time_array.shape[1] / interval_length)
     matrix_list = [None] * int(n)
     for i in np.arange(n):
         i = int(i)
-        ind = [(i * interval_length), ((i+1) * interval_length)]
+        ind = [(i * interval_length), ((i + 1) * interval_length)]
         small_time_array = time_array[:, ind[0]:ind[1]]
         small_time_list = list(small_time_array)
         small_time_str_list = ["".join(np.char.mod('%i', a))
@@ -248,8 +255,8 @@ def get_prob_matrix_small_interval(string_list, verbose=False):
 
     """
     # check all the inputs
-    condition_string_list = (type(string_list) == list)
-    condition_list_item = (type(string_list[0]) == str)
+    condition_string_list = isinstance(string_list, list)
+    condition_list_item = isinstance(string_list[0], basestring)
     if verbose:
         print(string_list[0])
     if not condition_string_list:
@@ -257,18 +264,18 @@ def get_prob_matrix_small_interval(string_list, verbose=False):
     if not condition_list_item:
         raise ValueError("items in string_list should be str")
 
-    Mat_prob = np.zeros(4*4).reshape(4, 4)
+    Mat_prob = np.zeros(4 * 4).reshape(4, 4)
     for i in np.arange(4):
         i = int(i)
         for j in np.arange(4):
             j = int(j)
             ijth = str(i) + str(j)
             Mat_prob[i, j] = sum([string.count(ijth) for string
-                                 in string_list])
+                                  in string_list])
     for k in np.arange(4):
         k = int(k)
         if sum(Mat_prob[k, :]) != 0:
-            Mat_prob[k, :] = Mat_prob[k, :]/sum(Mat_prob[k, :])
+            Mat_prob[k, :] = Mat_prob[k, :] / sum(Mat_prob[k, :])
     return Mat_prob
 
 
@@ -336,7 +343,7 @@ def mcmc_simulation(mat_list, n_per_int):
             index = int(i * n_per_int + j)
             if index == 0:
                 simu_result[index] = 0
-            state_i = simu_result[int(index-1)]
+            state_i = simu_result[int(index - 1)]
             prob_trans = mat_list[i][int(state_i), :]
             prob_trans = np.cumsum(prob_trans)
             rand = np.random.uniform()
@@ -405,7 +412,7 @@ def get_score(true_day, simulated_day, weight=[1, 10, 50, 1]):
     # check all the inputs
     condition_true_day = (isinstance(true_day, (np.ndarray, np.generic)))
     condition_simulated_day = (isinstance(simulated_day,
-                               (np.ndarray, np.generic)))
+                                          (np.ndarray, np.generic)))
     condition_weight = (isinstance(weight, list))
 
     if not condition_true_day:
@@ -436,12 +443,12 @@ def get_score(true_day, simulated_day, weight=[1, 10, 50, 1]):
         if true_day[i] == simulated_same_length[i]:
             status = true_day[i]
             score += weight[int(status)]
-    score = score/len_true
+    score = score / len_true
     return score
 
 
-def find_best_interval(df, strain_num, interval_length_initial=np.arange(600,
-                       7800, 600)):
+def find_best_interval(df, strain_num,
+                       interval_length_initial=np.arange(600, 7800, 600)):
     r"""
     Returns the optimized time interval length and the corresponding
     fake mouse behavior string with the evaluation score for a
