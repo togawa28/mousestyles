@@ -15,6 +15,7 @@ VERSION = '0.1dev'
 
 INSTALL_REQUIRES = [
     'numexpr>=2.5.2',
+    'gatspy>=0.3',
     'numpy>=1.10.1',
     'pandas>=0.17.0',
     'pytest>=2.9.1',
@@ -74,8 +75,12 @@ if __name__ == "__main__":
                   "mousestyles.classification",
                   "mousestyles.classification.tests",
                   "mousestyles.dynamics", "mousestyles.dynamics.tests",
-                  "mousestyles.path_diversity",
+                  "mousestyles.path_diversity", 
                   "mousestyles.path_diversity.tests",
-                  "mousestyles.visualization", "mousestyles.visualization.tests"],
+                  "mousestyles.visualization", 
+                  "mousestyles.visualization.tests",
+                  "mousestyles.ultradian", "mousestyles.ultradian.tests"],
+
+
         package_data={'mousestyles.data': ['*.npy', '*/*/*.npy']}
     )
