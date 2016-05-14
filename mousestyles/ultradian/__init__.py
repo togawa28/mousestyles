@@ -130,7 +130,7 @@ def aggregate_interval(strain, mouse, feature, bin_width):
         '01/01/2014', periods=len(time_behaviour),
         freq=str(bin_width) + 'min'))
 
-    return(ts)
+    return ts
 
 
 def aggregate_movement(strain, mouse, bin_width):
@@ -205,7 +205,7 @@ def aggregate_movement(strain, mouse, bin_width):
         '01/01/2014', periods=len(time_movements),
         freq=str(bin_width) + 'min'))
 
-    return(ts)
+    return ts
 
 
 def aggregate_data(feature, bin_width, nmouse=4, nstrain=3):
@@ -262,7 +262,7 @@ def aggregate_data(feature, bin_width, nmouse=4, nstrain=3):
             tmp["hour"] = tmp.index.hour + tmp.index.minute / 60
             init = init.append(tmp)
 
-    return(init)
+    return init
 
 
 def seasonal_decomposition(strain, mouse, feature, bin_width, period_length):
@@ -328,7 +328,7 @@ def seasonal_decomposition(strain, mouse, feature, bin_width, period_length):
                                 feature=feature, bin_width=bin_width)
     res = sm.tsa.seasonal_decompose(ts.values, freq=freq, model="additive")
 
-    return(res)
+    return res
 
 
 def strain_seasonal(strain, mouse, feature, bin_width, period_length):
@@ -394,7 +394,7 @@ def strain_seasonal(strain, mouse, feature, bin_width, period_length):
         seasonal_all = np.append(seasonal_all, res.seasonal[0:freq])
     seasonal_all = seasonal_all.reshape([len(mouse), -1])
 
-    return(seasonal_all)
+    return seasonal_all
 
 
 def find_cycle(feature, strain, mouse=None, bin_width=15,
@@ -668,4 +668,4 @@ def mix_strain(data, feature, print_opt=True,
     fstat = 2 * abs(like1 - like2)
     p_v = chi2.pdf(fstat, df=2)
 
-    return(p_v)
+    return p_v

@@ -35,7 +35,6 @@ def plot_performance(result):
     ax.set_xticklabels(range(16))
     ax.legend((rects1[0], rects2[0], rects3[0]), ('precision', 'recall', 'F1'))
     plt.show()
-    return()
 
 
 def plot_comparison(comparison):
@@ -70,4 +69,3 @@ def plot_comparison(comparison):
     ax.legend((rects1[0], rects2[0], rects3[0]),
               ('RandomForest', 'GradientBoosting', 'SVM'))
     plt.show()
-    return()

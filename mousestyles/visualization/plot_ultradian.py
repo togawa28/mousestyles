@@ -86,7 +86,7 @@ def plot_strain_seasonal(strains, mouse, feature, bin_width, period_length):
     plt.suptitle(feature, fontsize=20)
     fig.show()
 
-    return(fig)
+    return fig
 
 
 def compare_strain(feature, n_strain=3, bin_width=15, disturb_t=False):

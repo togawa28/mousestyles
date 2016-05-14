@@ -57,7 +57,7 @@ def get_pvalues(m):
     cor = np.empty([n, n])
     for (a, b) in indices:
         cor[a, b] = 2 * mannwhitneyu(m[a], m[b])[1]
-    return(cor)
+    return cor
 
 
 def MWW_mice(strain, step=50, verbose=False):
@@ -94,7 +94,7 @@ def MWW_mice(strain, step=50, verbose=False):
         if verbose:
             print('mouse %s done.' % mouse)
     cor = get_pvalues(res[:-1])
-    return(cor)
+    return cor
 
 
 def MWW_allmice(step=50, verbose=False):
@@ -125,7 +125,7 @@ def MWW_allmice(step=50, verbose=False):
             print('strain %s done.' % strain)
         strain += 1
     mww_values = mww_values[:-1]
-    return(mww_values)
+    return mww_values
 
 
 def MWW_strains(step=50, verbose=False):
@@ -160,7 +160,7 @@ def MWW_strains(step=50, verbose=False):
             print('strain %s done.' % strain)
         strain += 1
     cor = get_pvalues(res[:-1])
-    return(cor)
+    return cor
 
 
 def plot_cor(data):

@@ -85,4 +85,4 @@ def smooth_noise(movement, paths, angle_threshold, delta_t):
     new_movement = movement.drop(drop_ind)
     new_movement.index = range(len(new_movement))
 
-    return(new_movement)
+    return new_movement

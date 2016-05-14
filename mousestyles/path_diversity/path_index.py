@@ -72,4 +72,4 @@ def path_index(movement, stop_threshold, min_path_length):
         i += 1
     path = [p for p in path if (p[1] - p[0]) > min_path_length]
 
-    return(path)
+    return path

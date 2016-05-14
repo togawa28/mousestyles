@@ -62,7 +62,7 @@ def clean_movements(movements, keep_index=False):
             out = 3
         else:
             out = 0
-        return(out)
+        return out
 
     def detect_same_loc(one_movement):
         # returns indices which have same x,y-coordinates as the previous
@@ -71,21 +71,21 @@ def clean_movements(movements, keep_index=False):
         same_loc_bool = x_bool & y_bool
         same_loc = [i + 1 for i in range(len(same_loc_bool))
                     if same_loc_bool[i]]
-        return(same_loc)
+        return same_loc
 
     def detect_same_time(one_movement):
         # returns indices which have same timestamp as the previous
         time_bool = one_movement['t'][:-1] == one_movement['t'][1:]
         same_time = [i + 1 for i in range(len(time_bool))
                      if time_bool[i]]
-        return(same_time)
+        return same_time
 
     def drop_same_loc(one_movement, same_loc):
         # based on `same_loc` drops the duplicated rows
         new_one_movement = one_movement.drop(same_loc)
         if not keep_index:
             new_one_movement.index = range(len(new_one_movement))
-        return(new_one_movement)
+        return new_one_movement
 
     # testing each element of `movements` obj.
     test_outs = [testing_input_movement(one_movement)
@@ -112,4 +112,4 @@ def clean_movements(movements, keep_index=False):
 
     cleaned_movements = [drop_same_loc(movement, same_loc)
                          for movement, same_loc in zip(movements, same_locs)]
-    return(cleaned_movements)
+    return cleaned_movements

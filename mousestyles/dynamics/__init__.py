@@ -126,7 +126,7 @@ def create_time_matrix(combined_gap=4, time_gap=1,
     matrix = pd.DataFrame(matrix, columns=columns)
     title = pd.DataFrame(days, columns=['strain', 'mouse', 'day'])
     time_matrix = pd.concat([title, matrix], axis=1)
-    return(time_matrix)
+    return time_matrix
 
 
 def get_prob_matrix_list(time_df, interval_length=1000):
@@ -441,8 +441,8 @@ def get_score(true_day, simulated_day, weight=[1, 10, 50, 1]):
     return score
 
 
-def find_best_interval(df, strain_num, interval_length_initial=np.arange(600,
-                                                                         7800, 600)):
+def find_best_interval(df, strain_num,
+                       interval_length_initial=np.arange(600, 7800, 600)):
     r"""
     Returns the optimized time interval length and the corresponding
     fake mouse behavior string with the evaluation score for a

@@ -92,4 +92,4 @@ def detect_noise(movement, paths, angle_threshold, delta_t):
 
         noise_path = noise_path.append(path_obj.noise)
 
-    return(noise_path)
+    return noise_path

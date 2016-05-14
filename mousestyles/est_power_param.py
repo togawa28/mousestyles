@@ -37,7 +37,7 @@ def getdistance(strain, mouse, day):
     distance_vector = np.sqrt(np.diff(xcood)**2 + np.diff(ycood)**2)
     msk = distance_vector > 1
     cut_dist = distance_vector[msk]
-    return(cut_dist)
+    return cut_dist
 
 
 def fit_powerlaw(strain, mouse, day):

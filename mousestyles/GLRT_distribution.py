@@ -36,7 +36,7 @@ def random_powerlaw(n, a, seed=-1):
     if seed != -1:
         np.random.seed(seed)
     y = np.random.sample(n)
-    return((1 - y)**(-1 / (a - 1)))
+    return (1 - y)**(-1 / (a - 1))
 
 
 def random_exp(n, l, seed=-1):
@@ -72,7 +72,7 @@ def random_exp(n, l, seed=-1):
     if seed != -1:
         np.random.seed(seed)
     y = np.random.exponential(1.0 / l, n)
-    return(y + 1)
+    return y + 1
 
 
 def hypo_powerLaw_null(strain, mouse, day, law_est=0, seed=-1):
@@ -150,7 +150,7 @@ def hypo_powerLaw_null(strain, mouse, day, law_est=0, seed=-1):
         sample_stat.append(tmp)
     # critical_value = ss.mstats.mquantiles(sample_stat, prob = 0.05)[0]
     p_value = np.sum(sample_stat > test_stat) / len(sample_stat)
-    return (p_value)
+    return p_value
 
 
 def hypo_exp_null(strain, mouse, day, law_est=0, exp_est=0, seed=-1):
@@ -234,4 +234,4 @@ def hypo_exp_null(strain, mouse, day, law_est=0, exp_est=0, seed=-1):
         sample_stat.append(tmp)
     # critical_value = ss.mstats.mquantiles(sample_stat, prob = 0.95)[0]
     p_value = np.sum(sample_stat <= test_stat) / len(sample_stat)
-    return (p_value)
+    return p_value

@@ -49,4 +49,4 @@ def filter_path(movement, paths, time_threshold):
         if (end_time - start_time) >= time_threshold:
             pass_paths.append(path)
 
-    return(pass_paths)
+    return pass_paths

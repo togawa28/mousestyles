@@ -51,7 +51,7 @@ def compute_accelerations(speeds, timestamps):
         raise ValueError(test)
 
     accel = [v / t for v, t in zip(speeds_diff, time_diffs)]
-    return(accel)
+    return accel
 
 
 def angle_between(v1, v2):
@@ -153,4 +153,4 @@ def compute_angles(path_obj, radian=False):
     # the first and last elements should be None
     angles.insert(len(angles), None)
     angles.insert(0, None)
-    return(angles)
+    return angles

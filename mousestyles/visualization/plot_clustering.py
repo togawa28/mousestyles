@@ -41,7 +41,7 @@ def plot_dendrogram(mouse_day, method, dist):
         show_contracted=True,
     )
     plt.show()
-    return(Z)
+    return Z
 
 
 def plot_lastp_dist(Z, method, dist, p=10):

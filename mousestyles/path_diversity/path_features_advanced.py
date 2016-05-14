@@ -89,6 +89,6 @@ def compute_advanced(path_obj):
     abs_distance = np.sqrt((end['x'] - initial['x']) ** 2 +
                            (end['y'] - initial['y']) ** 2)
 
-    return({'radius': radius, 'center_angles': center_angles,
+    return {'radius': radius, 'center_angles': center_angles,
             'area_cov': area_cov, 'area_rec': area_rec,
-            'abs_distance': abs_distance})
+            'abs_distance': abs_distance}
