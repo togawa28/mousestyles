@@ -13,9 +13,3 @@ fig_F = plot_strain_seasonal(strains={0, 1, 2}, mouse={0, 1, 2, 3},
 fig_MIS = plot_strain_seasonal(strains={0, 1, 2}, mouse={0, 1, 2, 3},
                                feature="M_IS", bin_width=30,
                                period_length=24)
-fig_MAS = plot_strain_seasonal(strains={0, 1, 2}, mouse={0, 1, 2, 3},
-                               feature="M_AS", bin_width=30,
-                               period_length=24)
-fig_D = plot_strain_seasonal(strains={0, 1, 2}, mouse={0, 1, 2, 3},
-                             feature="Distance", bin_width=30,
-                             period_length=24)
