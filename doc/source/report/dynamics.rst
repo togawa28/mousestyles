@@ -44,12 +44,21 @@ Or, simply import the matrix from data directory::
 
 3. Estimating Transition Probability: 
 
-Estimate the transition probability matrix of the Markov Chain using the data given. One of the key challenges to estimate the transition matrix is that the model used is actually time continuous non-homogeneous Markov Chain, and the parameters are too difficult to estimate given the current data. Therefore, a new way is discovered to make the model a composite of small homogeneous discrete time Markov Chains, so that performing a rough estimation of the original time continuous non-homogeneous Markov Chain is possible. The following steps are followed to get the transistion probability matrix: 
+Estimate the transition probability matrix of the Markov Chain using the data
+given. One of the key challenges to estimate the transition matrix is that the
+model used is actually time continuous non-homogeneous Markov Chain, and the
+parameters are too difficult to estimate given the current data. Therefore, a
+new way is discovered to make the model a composite of small homogeneous
+discrete time Markov Chains, so that performing a rough estimation of the
+original time continuous non-homogeneous Markov Chain is possible. The
+following steps are followed to get the transistion probability matrix: 
 
 - Divide each mouse day into small time intervals, say 5 minutes. (The time interval is optimized in the future analysis)
 - For each of the small time intervals, aggregate the data from all mice in the same strain for all mouse days and estimate the transition probability matrix of a discrete homogeneous Markov Chain model just for this small time interval.
 - each of these transition probability matrices is estimated by MLE method, where e.g.: 
+
    .. math:: P(F_{t+1} | W_{t}) = \frac{N_{WF}}{N_{W.}}
+
    where $N_{WF}$ indicates the counts of transitions from W to F and $N_{W.}$ indicates the counts of transitions starting from W, no matter where it ends.
 - Build the whole model by compositing the models for each small time intervals. 
 

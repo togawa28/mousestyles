@@ -43,7 +43,7 @@ def prep_data(mouse_data, melted=False, std=True, rescale=True):
         column's maximum)
 
     Returns
-    ----------
+    -------
     The ndarray as specified
     """
     if melted:
@@ -161,6 +161,7 @@ def get_optimal_fit_kmeans(mouse_X, num_clusters, raw=False):
         range of number of clusters
     raw: a boolean with default is False
        False if using the 170 * M array
+
     Returns
     -------
     A list of 2: [silhouettes, cluster_labels]
