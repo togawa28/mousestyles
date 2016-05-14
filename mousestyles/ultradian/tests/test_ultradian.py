@@ -6,6 +6,7 @@ import statsmodels
 import mousestyles.ultradian as ultradian
 import pytest
 
+
 # aggregate_interval test
 def test_aggregate_interval():
     with pytest.raises(ValueError) as msg1:
