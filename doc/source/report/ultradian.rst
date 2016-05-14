@@ -293,18 +293,3 @@ coefficients for the model.
 
 Step 3: Compare the result with our hypothesis.
 
-
-Appendix
---------
-
-.. plot:: report/plots/plot_24H_seasonal_features.py
-
-   Seasonal variation of other features (circadian).
-
-.. plot:: report/plots/plot_LS.py
-
-   Lomb scargle plot for different features. Different strains have different
-   ultradian periods, differing also in p-values. Here $O(N\log N)$ algorithms
-   suffer an instability around 0 points while $O(N^2)$ algorithms can be more
-   smooth. We here compare the significant ultradian periods between strains
-   and ignore the highest LS power appearing near 24 hours.
