@@ -305,6 +305,28 @@ Small, next to 0.0005. This is a strong evidence that we should not think
 power law is a better fit than exponential. Thus, we conclude that we should
 use exponential to fit and do further research.
 
+Relative distribution with kernel smooting:
+------------------------------------------
+In the previous section, the result of K-S test suggests that the actual distribution of distance doesn't follow the power law family but may follow in the exponential family. In this section, we characterize discrepency of the actual distribution to  these two by looking at their relative distribution.
+
+In the relative distribution framework, we call the actual distribution $G$ comparison distribution and call the proposed distribution $F_0$, e.g. power law with parameter $\alpha$, the reference distribution. The idea of the relative distribution is to characterize the change in distributions by using $F_0$ to transform X into $[0,1]$, and then look at how the density departs from uniformity.
+
+The relative data, or grades, are $r_i =F_0(x_i)$, which lies in $[0,1]$. Its probability density function is $f_r(x) = \frac{g(F_0^{-1}(x))}{f_0(F_0^{-1}(x))}$. $r$ has uniform density in the special case when $G = F$.
+
+As shown in the previous formula, we need to get the density $g$ of the observed data to calculate the relative distribution. However, the naive nonparametric density estimation with gaussian kernel doesn't work well when the random variable is nonnegative. We propose a strategy using symmetric correction to work it around. 
+
+In the first step, we create the symmetric-corrected data $X'$ by concatenating the original data $X$ and its reflection around its left boundary point 1, $2-X$. In the second step, we get $f_1$, the density estimate using gaussian kernel with bandwidth maximizing 5-fold cross-validated score. In the third step, we delete $2-X$ and set the density estimate of $X$ to be $f=2f_1$. An example is shown in the plot.
+
+.. plot:: report/plots/plot_kernel_smoothing.py
+
+We construct the relative distribution to the best-fitted power law distribution and exponential distribution using this density. The result is shown in the plotted density curve.
+
+.. plot:: report/plots/plot_relative_distribution.py
+
+    Relative distributions, power law on the left, exponential on the right
+
+Now, the fine relative density structure is very clear. We see our actual distribution has a smaller density at the beginning and a thicker tail compared to both power law distribution and exponential distribution. Exponential has a better fit at the beginning and a worse fit for the tail, which gives rise to smaller discrepency in CDF and smaller K-S statistic. However, neither family seems to be good enough in terms of density characterization of distribution.
+
 Mann-Whitney U test on distances:
 ---------------------------------
 Given the distribution of distances, we perform a hypothesis test on the distributions of these distances. The goal is to identify some similarity on mice in the same strain when only looking at the distances covered every second.
