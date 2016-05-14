@@ -92,7 +92,7 @@ def test_get_prob_matrix_small_interval_input():
 
 def test_get_prob_matrix_small_interval():
     # Checking functions output the correct matrix
-    time_list = [str('002'), '001', '012']
+    time_list = ['002', '001', '012']
     example = get_prob_matrix_small_interval(time_list)
     assert example[0, 0] == 0.4
     assert example[0, 1] == 0.4
