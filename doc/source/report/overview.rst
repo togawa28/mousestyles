@@ -1,8 +1,8 @@
 Overview
 ========
 
-1. Statement of Problem
------------------------
+Statement of Problem
+--------------------
 
 For this project, our primary data source is mouse behavioral data from the
 Tecott Lab at UCSF. [#f1]_ The lab has recently developed a method for
@@ -15,15 +15,15 @@ principles of behavioral organization that have not been previously reported,
 2) permits classification by genotype with unprecedented accuracy, and 3)
 enables fine dissection of behavioral patterns.
 
-1.1 Project Goal
-~~~~~~~~~~~~~~~~
+Project Goal
+~~~~~~~~~~~~
 
 The goal of this project is to explore the effects of genetics on
 behavior in mice and extrapolate these findings to improve treatment of
 psychiatric diseases in humans.
 
-1.2 Computational Ethology
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+Computational Ethology
+~~~~~~~~~~~~~~~~~~~~~~
 
 `Ethology` is the study of animal behavior, and it
 generally follows one of two approaches. The first approach was
@@ -54,8 +54,8 @@ issues. Together, modern mathematics, engineering, and computer science
 have the potential to establish a causal relationship between genetics
 and behavior.
 
-1.3 Why Mice?
-~~~~~~~~~~~~~
+Why Mice?
+~~~~~~~~~
 
 Although the human genome was first sequenced over a decade ago, the
 relationship between genetics and behavior is still not well understood.
@@ -74,8 +74,8 @@ the space efficiency of maintaining their caged environments, and the
 speed of reproduction make mice a logical alternative to testing on
 humans.
 
-2. Methodology Description
---------------------------
+Methodology
+-----------
 
 The traditional technology to analyze behavior is time-intensive and
 labor-intensive. For example, recording data requires researchers to
@@ -104,8 +104,8 @@ understand the importance of genetic makeup on mice behavior. We can
 then extrapolate to humans thanks to the remarkable genetic similarity
 between the two species.
 
-3. Statement of Statistical Problems
-------------------------------------
+Statement of Statistical Problems
+---------------------------------
 
 This project utilized sophisticated statistical methods to process data,
 including machine learning algorithms and statistical inference. The
@@ -118,8 +118,8 @@ whole project can be divided into 6 sub-projects:
 -  :ref:`classification`
 -  :ref:`distribution`
 
-4. Glossary
------------
+Glossary
+--------
 
 -  **Active State (AS):** The active state in this model is when the
    mouse is using energy, such as foraging, patrolling, eating, or
@@ -148,11 +148,13 @@ whole project can be divided into 6 sub-projects:
 -  **Strain:** A strain here is a genetic variant or sub-type of of the
    more general mouse population.
 
-5. Data 
--------
+Data 
+----
 
-The data includes two directories, intervals and txy_coords, and a npy file named all_features_mousedays_11bins. The all_features_mousedays_11bins.npy
-contains a 9*1921*11 matrix, which represents 9 features among 1921 mouse days in 11 2 hour bins for a day, the 9 features are:
+The data includes two directories, intervals and txy_coords, and a npy file
+named all_features_mousedays_11bins. The all_features_mousedays_11bins.npy
+contains a $9 \times 1921 \times 11$ matrix, which represents 9 features among
+1921 mouse days in 11 2 hour bins for a day, the 9 features are:
 
 -  **Food (F):** records the food consumption (g) for a certain mouse day and a certain time bin.
 -  **Water (W):** records the water consumption (g) for a certain mouse day and a certain time bin.
@@ -164,7 +166,8 @@ contains a 9*1921*11 matrix, which represents 9 features among 1921 mouse days i
 -  **ASWaterIntensity (ASWI):** equals W/ASP. 
 -  **MoveASIntensity (ASMI):** equals D/ASP.
 
-The intervals directory has 6 sub-directories, all sub-directories have about 33 files for 3 strains, and for each strain there are 11 days data:
+The intervals directory has 6 sub-directories, all sub-directories have about
+33 files for 3 strains, and for each strain there are 11 days data:
 
 -  **F:** records start and stop time of eating behaviors for a certain strain and a certain day. 
 -  **W:** records start and stop time of drinking behaviors for a certain strain and a certain day.
@@ -173,7 +176,8 @@ The intervals directory has 6 sub-directories, all sub-directories have about 33
 -  **IS:** records start and stop time of IS for a certain strain and a certain day.
 -  **M_IS:** records start and stop time of movements in IS for a certain strain and a certain day.
 
-The txy_coords directory has 5 sub-directories,all sub-directories have about 33 files for 3 strains, and for each strain there are 11 days data:
+The txy_coords directory has 5 sub-directories,all sub-directories have about
+33 files for 3 strains, and for each strain there are 11 days data:
 
 -  **CY,CX,CY:** records the position (x,y) in time t for a certain strain and a certain day.
 -  **C_idx_HB:** indicates whether the mouse is in HB or not at time t.

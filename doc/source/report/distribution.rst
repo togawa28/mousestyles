@@ -1,10 +1,10 @@
 .. _distribution:
 
-Power Laws & Universality
-=========================
+Power Laws and Universality
+===========================
 
-Statement of Problem:
----------------------
+Statement of Problem
+--------------------
 
 **Construct Statistical Model for Locomotion Distribution**
 
@@ -21,8 +21,8 @@ estimator, and further figure figure out with strain they belong to.
    - How can we do clustering strains based on model parameters?
 
 
-Statement of Statistical Problem:
----------------------------------
+Statement of Statistical Problem
+--------------------------------
 
 **Distribution Selection**
 
@@ -56,7 +56,7 @@ them make sense but we need to have more quantitative evidence to see
 the fittness or, hopefully, compare their goodness of fit.
 
 The check of fitness is in needed after obtaining the parameter. 
-Kolmogorov–Smirnov test enable us to test the fitness of power 
+Kolmogorov-Smirnov test enable us to test the fitness of power 
 law and exponential distribution. For them, we choose the null
 to be selected distribution, and if we reject K-S test, we will
 conclude the the sample distribution is not familiar with theoretical
@@ -73,6 +73,7 @@ random number from our fitted model.
 
 Exploratory Analysis
 --------------------
+
 The difference between “home base” and “non home base”: "home base",
 which means a favored location at which long periods of inactivity
 (ISs) occur, is a post defined characteristic of the mouse and it is
@@ -109,8 +110,9 @@ more than 1cm within in 20ms. It does not make sense to have observations
 less than 1cm and outliers needs to be cleaned up. After we put a threshold
 with 1cm, we find the distribution is monotonic decreasing and we can fit
 power law distribution, as well as exponential distribution.
-=======
-   Distribution
+
+Distribution
+------------
 
 
 - Preferred choice of distribution: the power law is a
@@ -125,8 +127,8 @@ power law distribution, as well as exponential distribution.
    Distances recorded every second, for different strains of mice
 
 
-Data Requirements Description
------------------------------
+Data Requirements
+-----------------
 
 -  Label of “home base” or “non home base”: generated in the process of
    data pre-processing by the definition. The build-in function enable 
@@ -138,8 +140,8 @@ Data Requirements Description
 -  Speed: calculated by the distance divided by the duration 
    of this distance.
 
-Methodology/ Approach Description
----------------------------------
+Methodology
+-----------
 
 Given the estimated parameter for each distribution, we can learn more
 about its distribution and the information lies mainly in the decay rate
@@ -213,7 +215,7 @@ guide of testing:
    threshold (e.g. alpha = 95%)
 
 Result
---------------------
+------
 
 We fit the power law and exponential distribution for each mouse day. For each, we got an estimator of alpha for power law and an
 estimator of lambda for exponential. We store our result in a dataframe called estimation which has five columns: strain, mouse, day
@@ -281,6 +283,7 @@ three possible outcomes.
    - Exponential null rejected but power law null not rejected. In this case, we conclude power law is better than exponential.
    - Power law null rejected but exponential null not rejected. In this case, we conclude exponential is better than power law.
    - Both two tests not rejected. In this case, we conclude both two fits similarly and there is no one significantly better than another.
+
 Although theoretically we should consider the case when both two tests 
 are rejected, it is highly unlikely this thing happens. Because rejecting 
 both two means we have enough evidence to say exponential is better 
@@ -305,39 +308,77 @@ Small, next to 0.0005. This is a strong evidence that we should not think
 power law is a better fit than exponential. Thus, we conclude that we should
 use exponential to fit and do further research.
 
-Relative distribution with kernel smooting:
+Relative distribution with kernel smooting
 ------------------------------------------
-In the previous section, the result of K-S test suggests that the actual distribution of distance doesn't follow the power law family but may follow in the exponential family. In this section, we characterize discrepency of the actual distribution to  these two by looking at their relative distribution.
 
-In the relative distribution framework, we call the actual distribution $G$ comparison distribution and call the proposed distribution $F_0$, e.g. power law with parameter $\alpha$, the reference distribution. The idea of the relative distribution is to characterize the change in distributions by using $F_0$ to transform X into $[0,1]$, and then look at how the density departs from uniformity.
+In the previous section, the result of K-S test suggests that the actual
+distribution of distance doesn't follow the power law family but may follow in
+the exponential family. In this section, we characterize discrepency of the
+actual distribution to  these two by looking at their relative distribution.
 
-The relative data, or grades, are $r_i =F_0(x_i)$, which lies in $[0,1]$. Its probability density function is $f_r(x) = \frac{g(F_0^{-1}(x))}{f_0(F_0^{-1}(x))}$. $r$ has uniform density in the special case when $G = F$.
+In the relative distribution framework, we call the actual distribution $G$
+comparison distribution and call the proposed distribution $F_0$, e.g. power
+law with parameter $\alpha$, the reference distribution. The idea of the
+relative distribution is to characterize the change in distributions by using
+$F_0$ to transform X into $[0,1]$, and then look at how the density departs
+from uniformity.
 
-As shown in the previous formula, we need to get the density $g$ of the observed data to calculate the relative distribution. However, the naive nonparametric density estimation with gaussian kernel doesn't work well when the random variable is nonnegative. We propose a strategy using symmetric correction to work it around. 
+The relative data, or grades, are $r_i =F_0(x_i)$, which lies in $[0,1]$. Its
+probability density function is $f_r(x) =
+\frac{g(F_0^{-1}(x))}{f_0(F_0^{-1}(x))}$. $r$ has uniform density in the
+special case when $G = F$.
 
-In the first step, we create the symmetric-corrected data $X'$ by concatenating the original data $X$ and its reflection around its left boundary point 1, $2-X$. In the second step, we get $f_1$, the density estimate using gaussian kernel with bandwidth maximizing 5-fold cross-validated score. In the third step, we delete $2-X$ and set the density estimate of $X$ to be $f=2f_1$. An example is shown in the plot.
+As shown in the previous formula, we need to get the density $g$ of the
+observed data to calculate the relative distribution. However, the naive
+nonparametric density estimation with gaussian kernel doesn't work well when
+the random variable is nonnegative. We propose a strategy using symmetric
+correction to work it around. 
+
+In the first step, we create the symmetric-corrected data $X'$ by concatenating
+the original data $X$ and its reflection around its left boundary point 1,
+$2-X$. In the second step, we get $f_1$, the density estimate using gaussian
+kernel with bandwidth maximizing 5-fold cross-validated score. In the third
+step, we delete $2-X$ and set the density estimate of $X$ to be $f=2f_1$. An
+example is shown in the plot.
 
 .. plot:: report/plots/plot_kernel_smoothing.py
 
-We construct the relative distribution to the best-fitted power law distribution and exponential distribution using this density. The result is shown in the plotted density curve.
+We construct the relative distribution to the best-fitted power law
+distribution and exponential distribution using this density. The result is
+shown in the plotted density curve.
 
 .. plot:: report/plots/plot_relative_distribution.py
 
     Relative distributions, power law on the left, exponential on the right
 
-Now, the fine relative density structure is very clear. We see our actual distribution has a smaller density at the beginning and a thicker tail compared to both power law distribution and exponential distribution. Exponential has a better fit at the beginning and a worse fit for the tail, which gives rise to smaller discrepency in CDF and smaller K-S statistic. However, neither family seems to be good enough in terms of density characterization of distribution.
+Now, the fine relative density structure is very clear. We see our actual
+distribution has a smaller density at the beginning and a thicker tail compared
+to both power law distribution and exponential distribution. Exponential has a
+better fit at the beginning and a worse fit for the tail, which gives rise to
+smaller discrepency in CDF and smaller K-S statistic. However, neither family
+seems to be good enough in terms of density characterization of distribution.
 
-Mann-Whitney U test on distances:
----------------------------------
-Given the distribution of distances, we perform a hypothesis test on the distributions of these distances. The goal is to identify some similarity on mice in the same strain when only looking at the distances covered every second.
+Mann-Whitney U test on distances
+--------------------------------
 
-To do so we chose a non parametric test since we only have access to sample distributions. The Kolmogorov Smirnov test is a very popular test used in this case but I chose to explore the Mann-Whitney U test instead for the following reasons:
+Given the distribution of distances, we perform a hypothesis test on the
+distributions of these distances. The goal is to identify some similarity on
+mice in the same strain when only looking at the distances covered every
+second.
+
+To do so we chose a non parametric test since we only have access to sample
+distributions. The Kolmogorov Smirnov test is a very popular test used in this
+case but I chose to explore the Mann-Whitney U test instead for the following
+reasons:
 
 - The KS test is sensitive to any differences in the two distributions. Substantial differences in shape, spread or median will result in a small P value. (see here for more details). Here we can feel that the distances have high variance. Therefore, the KS test would be too strict for our study.
 
 - In contrast, the MW test is mostly sensitive to changes in the median, which is less sensitive of noise in the case of mice.
 
-The MannWhitney U test is a test for assessing whether two independent samples come from the same distribution. The null hypothesis for this test is that the two groups have the same distribution, while the alternative hypothesis is that one group has larger (or smaller) values than the other.
+The MannWhitney U test is a test for assessing whether two independent samples
+come from the same distribution. The null hypothesis for this test is that the
+two groups have the same distribution, while the alternative hypothesis is that
+one group has larger (or smaller) values than the other.
 
 - $H_0$: $P(X>Y)=P(Y>X)$
 - $H_1$: $P(X>Y)\neq P(Y>X)$
@@ -353,10 +394,16 @@ The MannWhitney U test is a test for assessing whether two independent samples c
    MW U test p-values for mice within the same strains. Dark blue is close to 1 and very light blue is close to zero.
 
 
-From the figures above, we notice that in terms of p-values, strain 1 is closer to strain 0 than strain 2. But we also notice that the p-values are still very low, which means that there is evidence for rejecting $H_0$. Moreover, when looking closer within each strain of mice, we can see that mice have different distributions too. Therefore, based on the inter-distances,  we cannot conclude that mice behave similarly depending on their strains.
+From the figures above, we notice that in terms of p-values, strain 1 is closer
+to strain 0 than strain 2. But we also notice that the p-values are still very
+low, which means that there is evidence for rejecting $H_0$. Moreover, when
+looking closer within each strain of mice, we can see that mice have different
+distributions too. Therefore, based on the inter-distances,  we cannot conclude
+that mice behave similarly depending on their strains.
 
-Further Work:
--------------
+Future Work
+-----------
+
 Here are some further research we could do. However, because of 
 Incomplete sample we have, we cannot do it for now, but it is easy 
 to fix the function
@@ -374,8 +421,8 @@ definitely use it to make clusters. However, one drawback is the distance
 between our parameters is not uniform but as long as there exists
 significant difference, it will not harm that much.
 
-Reference reading:
-------------------
+Reference reading
+-----------------
 
 -  https://en.wikipedia.org/wiki/Power\_law
 -  http://arxiv.org/pdf/0706.1062v2.pdf

@@ -129,8 +129,8 @@ not using big dataset is because the hierarchical clustering is computationally
 expensive and silhouette score also takes fairly long time to calculate.
 
 
-Methodology/ Approach Description
----------------------------------
+Methodology
+-----------
 
 **Classification**
 

@@ -7,9 +7,9 @@ from mousestyles import data
 
 
 try:
-  basestring
+    basestring
 except NameError:
-  basestring = str
+    basestring = str
 
 
 def create_time_matrix(combined_gap=4, time_gap=1,

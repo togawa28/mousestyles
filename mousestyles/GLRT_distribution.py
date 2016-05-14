@@ -151,8 +151,6 @@ def hypo_exp_null(strain, mouse, day, law_est=0, exp_est=0, seed=-1):
     """
     Return the outcome from GLRT with null hypothesis law distribution.
 
-    Description
-    -----------
     This function also used the Generalized Likelihood Ratio Test to test
     goodness of fit: in other words, which distribution is more likely.
 

@@ -3,8 +3,8 @@
 Behavioral Model
 ================
 
-Statement of Problem:
----------------------
+Statement of Problem
+--------------------
 
 In order to differentiate mice, we need to create a detailed behavior
 profile to describe:
@@ -39,8 +39,8 @@ We have the following key background information from the paper:
    are then defined as the complement of these ASs. (*Active State
    Organization of Spontaneous Behavior Patterns*, C. Hillar et al.)
 
-Statement of statistical problems:
-----------------------------------
+Statement of Statistical Problems
+---------------------------------
 
 The above flowchart shows the key metrics that are required by the study
 to capture the behavioral profile:
@@ -74,8 +74,8 @@ of **drinking state**:
          -  **Drinking** Event Size:
             ``Total Drinking Amount/ Number of Events`` (mg/event)
 
-Data Collection:
-----------------
+Data
+----
 
 Our underlying functions depend on the following key data
 requirements for each **mouse, strain and day**:

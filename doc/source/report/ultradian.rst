@@ -3,7 +3,7 @@
 Ultradian and Circadian Analysis
 ================================
 
-Statement of problem
+Statement of Problem
 --------------------
 
 Ultradian and circadian rhythm are widely observed in mammalian
@@ -36,7 +36,7 @@ Ultradian rhythms could be treated as one feature for clustering the 16
 strains. We may also subset the data using the results of the cluster and
 analyze the rhythm similarities and differences across clusters.
 
-Statement of statistical problem
+Statement of Statistical Problem
 --------------------------------
 
 Our statistical problems are three parts: data preparation, choice of
@@ -67,8 +67,8 @@ the frequency or period, and modeling of rhythm patterns.
   discovered circles. To model the time trajectory of features, we propose
   to use seasonal decomposition and mixed effects model.
 
-Data Requirements
------------------
+Data
+----
 
 In order to retrieve the data needed for analyzing mouse ultradian behaviors, we
 get input from users, including features (water, food, active state, etc.),
@@ -109,8 +109,8 @@ active state time as well as movement distance).
   appropriate time bins that present the most significant ultradian pattern.
 
 
-Methodology/Approach Description
---------------------------------
+Methodology
+-----------
 
 **********************
 Seasonal decomposition
