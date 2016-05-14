@@ -84,7 +84,7 @@ def plot_fitted(strain, mouse, day, hist=True, density=False):
     ax.plot(x, exp_pdf(x, lamb), 'y-', lw=2, alpha=2,
             label='exp pdf')
     if hist:
-        weights = np.ones_like(cut_dist) / len(cut_dist) * (alpha - 1)
+        weights = np.ones_like(cut_dist) / len(cut_dist) * 10
         ax.hist(cut_dist, weights=weights, bins=np.arange(1, 2.6, 0.1))
     if density:
         np.random.seed(0)
