@@ -3,7 +3,7 @@
 import mousestyles.behavior as bh
 import numpy as np
 import pandas as pd
-import maplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 
 # get a tree for each day for two different mice
 mouse1_trees = [bh.compute_tree('F', 0, 0, d) for d in range(11)]

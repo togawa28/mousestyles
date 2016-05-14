@@ -111,9 +111,5 @@ into one larger tree of lists, which we can then summarize or turn
 into a Pandas data frame. Finally, we show how to plot the results
 using ``matplotlib``.
 
-.. literalinclude:: report/plots/behavior_example.py
-
-
-           
-.. plot:: report/plots/behavior_example.py
-
+.. plot:: report/plots/plot_behavior_example.py
+   :include-source:
