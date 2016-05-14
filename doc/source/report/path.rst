@@ -159,6 +159,35 @@ sensor data.
 
 .. figure:: figure/dist_angle.png
 
+Future Studies
+---------------
+
+In the future, we would like to explore the following areas:
+
+-  Further data smoothing: We would like to further develop a robust methodology
+   to detect points which could be deemed ‘measurement noise’. Measurement noise
+   can be defined as consecutive observations which indicate high-turning angles
+   (i.e., above 150 degrees) over very short time intervals. Such observations
+   would skew results on number of sharp turns, average turning angles, etc. It
+   is possible the measurement noise obscures the path behavior differences
+   between strains.
+
+-  Path behavior as it relates to active state lifestyle: We would like to
+   explore the influence of a mouse’s active state behaviors on its path
+   behavior. A possible question we may be answer is the following: how does
+   hunger and thirst affect the mouse’s path diversity? (i.e., does the mouse get
+   sluggish after having eaten and therefore takes shorter, slower paths?)
+
+-  Obtaining optimal tuning parameters: We would like to determine which
+   parameters would be optimal for analysis purposes. These parameters include,
+   but are not limited to, the cutoff time for a path, the minimum path length
+   (in observations) and turning angle threshold for noise detection.
+
+-  Use path features for classification: We would like to use the features
+   calculated within the functions and apply machine learning techniques to
+   determine whether path features (speed, turning angles, distance traveled,
+   etc.) can be used for classification.
+
 Additional Remarks
 ------------------
 
