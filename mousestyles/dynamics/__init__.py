@@ -3,7 +3,6 @@ from __future__ import (absolute_import, division,
 
 import pandas as pd
 import numpy as np
-from math import ceil
 from mousestyles import data
 
 
@@ -190,16 +189,17 @@ def get_prob_matrix_list(time_df, interval_length=1000):
 
     """
     # check all the inputs
-    condition_time_df = (type(time_df) == pd.core.frame.DataFrame)
-    condition_interval_length = (type(interval_length) == int and
-                                 interval_length > 0)
+    condition_time_df = isinstance(time_df, pd.core.frame.DataFrame)
+    condition_interval_length = isinstance(interval_length, int) and \
+                                interval_length > 0
+
     if not condition_time_df:
         raise ValueError("time_df should be pandas DataFrame")
     if not condition_interval_length:
         raise ValueError("interval_length should be positive int")
 
     time_array = np.array(time_df)[:, 3:]
-    n = ceil(time_array.shape[1] / interval_length)
+    n = np.ceil(time_array.shape[1] / interval_length)
     matrix_list = [None] * int(n)
     for i in np.arange(n):
         i = int(i)
@@ -249,8 +249,8 @@ def get_prob_matrix_small_interval(string_list, verbose=False):
 
     """
     # check all the inputs
-    condition_string_list = (type(string_list) == list)
-    condition_list_item = (type(string_list[0]) == str)
+    condition_string_list = isinstance(string_list, list)
+    condition_list_item = isinstance(string_list[0], unicode)
     if verbose:
         print(string_list[0])
     if not condition_string_list:
