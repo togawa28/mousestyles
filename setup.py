@@ -70,7 +70,7 @@ if __name__ == "__main__":
 
         packages=["mousestyles", "mousestyles.tests",
                   "mousestyles.data", "mousestyles.data.tests",
-                  "mousestyles.behavior", "mousestyles.behavior.tests"
+                  "mousestyles.behavior", "mousestyles.behavior.tests",
                   "mousestyles.classification",
                   "mousestyles.classification.tests",
                   "mousestyles.dynamics", "mousestyles.dynamics.tests",
