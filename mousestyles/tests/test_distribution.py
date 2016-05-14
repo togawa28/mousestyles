@@ -1,3 +1,4 @@
+import numpy as np
 from mousestyles.distribution import (powerlaw_pdf, exp_pdf,
                                       powerlaw_inverse_cdf, exp_inverse_cdf)
 
