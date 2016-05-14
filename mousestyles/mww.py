@@ -21,7 +21,7 @@ def get_pvalues(m):
     hypothesis is that one group has larger (or smaller) values than the other.
 
     Null hypothesis $H_0$: $P(X>Y)=P(Y>X)$.
-    Alternative $H_1: not $H_0$.
+    Alternative $H_1$: not $H_0$.
 
     The Mann-Whitney U test is similar to the Wilcoxon test, but can be used to
     compare multiple samples that aren't necessarily paired.

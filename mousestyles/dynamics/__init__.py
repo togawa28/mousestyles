@@ -191,7 +191,7 @@ def get_prob_matrix_list(time_df, interval_length=1000):
     # check all the inputs
     condition_time_df = isinstance(time_df, pd.core.frame.DataFrame)
     condition_interval_length = isinstance(interval_length, int) and \
-                                interval_length > 0
+        interval_length > 0
 
     if not condition_time_df:
         raise ValueError("time_df should be pandas DataFrame")
