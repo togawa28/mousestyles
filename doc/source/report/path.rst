@@ -15,7 +15,7 @@ experiment. This involved engineering path features such as length, speed,
 acceleration, and angle, followed by incorporating visualization techniques to
 discover previously hidden patterns.
 
-.. plot:: plots/heat_map_0_0_0.py
+.. figure:: figure/movement_density.png
 
    A heatmap of a mouse movement.
 
@@ -54,6 +54,12 @@ better understanding of the more granular differences in paths between strains
 than with just visualization alone. Having considered these questions, we also
 realized the need for data cleaning functions to filter out any noise from the
 data.
+
+The figure below is an example of a day in the life of a mouse in terms of
+path movements. We see high density movement near the home base, food, and
+water locations of the cage.
+
+.. figure:: figure/path_first_day.png
 
 Data Requirements
 -----------------
