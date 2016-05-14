@@ -14,6 +14,7 @@ DOWNLOAD_URL = 'https://github.com/berkeley-stat222/mousestyles'
 VERSION = '0.1dev'
 
 INSTALL_REQUIRES = [
+    'numexpr>=2.5.2',
     'numpy>=1.10.1',
     'pandas>=0.17.0',
     'pytest>=2.9.1',
@@ -67,12 +68,14 @@ if __name__ == "__main__":
         install_requires=INSTALL_REQUIRES,
         tests_require=TESTS_REQUIRE,
 
-
         packages=["mousestyles", "mousestyles.tests",
                   "mousestyles.data", "mousestyles.data.tests",
-                  "mousestyles.classification", "mousestyles.classification.tests",
+                  "mousestyles.behavior", "mousestyles.behavior.tests",
+                  "mousestyles.classification",
+                  "mousestyles.classification.tests",
                   "mousestyles.dynamics", "mousestyles.dynamics.tests",
-                  "mousestyles.path_diversity", "mousestyles.path_diversity.tests",
+                  "mousestyles.path_diversity",
+                  "mousestyles.path_diversity.tests",
                   "mousestyles.visualization", "mousestyles.visualization.tests"],
         package_data={'mousestyles.data': ['*.npy', '*/*/*.npy']}
     )
