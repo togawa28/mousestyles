@@ -44,7 +44,7 @@ class Intervals(object):
             return "EmptySet"
         ivt = self.intervals
         return " ".join(["[%s,%s]" % (ivt[i, 0], ivt[i, 1])
-                        for i in range(ivt.shape[0])])
+                         for i in range(ivt.shape[0])])
 
     def __add__(self, F):
         return self.union(F)

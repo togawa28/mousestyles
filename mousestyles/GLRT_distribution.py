@@ -132,7 +132,7 @@ def hypo_powerLaw_null(strain, mouse, day, law_est=0, seed=-1):
     cut_dist = distance_vector[msk]
     if law_est == 0:
         law_est = 1 + len(cut_dist) * 1 / \
-                          (np.sum(np.log(cut_dist / np.min(cut_dist))))
+            (np.sum(np.log(cut_dist / np.min(cut_dist))))
     n = len(cut_dist)
     log_cut = np.log(cut_dist)
     sum_cut = np.sum(log_cut)
@@ -143,7 +143,8 @@ def hypo_powerLaw_null(strain, mouse, day, law_est=0, seed=-1):
         sum_sam = np.sum(sample)
         log_sam = np.log(sample)
         sum_log_sam = np.log(np.sum(log_sam))
-        tmp = n*(np.log(sum_sam-n)-sum_log_sam) - law_est*np.sum(log_sam)
+        tmp = n * (np.log(sum_sam - n) - sum_log_sam) - \
+            law_est * np.sum(log_sam)
         sample_stat.append(tmp)
     # critical_value = ss.mstats.mquantiles(sample_stat, prob = 0.05)[0]
     p_value = np.sum(sample_stat > test_stat) / len(sample_stat)
@@ -211,7 +212,7 @@ def hypo_exp_null(strain, mouse, day, law_est=0, exp_est=0, seed=-1):
     cut_dist = distance_vector[msk]
     if law_est == 0:
         law_est = 1 + len(cut_dist) * 1 / \
-                        (np.sum(np.log(cut_dist / np.min(cut_dist))))
+            (np.sum(np.log(cut_dist / np.min(cut_dist))))
     if exp_est == 0:
         exp_est = len(cut_dist) / (np.sum(cut_dist) - len(cut_dist))
     n = len(cut_dist)

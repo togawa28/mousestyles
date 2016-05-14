@@ -53,7 +53,7 @@ def test_get_prob_matrix_list_input():
     assert excinfo.value.args[0] == "time_df should be pandas DataFrame"
     # interval_length is 0
     row_i = np.hstack((np.zeros(13), np.ones(10),
-                      np.ones(10)*2, np.ones(10)*3))
+                       np.ones(10) * 2, np.ones(10) * 3))
     time_df_eg = np.vstack((row_i, row_i, row_i))
     time_df_eg = pd.DataFrame(time_df_eg)
     with pytest.raises(ValueError) as excinfo:
@@ -68,7 +68,7 @@ def test_get_prob_matrix_list_input():
 def test_get_prob_matrix_list():
     # Checking functions output the correct matrix list
     row_i = np.hstack((np.zeros(13), np.ones(10),
-                      np.ones(10)*2, np.ones(10)*3))
+                       np.ones(10) * 2, np.ones(10) * 3))
     time_df_eg = np.vstack((row_i, row_i, row_i))
     time_df_eg = pd.DataFrame(time_df_eg)
     mat_list = get_prob_matrix_list(time_df_eg,
@@ -201,7 +201,7 @@ def test_find_best_interval_input():
     assert excinfo.value.args[0] == "df should be pandas DataFrame"
     # strain_num is not integer in 0,1,2
     row_i = np.hstack((np.zeros(13), np.ones(10),
-                      np.ones(10)*2, np.ones(10)*3))
+                       np.ones(10) * 2, np.ones(10) * 3))
     time_df_eg = np.vstack((row_i, row_i, row_i))
     time_df_eg = pd.DataFrame(time_df_eg)
     time_df_eg.rename(columns={0: 'strain'}, inplace=True)
@@ -232,4 +232,4 @@ def test_find_best_interval():
                                            np.arange(10, 40, 10))
     assert time == 10
     assert np.array_equal(fake, np.zeros(40))
-    assert 1-score < 0.05
+    assert 1 - score < 0.05

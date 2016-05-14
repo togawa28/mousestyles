@@ -42,7 +42,7 @@ def compute_accelerations(speeds, timestamps):
 
     speeds_diff = [x - y for x, y in zip(speeds[:len(speeds)], speeds[1:])]
     time_diffs = [x - y for x, y in zip(timestamps[:len(timestamps) - 1],
-                  timestamps[2:])]
+                                        timestamps[2:])]
 
     test = "timestamps should not contain same times in i th and i+2 th rows."
     if np.count_nonzero(time_diffs) is not len(time_diffs):

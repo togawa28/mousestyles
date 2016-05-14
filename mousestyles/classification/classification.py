@@ -276,15 +276,15 @@ def get_summary(predict_labels, true_labels):
         prediction_accurate_count_matrix["rowTotal"]
     # get the precision list
     precision = [prediction_accurate_rate_matrix.T.iloc[i, i]
-                 for i in range(prediction_accurate_rate_matrix.shape[1]-1)]
+                 for i in range(prediction_accurate_rate_matrix.shape[1] - 1)]
     prediction_accurate_rate_matrix = prediction_accurate_count_matrix /\
         prediction_accurate_count_matrix.ix["colTotal"]
     # get the recall list
     recall = [prediction_accurate_rate_matrix.T.iloc[i, i]
-              for i in range(prediction_accurate_rate_matrix.shape[1]-1)]
+              for i in range(prediction_accurate_rate_matrix.shape[1] - 1)]
     # get the F1 list
-    f1 = [2*precision[i]*recall[i]/(precision[i]+recall[i])
-          for i in range(prediction_accurate_rate_matrix.shape[1]-1)]
+    f1 = [2 * precision[i] * recall[i] / (precision[i] + recall[i])
+          for i in range(prediction_accurate_rate_matrix.shape[1] - 1)]
     summary = pd.concat([pd.DataFrame(precision),
                          pd.DataFrame(recall), pd.DataFrame(f1)], axis=1)
     summary.columns = ['precision', 'recall', "F1_score"]
