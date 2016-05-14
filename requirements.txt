@@ -1,6 +1,7 @@
 coverage==4.0.3
 coveralls==1.1
 matplotlib==1.5.1
+numexpr==2.5.2
 numpy==1.10.4
 pandas==0.17.0
 pytest==2.9.1
@@ -14,4 +15,3 @@ Sphinx==1.4.1
 sphinxcontrib-bibtex==0.3.3
 numpydoc==0.6.0
 ghp-import==0.4.1
-numexpr==2.5.2
