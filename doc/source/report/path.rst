@@ -6,176 +6,209 @@ Exploration & Path Diversity
 Statement of Problem
 --------------------
 
-The background of this problem is that the movements of each mouse, defined by
-"path",should be affected by some other relevant quantity including strain,
-time-of-day, day-of-week, physical status, or neural psychological attributes.
-These important relationships enable us to use the movement of mice to
-implement statistical analysis including prediction or classification.
-Generally speaking, our aim in this subproject is to use mouse locomotion
-patterns to make inference about the mouse’s daily behavior. This behavior
-involves how many times did the mouse eat in that day and how long did it eat.
-As we think that mice locomotion patterns are fundamental aspects of behavior,
-we will expect that these are good features of strains.
+The movements of mice are theorized to be correlated with physical, neural,
+and environmental attributes associated with mice such as strain, health,
+time-of-day, and day-of-week. The aim of this subproject was to discover
+whether or not mouse locomotion patterns are unique to each strain. To achieve
+this objective, we studied the paths the mice took throughout the days of the
+experiment. This involved engineering path features such as length, speed,
+acceleration, and angle, followed by incorporating visualization techniques to
+discover previously hidden patterns.
 
-.. plot:: report/plots/heat_map_0_0_0.py
+.. figure:: figure/movement_density.png
 
    A heatmap of a mouse movement.
 
 Statement of Statistical Problems
 ---------------------------------
 
-Our statistical problems are essentially classified into 2 categories;
-the definition of path and statistical inference. How to define the path
-should depend on what we want to do by these paths since the concept of
-path could be very broad and obscure. If we employ classification in our
-analysis, we need to discretize the continuous paths. Also we might be
-able to quantify the paths itself by introducing some 'scores' of each
-path, which is supposed to be a representative summary of the whole path
-(e.g. "efficiency score" or “exploration score.” Details are in the
-following sections). Classification could be certainly one of our
-statistical interests. We are primarily interested in the link between
-the spatial habits and strain, so for example we can use the following as
-the response variable for classification:
-
--  Path: given the strain and certain key attributes about the mice (ex:
-   time of day, time of last meal, aggregate distance traveled, etc.),
-   we want to be able to predict the future movement or “path” of the
-   mice. It may be possible to identify types of commonly traveled paths
-   (ex: path towards food, path towards water, exploratory path, etc.)
-   and use these for prediction. 
--  Strain: By using the path patterns as one of key features to predict
-   strain, we can reveal the important relationship between those.
-
-Ideally the results of those classification should be interpretable to us.
-That is, for example, the results would show that mice strains which are
-heavier tend to travel less frequently and less distance throughout the day.
-
-Exploratory Analysis
---------------------
-
-As we begin our analysis, we would like to explore the following points:
-
-- Daily plots of densities for each strain of mice to distinguish
-  locomotive patterns amongst strains and to get a sense of day-to-day
-  variations in mouse locomotive behavior or possibly detect anomalies. We
-  can measure the ‘distance’ between two densities by the KL divergence in
-  probability.
-- Summary statistics of locomotive patterns for each strain. This includes
-  total distance traveled per set intervals (daily, hourly, etc.)
-- How different strains allocate their time on each path.
-- The impact of changing the grid size (note: the authors have used 1 cm).
-- Identify paths that are structurally similar by exploiting rotational
-  invariance
-
-.. plot:: report/plots/plot_path.py
-
-   Example of path plot.
-
-
-Data Requirements
------------------
-
-We would require the ``<x, y, t>`` coordinates for the mice. We require
-active states ("AS") and inactive states ("IAS") to be clearly defined
-and possibly flagged within the dataset. Additionally, we require
-behavioral attributes about the mice to be defined and flagged (ex:
-eating event, drinking event, etc.)
+As stated previously, this subproject attempted to discover differences in
+path patterns that were unique to each mouse strain and each mouse within a
+strain. The major statistical problem associated with this project was to
+collapse the data in such a way as to increase our understanding of physical
+and psychological behavior through visualization of mouse paths. With the
+Tecott lab's visualization graphics as a launching point (see the image
+below), we continued on to create features that could be adapted to their
+plots and also generated new plotting methods to find the optimal method of
+expression. These features might prove useful in the classification
+subproject and potentially help us understand the relationship between
+behavior and genetics in mice and humans.
 
 .. figure:: figure/mice_path.png
    :alt: alt tag
 
    Path (image courtesy of Tecott Lab)
 
-As we define the path, we will also need to consider how each path will be
-labeled. One possibility is to assign a number to each grid square and to
-define the path as a sequence of numbers. As an alternative, we can use binary
-classification to indicate if the mouse traveled on a particular grid square,
-resulting in a matrix of 0s and 1s.  
+Exploratory Analysis
+--------------------
+
+The initial exploratory data analysis focused on how to define a path, how to
+generate metrics from the data, and how to visualize paths at different points
+in the day. Based on advice from the Tecott lab and our initial data
+exploration, we separated paths by interruptions in movement that were more
+than one second long. The path metrics we chose to include were length, speed,
+acceleration, angles, radius, center angles, area covered, area of the
+rectangle that contains the path, and absolute distance between the first and
+last points of a path. With the results of these features, we hoped to gain a
+better understanding of the more granular differences in paths between strains
+than with just visualization alone. Having considered these questions, we also
+realized the need for data cleaning functions to filter out any noise from the
+data.
+
+The figure below is an example of a day in the life of a mouse in terms of
+path movements. We see high density movement near the home base, food, and
+water locations of the cage.
+
+.. figure:: figure/path_first_day.png
+
+Data Requirements
+-----------------
+
+The data required to perform our analysis included the ``<x, y, t>``
+coordinates for the mice as well as a boolean indicating whether the mouse
+was situated in its home base. Additionally, we required the daily coordinates
+of the home base for each mouse.
 
 Methodology/Approach Description
 --------------------------------
 
 **Step 1** : Define “Path”
 
-Definition of path should clearly answer the following questions: -
-Whether we use raw paths or chunk those into a grid. If we want treat
-paths as discrete patterns, we need to set appropriate grid size so that
-the paths are not too chunky or too jittery categorical variables. What
-is the good measurement here? Which criteria will we follow e.g.
-stability? - Functions possibly needed in this step: - Obtain\_grid:
-creates grid information based on input of grid size - Chunk\_path:
-chunks paths into a grid by the outputs of Obtain\_grid - Eval\_chunk:
-evaluate chunked paths by certain measurement - Whether or not we use
-time dimension. If yes, how to distinguish a stop or a progression in a
-path? And how to consider speeds of each path? - Functions possibly
-needed in this step: - Take\_timediff: takes time difference b/w
-neighboring timestamps - Eval\_stops: distinguish a stop or a
-progression - Obtain\_speed: calculates the speed in each path - How to
-cut out paths from location data? Should it be divided by equal time
-length? Or should it start from a certain point e.g. nest? - Functions
-possibly needed in this step: - Cut\_paths: cuts out paths into several
-smaller paths - Possibility of defining “score” of a path to summarize
-it. For example, if one mouse goes to food directly and back to the nest
-immediately, we can evaluate this path as “very efficient,” in a sense
-that he is very efficient in getting a food. Also it is possible to
-define an “exploration score” which takes a high value if a mouse goes
-every part of the cage before going back to the nest. - Functions
-possibly needed in this step: - Cut\_paths: cuts out paths into several
-smaller paths
+We define a path based on a specific time threshold between movements. In more
+detail, we created a function that considers that time difference. If the time
+between movements exceeded the threshold, we considered a new path to have
+begun. That path was considered to have ended once the threshold had been
+exceeded again. Based on the advice of the Tecott lab, the default threshold
+was one second.
 
-**Step 2**: Choose Key Features
+**Step 2**: Clean Data
 
-The examples of the key features would include the following: - The
-stain of the mouse - The time of day - Some pre-defined “score” of a
-path e.g. efficiency - How frequently a mouse visits/stays at a location
-- How long it stays at a specific location (ex: nest or food) - The last
-time the mouse ate - The last time the mouse drank water - The total
-distance on average a mouse travels per day - How fast on average a
-mouse travels
+Based on our definition of a path, we realized that we needed to clean the
+data to remove obvious outliers and noise. For instance, we found that the
+sensor platform generated extreme outliers such as an acceleration of -4000
+centimeters per second. In order to remove this noise, we created two
+functions: one to filter the paths and one to remove duplicate rows. The
+filter paths function uses a minimum number of points in a path to filter out
+paths that create noise. For example, a path that is only three points could
+simply be a mouse shifting weight from one foot to the other and back again.
+Since this is not the type of path we are interested in analyzing, it makes
+sense to filter them out. The remove duplicates function deals with an issue
+in the data where the same x and y coordinates appear in adjacent rows but
+with different timestamps. This caused a problem when computing the angles of
+the paths so, while it is a trivial removal, it is necessary.
 
-We need to construct the functions to generate those features.
+**Step 3**: Choose Key Features
 
-**Step 3**: Classification: Machine Learning Technique
+The path features we wrapped up into functions are as follows:
 
-We might be able to use several machine learning methods, including
-random forest, SVM, gradient boosting. Each method should have following
-steps: - Cross validation: divide the data into train, validation, and
-test set - Tune the parameters: Based on the train and validation set,
-tune the parameter to maximize some pre-defined measurement. - Fit on
-the test set: Evaluate the performance of the classification on the test
-set.
+-  Path Length: Total distance covered
+-  Path Speed: Average speed
+-  Acceleration: Ratio of speed to the time difference at each point
+-  Angles: Angle between adjacent vectors
+-  Radius of Path: Distance between the center point and every other
+   point
+-  Center Angles: Angle created by two adjacent radius vectors
+-  Area Covered: Area covered by the path, computed with center angle
+   and radii
+-  Area of Rectangle: Area of rectangle that contains the entire path
+-  Absolute Distance: Distance between the first and last points
 
-**Step 4**: Interpretation
+**Step 4**:  Interpretation
 
-Hopefully we might employ the different model like logistic regression
-to get a sense of the effect size of each features on the response
-variables.
+Below are the plots generated based on the features we calculated above, per
+strain, mouse, and day. With these plots, we can draw some initial conclusions
+about differences between strains in the results section.
 
-Testing Framework Outline
+Results
 -------------------------
 
--  Run simulations of machine learning algorithm with a set seed to
-   ensure reproducibility
--  Correct warning message or error message.
--  Develop tests for python functions in methodology section above
+The main findings in this subproject involved the distributions of path
+distance, average speed, acceleration, and angle. The plots illustrating
+these distributions can be found below.
+
+In the distribution of path distances plot, we see that Strain 0 appeared to
+be the most active overall. For all mice in this strain, activeness peaked
+around days 6-8 and fell off after that. In contrast, there appears to be
+huge variation in the activeness among mice of Strain 1 with Mouse 2 seeming
+to exhibit odd behavior compared to the other mice in that strain. Finally,
+Strain 2 appeared to be the least active strain. However, further inspection
+is necessary.
+
+.. figure:: figure/dist_path.png
+
+
+From the distribution of average speed plot, we see similar patterns as that
+of path distance. This is likely due to the correlation between the two
+features.
+
+.. figure:: figure/dist_speed.png
+
+
+We have also included a distribution of acceleration plot that goes along
+nicely with the average speed and distance plots. The distributions were
+centered around 0, symmetrical across the mean. In general, Strain 2 had the
+least variation while Strain 0 had the most. This implies that Strain 0
+reached higher speeds than the other two strains.
+
+.. figure:: figure/dist_acceleration.png
+
+
+In terms of the distribution of angle, we found that Strain 1 Mouse 1 and 3
+along with Strain 2 Mouse 3 had the least sharp turns compared to the other
+mice. However, this result is likely skewed by the presence of noise in the
+sensor data.
+
+.. figure:: figure/dist_angle.png
+
+Future Studies
+---------------
+
+In the future, we would like to explore the following areas:
+
+-  Further data smoothing: We would like to further develop a robust methodology
+   to detect points which could be deemed ‘measurement noise’. Measurement noise
+   can be defined as consecutive observations which indicate high-turning angles
+   (i.e., above 150 degrees) over very short time intervals. Such observations
+   would skew results on number of sharp turns, average turning angles, etc. It
+   is possible the measurement noise obscures the path behavior differences
+   between strains.
+
+-  Path behavior as it relates to active state lifestyle: We would like to
+   explore the influence of a mouse’s active state behaviors on its path
+   behavior. A possible question we may be answer is the following: how does
+   hunger and thirst affect the mouse’s path diversity? (i.e., does the mouse get
+   sluggish after having eaten and therefore takes shorter, slower paths?)
+
+-  Obtaining optimal tuning parameters: We would like to determine which
+   parameters would be optimal for analysis purposes. These parameters include,
+   but are not limited to, the cutoff time for a path, the minimum path length
+   (in observations) and turning angle threshold for noise detection.
+
+-  Use path features for classification: We would like to use the features
+   calculated within the functions and apply machine learning techniques to
+   determine whether path features (speed, turning angles, distance traveled,
+   etc.) can be used for classification.
 
 Additional Remarks
 ------------------
 
-We note that the locomotive observations of the mice are recorded at
-unevenly spaced intervals (i.e., delta-t varies from point to point).
-Based on exploration of the data, we assume that observations are
-recorded whenever the mouse is in motion, and during large delta-t
-intervals, we assume the mouse is stationary. This is an important point
-we would like to confirm and understand before moving forward with the
-analysis.
+While working on this subproject, we came across several questions that
+required clarification from the lab. Researchers should be cautious regarding
+these points in future studies.
 
-According to the authors, a mice 'movement event' was measured as
-numbered in the tens of thousands per day. Each event was described by a
-location and time stamp when the distance from the prior recorded
-location exceeded 1 cm. Despite this, we note an instance in the data
-where the coordinates from (t) to (t+1) did not change, but resulted in
-a new observation.
+First, we noted that the locomotive observations of the mice were recorded at
+unevenly spaced intervals (i.e., delta-t varies from point to point).
+In our exploratory data analysis, we assumed that observations were recorded
+whenever the mouse was in motion, and during large delta-t intervals, we
+assumed the mouse was stationary. This is an important point that should be
+taken into account before moving forward with any analysis.
+
+According to the authors, a mouse 'movement event' was numbered in the tens of
+thousands per day. Each event was described by a location and time stamp when
+the distance from the prior recorded location exceeded 1 cm. Despite this, we
+noted an instance in the data where the coordinates from (t) to (t+1) did not
+change, but resulted in a new observation. This was accounted for in the data
+cleaning process.
 
 Reference reading:
 ------------------
