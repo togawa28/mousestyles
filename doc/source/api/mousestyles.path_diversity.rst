@@ -12,6 +12,14 @@ mousestyles.path_diversity.clean_movements module
     :undoc-members:
     :show-inheritance:
 
+mousestyles.path_diversity.detect_noise module
+----------------------------------------------
+
+.. automodule:: mousestyles.path_diversity.detect_noise
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 mousestyles.path_diversity.filter_path module
 ---------------------------------------------
 
@@ -32,6 +40,14 @@ mousestyles.path_diversity.path_features module
 -----------------------------------------------
 
 .. automodule:: mousestyles.path_diversity.path_features
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+mousestyles.path_diversity.smooth_noise module
+----------------------------------------------
+
+.. automodule:: mousestyles.path_diversity.smooth_noise
     :members:
     :undoc-members:
     :show-inheritance:
