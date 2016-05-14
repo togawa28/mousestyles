@@ -44,6 +44,22 @@ mousestyles.path_diversity.path_features module
     :undoc-members:
     :show-inheritance:
 
+mousestyles.path_diversity.path_features_advanced module
+--------------------------------------------------------
+
+.. automodule:: mousestyles.path_diversity.path_features_advanced
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+mousestyles.path_diversity.path_index module
+--------------------------------------------
+
+.. automodule:: mousestyles.path_diversity.path_index
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 mousestyles.path_diversity.smooth_noise module
 ----------------------------------------------
 

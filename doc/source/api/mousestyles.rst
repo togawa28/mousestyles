@@ -12,6 +12,7 @@ Subpackages
     mousestyles.distributions
     mousestyles.dynamics
     mousestyles.path_diversity
+    mousestyles.ultradian
     mousestyles.visualization
 
 Submodules
@@ -49,26 +50,18 @@ mousestyles.intervals module
     :undoc-members:
     :show-inheritance:
 
+mousestyles.kde module
+----------------------
+
+.. automodule:: mousestyles.kde
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 mousestyles.mww module
 ----------------------
 
 .. automodule:: mousestyles.mww
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-mousestyles.pca_hcm_data module
--------------------------------
-
-.. automodule:: mousestyles.pca_hcm_data
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-mousestyles.strain_classification module
-----------------------------------------
-
-.. automodule:: mousestyles.strain_classification
     :members:
     :undoc-members:
     :show-inheritance:
