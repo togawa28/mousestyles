@@ -12,7 +12,9 @@ Darren Rhea, 2012; Chris Hillar revised, April 30, 2013;
 Ram Mehta revised, 2013; Copyright (c) 2013, All rights reserved;
 Chris Hillar revised, 2015
 """
-from __future__ import print_function, absolute_import, division
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
+
 import numpy as np
 
 

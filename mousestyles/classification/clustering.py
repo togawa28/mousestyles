@@ -1,3 +1,6 @@
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
+
 from scipy.cluster.hierarchy import linkage
 from sklearn.cluster import AgglomerativeClustering, KMeans
 from sklearn import metrics

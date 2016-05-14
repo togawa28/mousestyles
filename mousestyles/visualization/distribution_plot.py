@@ -1,3 +1,6 @@
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
+
 import matplotlib.pyplot as plt
 import numpy as np
 from mousestyles.distribution import (powerlaw_pdf, exp_pdf,

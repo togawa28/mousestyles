@@ -1,3 +1,6 @@
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
+
 from mousestyles.GLRT_distribution import (random_powerlaw, random_exp,
                                            hypo_powerLaw_null, hypo_exp_null)
 
