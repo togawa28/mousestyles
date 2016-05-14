@@ -2,6 +2,7 @@ from __future__ import print_function, absolute_import, division
 
 import pandas as pd
 import numpy as np
+
 from mousestyles.path_diversity import detect_noise
 
 
@@ -54,8 +55,7 @@ def smooth_noise(movement, paths, angle_threshold, delta_t):
     if len(movement) <= 1:
         raise ValueError("Movement must contain at least 2 rows")
 
-    noise = detect_noise.detect_noise(
-        movement, paths, angle_threshold, delta_t)
+    noise = detect_noise(movement, paths, angle_threshold, delta_t)
 
     max_noise = max(noise)
 
