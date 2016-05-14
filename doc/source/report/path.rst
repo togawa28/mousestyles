@@ -55,11 +55,6 @@ than with just visualization alone. Having considered these questions, we also
 realized the need for data cleaning functions to filter out any noise from the
 data.
 
-.. plot:: report/plots/plot_path.py
-
-   Example of path plot.
-
-
 Data Requirements
 -----------------
 
@@ -191,20 +186,23 @@ In the future, we would like to explore the following areas:
 Additional Remarks
 ------------------
 
-We note that the locomotive observations of the mice are recorded at
-unevenly spaced intervals (i.e., delta-t varies from point to point).
-Based on exploration of the data, we assume that observations are
-recorded whenever the mouse is in motion, and during large delta-t
-intervals, we assume the mouse is stationary. This is an important point
-we would like to confirm and understand before moving forward with the
-analysis.
+While working on this subproject, we came across several questions that
+required clarification from the lab. Researchers should be cautious regarding
+these points in future studies.
 
-According to the authors, a mice 'movement event' was measured as
-numbered in the tens of thousands per day. Each event was described by a
-location and time stamp when the distance from the prior recorded
-location exceeded 1 cm. Despite this, we note an instance in the data
-where the coordinates from (t) to (t+1) did not change, but resulted in
-a new observation.
+First, we noted that the locomotive observations of the mice were recorded at
+unevenly spaced intervals (i.e., delta-t varies from point to point).
+In our exploratory data analysis, we assumed that observations were recorded
+whenever the mouse was in motion, and during large delta-t intervals, we
+assumed the mouse was stationary. This is an important point that should be
+taken into account before moving forward with any analysis.
+
+According to the authors, a mouse 'movement event' was numbered in the tens of
+thousands per day. Each event was described by a location and time stamp when
+the distance from the prior recorded location exceeded 1 cm. Despite this, we
+noted an instance in the data where the coordinates from (t) to (t+1) did not
+change, but resulted in a new observation. This was accounted for in the data
+cleaning process.
 
 Reference reading:
 ------------------
