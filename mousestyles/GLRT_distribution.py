@@ -10,11 +10,9 @@ def random_powerlaw(n, a, seed=-1):
     """
     Random generate points of truncated power law.
 
-    Description
-    -----------
     The method we generate is to inverse Cumulative Density Function
     of truncated powerlaw function, and put random number draw from
-    Unif[0,1]. The theory behind it is F^{-1}(U)~F.
+    Unif[0,1]. The theory behind it is $F^{-1}(U) \sim F$.
 
     Parameters
     ----------
@@ -43,8 +41,6 @@ def random_exp(n, l, seed=-1):
     """
     Random generate points of truncated exponential.
 
-    Description
-    -----------
     The method we generate is to use the memorylessness property
     of exponential distribution. As the survival function of
     exponential distribution is always the same, for truncated
@@ -79,8 +75,6 @@ def hypo_powerLaw_null(strain, mouse, day, law_est=0, seed=-1):
     """
     Return the outcome from GLRT with null hypothesis law distribution.
 
-    Description
-    -----------
     This function used the Generalized Likelihood Ratio Test to test the
     goodness of fit: in other words, which distribution is more likely.
 
@@ -107,9 +101,9 @@ def hypo_powerLaw_null(strain, mouse, day, law_est=0, seed=-1):
     ----------
     strain : int
         the strain number of the mouse
-    mouse  : int
+    mouse : int
         the mouse number in its strain
-    day       :  int
+    day :  int
         the day number
     law_est: double (optional)
         the estimated parameter in law distribution

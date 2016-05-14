@@ -6,6 +6,12 @@ import numpy as np
 from mousestyles import data
 
 
+try:
+  basestring
+except NameError:
+  basestring = str
+
+
 def create_time_matrix(combined_gap=4, time_gap=1,
                        days_index=137, verbose=False):
     r"""
@@ -250,7 +256,7 @@ def get_prob_matrix_small_interval(string_list, verbose=False):
     """
     # check all the inputs
     condition_string_list = isinstance(string_list, list)
-    condition_list_item = isinstance(string_list[0], unicode)
+    condition_list_item = isinstance(string_list[0], basestring)
     if verbose:
         print(string_list[0])
     if not condition_string_list:

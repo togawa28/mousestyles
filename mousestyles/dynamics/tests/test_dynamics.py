@@ -5,11 +5,11 @@ import pytest
 import numpy as np
 import pandas as pd
 
-from mousestyles.dynamics import create_time_matrix
-from mousestyles.dynamics import get_prob_matrix_list
-from mousestyles.dynamics import get_prob_matrix_small_interval
-from mousestyles.dynamics import mcmc_simulation, get_score
-from mousestyles.dynamics import find_best_interval
+from mousestyles.dynamics import (create_time_matrix,
+                                  get_prob_matrix_list,
+                                  get_prob_matrix_small_interval,
+                                  mcmc_simulation, get_score,
+                                  find_best_interval)
 
 
 def test_creat_time_matrix_input():

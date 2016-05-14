@@ -227,7 +227,8 @@ class Intervals(object):
 
     def connect_gaps_by_rule(self, rule):
         """ Returns a new object with gaps connected when rule returns True.
-        parameters
+
+        Parameters
             rule: Callable that takes parameters start_time and end_time.
         """
         if self.is_empty():
