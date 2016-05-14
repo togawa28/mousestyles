@@ -63,14 +63,51 @@ def test_aggregate_data():
     # Check the strain
     test_2 = np.array(result['strain'])
     assert len(np.unique(test_2)) == 3
+    # check input error
+    with pytest.raises(ValueError) as msg1:
+        ultradian.aggregate_data(feature='hehe', bin_width=30)
+    assert msg1.value.args[0] == \
+        'Input value must in {"AS", "F", "M_AS", "M_IS", "W", "Distance"}'
+    # check input error
+    with pytest.raises(ValueError) as msg2:
+        ultradian.aggregate_data(feature='F', bin_width=-30)
+    assert msg2.value.args[
+        0] == 'Bin width (minutes) must be a non-negative integer below 1440'
 
 
 # Test for seasonal decomposition
-def test_seasonal_decomposition(strain=0, mouse=1, feature='AS',
-                                bin_width=30, period_length=10):
-    result = ultradian.seasonal_decomposition(
-        strain, mouse, feature, bin_width, period_length)
+def test_seasonal_decomposition():
+    result = ultradian.seasonal_decomposition(strain=0, mouse=1, feature='AS',
+                                              bin_width=30, period_length=10)
     assert type(result) == statsmodels.tsa.seasonal.DecomposeResult
+    # check input error
+    with pytest.raises(ValueError) as msg1:
+        ultradian.seasonal_decomposition(strain=-5, mouse=1, feature='AS',
+                                         bin_width=30, period_length=10)
+    assert msg1.value.args[0] == 'Strain must be a non-negative integer'
+    # check input error
+    with pytest.raises(ValueError) as msg2:
+        ultradian.seasonal_decomposition(strain=0, mouse=-1, feature='AS',
+                                         bin_width=30, period_length=10)
+    assert msg2.value.args[0] == 'Mouse value must be a non-negative integer'
+    # check input error
+    with pytest.raises(ValueError) as msg3:
+        ultradian.seasonal_decomposition(strain=0, mouse=1, feature='hehe',
+                                         bin_width=30, period_length=10)
+    assert msg3.value.args[0] == \
+        'Input value must in {"AS", "F", "M_AS", "M_IS", "W", "Distance"}'
+    # check input error
+    with pytest.raises(ValueError) as msg4:
+        ultradian.seasonal_decomposition(strain=0, mouse=1, feature='AS',
+                                         bin_width=-30, period_length=10)
+    assert msg4.value.args[
+        0] == 'Bin width (minutes) must be a non-negative integer below 1440'
+    # check input error
+    with pytest.raises(ValueError) as msg5:
+        ultradian.seasonal_decomposition(strain=0, mouse=1, feature='AS',
+                                         bin_width=30, period_length=-10)
+    assert msg5.value.args[
+        0] == 'Peoriod length must be a non-negative integer or float'
 
 
 # Test for strai_seasonal
@@ -78,6 +115,34 @@ def test_strain_seasonal():
     res = ultradian.strain_seasonal(strain=0, mouse={0, 1, 2}, feature="W",
                                     bin_width=30, period_length=24)
     assert len(res) == 3
+    # check input error
+    with pytest.raises(ValueError) as msg1:
+        ultradian.strain_seasonal(strain=-5, mouse={0, 1}, feature='AS',
+                                  bin_width=30, period_length=10)
+    assert msg1.value.args[0] == 'Strain must be a non-negative integer'
+    # check input error
+    with pytest.raises(ValueError) as msg2:
+        ultradian.strain_seasonal(strain=0, mouse={1, -1}, feature='AS',
+                                  bin_width=30, period_length=10)
+    assert msg2.value.args[0] == 'Mouse value must be a non-negative integer'
+    # check input error
+    with pytest.raises(ValueError) as msg3:
+        ultradian.strain_seasonal(strain=0, mouse={0, 1}, feature='hehe',
+                                  bin_width=30, period_length=10)
+    assert msg3.value.args[0] == \
+        'Input value must in {"AS", "F", "M_AS", "M_IS", "W", "Distance"}'
+    # check input error
+    with pytest.raises(ValueError) as msg4:
+        ultradian.strain_seasonal(strain=0, mouse={0, 1}, feature='AS',
+                                  bin_width=-30, period_length=10)
+    assert msg4.value.args[
+        0] == 'Bin width (minutes) must be a non-negative integer below 1440'
+    # check input error
+    with pytest.raises(ValueError) as msg5:
+        ultradian.strain_seasonal(strain=0, mouse={0, 1}, feature='AS',
+                                  bin_width=30, period_length=-10)
+    assert msg5.value.args[
+        0] == 'Peoriod length must be a non-negative integer or float'
 
 
 # check the outcome range of mix_strain, the result is a p-value, so it's
@@ -87,6 +152,15 @@ def test_mix_strain():
     result = ultradian.mix_strain(data, "AS")
     assert result > 0
     assert result < 1
+    # check input error
+    with pytest.raises(ValueError) as msg1:
+        ultradian.mix_strain([0, 1], 'W')
+    assert msg1.value.args[0] == 'Data must be a pandas data frame'
+    # check input error
+    with pytest.raises(ValueError) as msg2:
+        ultradian.mix_strain(data, 'hehe')
+    assert msg2.value.args[0] == \
+        'Input value must in {"AS", "F", "M_AS", "M_IS", "W", "Distance"}'
 
 
 # Test for find_cycle
@@ -134,3 +208,17 @@ def test_find_cycle():
     assert len(r6) == 7
     assert type(r6[3]) == int
     assert all(r6[6] <= 1) & all(r6[4] > 0)
+    # check input error
+    with pytest.raises(ValueError) as msg1:
+        ultradian.find_cycle(feature='hehe', strain=0, mouse=0,
+                             methods='LombScargleFast',
+                             plot=False)
+    assert msg1.value.args[0] == \
+        'Input value must in {"AS", "F", "M_AS", "M_IS", "W", "Distance"}'
+    # check input error
+    with pytest.raises(ValueError) as msg2:
+        ultradian.find_cycle(feature='F', strain=0, mouse=0,
+                             methods='hehe',
+                             plot=False)
+    assert msg2.value.args[
+        0] == 'Input value must in {"LombScargleFast","LombScargle"}'
