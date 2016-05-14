@@ -50,165 +50,66 @@ to capture the behavioral profile:
 
    Behavioral Profile (image courtesy of Tecott Lab)
 
-The main focus is 3 key states of the mice i.e. [*Drinking \| Feeding \|
-Locomotion*\ ]
+The main focus is 3 key states of the mice i.e. *Drinking*, *Feeding* and
+*Locomotion*.
 
 Each of these metrics can be seen visually in the slides referenced
 below. Each metric is a tree, decomposed into two child node metrics,
 whereby when the child nodes are multiplied together, they yield the
-parent metric.
+parent metric. We illustrate the relevant calculations in the case
+of **drinking state**:
 
--  AS [*Drinking \| Feeding \| Locomotion*\ ] Intensity
--  *A note about intensity:* We are not entirely sure what the Tecott
-   Lab's meaning of "intensity" is. Our current hypothesis is that
-   intensity is defined as quantity over active state time. E.g. for
-   drinking, intensity is the quantity consumed divided by the total
-   amount of time the mouse is in an active state.
-
-   -  [*Drinking \| Feeding \| Locomotion*\ ] Bout Size
-
-      -  [*Drinking \| Feeding \| Locomotion*\ ] Bout Duration
-      -  [*Drinking \| Feeding \| Locomotion*\ ] Bout Intensity
-
-         -  [*Drinking \| Feeding \| Locomotion*\ ] Bout EventRate
-         -  [*Drinking \| Feeding \| Locomotion*\ ] Event Size
-
-   -  [*Drinking \| Feeding \| Locomotion*\ ] Bout Rt
-
-Additionally the following needs to be calculated for Inactive /Active
-State:
-
-- AS Probability: the probability of AS among all time period
-- AS Duration: the length of time of AS
-- AS Rate: the reciprocal of average length of time of AS
+-  **Drinking** Consumption Rate: ``Total Drinking Amount/ Total Time`` (mg/s)
+-  Active State Prob: ``Active Time/ Total Time``
+-  **Drinking** Intensity: ``Total Drinking Amount/ Active Time`` (mg/s)
+   -  **Drinking** Bout Rate: ``Number of Bouts/ Active Time`` (bouts/s)
+   -  **Drinking** Bout Size: ``Total Drinking Amount/ Number of Bouts``
+      (mg/bout)
+      -  **Drinking** Bout Duration:
+         ``Total Drinking Time/ Number of Bouts`` (s/bout)
+      -  **Drinking** Bout Intensity:
+         ``Drinking Amount/ Total Drinking Time`` (mg/s)
+         -  **Drinking** Bout Event Rate:
+            ``Number of Events/ Total Drinking Time`` (events/s)
+         -  **Drinking** Event Size:
+            ``Total Drinking Amount/ Number of Events`` (mg/event)
 
 Data Collection:
 ----------------
 
-The data we have:
+Our underlying functions depend on the following key data
+requirements for each **mouse, strain and day**:
 
-- the observations of location for each mice, $(x, y, t)$ with $t$ small.
-- the aggregated time binned features about each event and its intensity.
+- Active State
+- Inactive State
+- Moving Active State
+- Moving Inactive State
+- Total Distance Travelled (meters)
+- Food Consumption (grams)
+- Water Consumption (milligrams)
 
-The data we need:
+These data requirements are sourced via the ``mousestyles`` ``data
+loader`` utilities.
 
-- the observation of consumption size and moving distance with each event.
+The Food and Water consumption data was only provided on a daily
+basis and our ``behavior`` utilities assume that such quantities
+are uniformly consumed over the time period studied.
 
-Exploratory Analysis
---------------------
+Illustrative Examples
+---------------------
 
-Based on the data requirements being provided, we will need to start
-plotting the following metrics:
+We illustrate the use of the ``behavior`` utilties with a
+motivating research question:
 
-For Event
+*How do do the key feeding metrics compare across 2 different mice
+for the entire 11 days?*
 
-- Event Consumption or Distance: Already in basic time bin features.
-- AS Event Intensity: Already in basic time bin features.
-- AS Bout Routine: Use `txy_coords` within each event intervals to generate
-  the path.
-- Event Bout Size or Distance: Use observation of consumption size and
-  moving distance data.
-- Event Bout Duration: Use event intervals data.
-- Event Bout Intensity: Use Event Consumption or Distance over minute of AS time
-- Event Size: Use interval to get the number of event happened in binned time
-- Event Bout Rate: Use Event Size over AS time.
+In this code, we see a few important features. First, we create
+behavior trees using the ``compute_tree`` function, and demonstrate
+their pretty-printing functionality.  Then, we merge lists of trees
+into one larger tree of lists, which we can then summarize or turn
+into a Pandas data frame. Finally, we show how to plot the results
+using ``matplotlib``.
 
-For In/Active State
-
-- AS Probability: Already in basic time bin features.
-- AS Duration: Already in basic time bin features.
-- AS Rate: Use AS Number over AS Duration.
-
-Data Requirements Description
------------------------------
-
-The data we have:
-
-- a dataframe of observations of location for each mice, $(x, y, t)$
-  with $t$ small.
-- The above dataframe with a classification of strain number and mouse
-  number at each time $t$ (if available)
-
-The data we require:
-
-- The above dataframe with AS/ IS properly classified at each point $t$ for
-  each mouse
-- The above dataframe with a classification of drinking, feeding and
-  locomotion for each mouse at each time $t$
-- The above dataframe with a classification of consumption size and moving
-  distance with each event at each time $t$
-
-A graphic view of the above is as below:
-
-======  =====  ======  =====  ========  =======
-strain  mouse   time   IS/AS  D/F/L/S*  Consn.
-======  =====  ======  =====  ========  =======
-0       1      1.1     IS     S         0
-0       1      1.4     AS     F         4
-1       2      1.1     AS     D         5
-1       2      1.3     AS     D         3
-1       2      1.6     IS     S         0
-======  =====  ======  =====  ========  =======
-
-\*\ **``D/F/L/S``** above is a flag for **D**\ rinking/ **F**\ eeding/
-**L**\ ocomotion/ **S**\ tationary
-
-Methodology/ Approach Description
----------------------------------
-
-We wish to create a single function that should be able to return all of
-the above metrics as a list:
-
-Key inputs are:
-
-- mouse/ strain as string
-- starting time
-- ending time
-- a dictionary containing the rectangular vertices marking the area to
-  restrict the movement to i.e. x\_lower, x\_upper, y\_lower, y\_upper.
-- [*Drinking \| Feeding \| Locomotion*\ ] state specification
-- The main output is a list containing the key metrics stated in
-  ``Statement of statistical problems`` section
-
-- Key idea is that if we have the most granular dataframe in
-  ``Data Requirements Description`` then the Python code is really just
-  a SQL (in ``pandas`` form) filtering/ grouping query to generate the
-  required output metrics (from flowchart) in the form of a list
-
-An example of a metric calculation for `Drinking` is as follows:
-$\frac{Drinking}{Total\ Time}=\frac{Drink\ Consumed}{AS\ Time}\times \frac{AS\ Time}{Total\ Time}$
-
-Testing Framework Outline
--------------------------
-
-Additional Remarks
-------------------
-
-- It is not clear exactly how the specified required metrics are to be
-  calculated in the form of a single query or multiple queries. We need
-  more clarification on what intensity means.
-- Not sure yet whether the required dataframe at the most granular
-  level can be easily constructed. This would be really useful for all
-  projects to use so we should really consider developing it for the
-  wider team.
-- Some of the required data metrics like consumption of food/ water at
-  each time t may not be easy to obtain as they are provided for each
-  interval. These may have to be prorated across each time t in some
-  stable way in the construction of the required dataframe
-- We also believe that the metrics provided at each point are single
-  point statistics i.e. means. We should consider outputing the actual
-  histogram of values at each point for the given metric rather than
-  just the single-valued mean metrics
-
-   - For example, we may not only be interested in the average amount
-     of active time spent in locomotion, but the distribution of
-     locomotion. This is a more complicated metric than those outlined
-     in the work by the Tecott Lab's papers referenced below. With this
-     information, we could potentially see interesting trends: the
-     proportion of a mouse-day spent in locomotion could be the same in
-     two time chunks, but the types of movements (distances) could form
-     a more nuanced distribution.
-
-- Not sure if this is feasible, but if we had to produce the mean value
-  we could output the time series mean value over the given interval
-  rather than *just* the overall mean from the given interval
+.. plot:: report/plots/plot_behavior_example.py
+   :include-source:
