@@ -59,15 +59,18 @@ whereby when the child nodes are multiplied together, they yield the
 parent metric. We illustrate the relevant calculations in the case
 of **drinking state**:
 
--  **Drinking** Consumption Rate: ``Total Drinking Amount/ Total Time`` (mg/s)
--  Active State Prob: ``Active Time/ Total Time``
--  **Drinking** Intensity: ``Total Drinking Amount/ Active Time`` (mg/s)
-    -  **Drinking** Bout Rate: ``Number of Bouts/ Active Time`` (bouts/s)
-    -  **Drinking** Bout Size: ``Total Drinking Amount/ Number of Bouts`` (mg/bout)
-        -  **Drinking** Bout Duration: ``Total Drinking Time/ Number of Bouts`` (s/bout)
-        -  **Drinking** Bout Intensity: ``Drinking Amount/ Total Drinking Time`` (mg/s)
-            -  **Drinking** Bout Event Rate: ``Number of Events/ Total Drinking Time`` (events/s)
-            -  **Drinking** Event Size: ``Total Drinking Amount/ Number of Events`` (mg/event)
+**Drinking** Consumption Rate: ``Total Drinking Amount/ Total Time`` (mg/s)
+
+Active State Prob: ``Active Time/ Total Time``
+
+**Drinking** Intensity: ``Total Drinking Amount/ Active Time`` (mg/s)
+
+ - **Drinking** Bout Rate: ``Number of Bouts/ Active Time`` (bouts/s)
+ - **Drinking** Bout Size: ``Total Drinking Amount/ Number of Bouts`` (mg/bout)
+     - **Drinking** Bout Duration: ``Total Drinking Time/ Number of Bouts`` (s/bout)
+     - **Drinking** Bout Intensity: ``Drinking Amount/ Total Drinking Time`` (mg/s)
+         - **Drinking** Bout Event Rate: ``Number of Events/ Total Drinking Time`` (events/s)
+         - **Drinking** Event Size: ``Total Drinking Amount/ Number of Events`` (mg/event)
 
 Data
 ----
